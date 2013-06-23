@@ -1,0 +1,4 @@
+ircrpg
+======
+
+RPG for IRC
