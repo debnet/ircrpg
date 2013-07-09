@@ -13,6 +13,10 @@ import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.game.queues.EventQueue;
+import fr.debnet.ircrpg.game.queues.IGameQueue;
+import fr.debnet.ircrpg.game.queues.INotifiable;
+import fr.debnet.ircrpg.game.queues.UpdateQueue;
 import fr.debnet.ircrpg.helpers.CheckItem;
 import fr.debnet.ircrpg.helpers.CheckPlayer;
 import fr.debnet.ircrpg.helpers.CheckPotion;
@@ -24,7 +28,9 @@ import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import fr.debnet.ircrpg.models.Spell;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +48,8 @@ public class Game {
     private Map<String, Player> playersByUsername;
     private Map<String, Item> itemsByCode;
     private Map<String, Spell> spellsByCode;
+    
+    private List<IGameQueue> queues;
 
     /**
      * Constructor : initialize the game by fetching in memory all data from database
@@ -52,6 +60,7 @@ public class Game {
         this.playersByUsername = new HashMap<String, Player>();
         this.itemsByCode = new HashMap<String, Item>();
         this.spellsByCode = new HashMap<String, Spell>();
+        this.queues = new ArrayList<IGameQueue>();
 
         if (Config.PERSISTANCE) {
             List<Player> players = DAO.<Player>getObjectList("from " + Model.PLAYER);
@@ -72,8 +81,30 @@ public class Game {
                 this.spellsByCode.put(spell.getCode(), spell);
             }
         }
+        
+        // Run queues
+        this.queues.add(new UpdateQueue(this));
+        this.queues.add(new EventQueue(this));
+    }
+    
+    /**
+     * Register a notifiable object to all queues
+     * @param notifiable Notifiable object
+     */
+    public void registerNotifiable(INotifiable notifiable) {
+        for (IGameQueue queue : this.queues) {
+            queue.register(notifiable);
+        }
     }
 
+    /**
+     * Get all players
+     * @return Collection of all players
+     */
+    public Collection<Player> getAllPlayers() {
+        return this.playersByNickname.values();
+    }
+    
     /**
      * Get player by nickname
      * @param nickname Nickname

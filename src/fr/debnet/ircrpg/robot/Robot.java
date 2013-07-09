@@ -9,21 +9,24 @@ import fr.debnet.ircbot.DccFileTransfer;
 import fr.debnet.ircbot.IRCBot;
 import fr.debnet.ircbot.User;
 import fr.debnet.ircrpg.Config;
-import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.game.Game;
+import fr.debnet.ircrpg.game.queues.INotifiable;
 import fr.debnet.ircrpg.models.Player;
+import fr.debnet.ircrpg.models.Result;
 import java.util.logging.Logger;
 
 /**
  *
  * @author Marc
  */
-public class Robot extends IRCBot {
+public class Robot extends IRCBot implements INotifiable {
 
     private Game game;
     
     public Robot(Game game) {
         this.game = game;
+        this.game.registerNotifiable(this);
         this.setVerbose(Config.DEBUG);
     }
     
@@ -39,16 +42,28 @@ public class Robot extends IRCBot {
         }
     }
     
-    public void sendFormattedMessage(String target, String message, Object... args) {
-        //if (args != null) for (String a : args) message.replaceFirst("$", a);
-        message = String.format(message, args);
+    public void sendFormattedMessage(String message, Object... args) {
         if (this.isConnected()) {
-            super.sendMessage(target, Strings.formatMessage(message));
+            for (String channel : this.getChannels()) {
+                message = String.format(message, args);
+                message = Strings.formatMessage(message);
+                super.sendMessage(channel, message);
+            }
         }
-        if (Config.DEBUG) {
-            message.replaceAll("<(\\w+)>", "");
-            String log = String.format("{0}: {1}", target, message);
-            Logger.getLogger(Robot.class.getName()).info(log);
+    }
+    
+    public void sendFormattedMessage(String target, String message, Object... args) {
+        if (this.isConnected()) {
+            message = String.format(message, args);
+            message = Strings.formatMessage(message);
+            super.sendMessage(target, message);
+        }
+    }
+
+    @Override
+    public void notify(Result result) {
+        for (String channel : this.getChannels()) {
+            this.sendFormattedMessage(channel, result.getMessage());
         }
     }
     
@@ -82,7 +97,11 @@ public class Robot extends IRCBot {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    this.game.register(username, password, sender, hostname);
+                    if (this.game.register(username, password, sender, hostname)) {
+                        this.sendFormattedMessage(sender, Strings.REGISTER_SUCCEED);
+                    } else {
+                        this.sendFormattedMessage(sender, Strings.REGISTER_FAILED);
+                    }
                 }
             }
             // Login
@@ -90,7 +109,11 @@ public class Robot extends IRCBot {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    this.game.login(username, password, sender, hostname);
+                    if (this.game.login(username, password, sender, hostname)) {
+                        this.sendFormattedMessage(sender, Strings.LOGIN_SUCCEED);
+                    } else {
+                        this.sendFormattedMessage(sender, Strings.LOGIN_FAILED);
+                    }
                 }
             }
             // Infos
@@ -129,12 +152,16 @@ public class Robot extends IRCBot {
 
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
-        
+        if (this.game.tryRelogin(sender, hostname)) {
+            this.sendFormattedMessage(sender, Strings.RELOGIN_SUCCEED);
+        }
     }
 
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
-        
+        if (this.game.logout(sender)) {
+            //TODO:
+        }
     }
 
     @Override
@@ -149,7 +176,9 @@ public class Robot extends IRCBot {
 
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        
+        if (this.game.logout(sourceNick)) {
+            //TODO:
+        }
     }
 
     @Override

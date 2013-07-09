@@ -57,6 +57,22 @@ public class Strings {
     @Property(name = "stat.defense")
     public static String STAT_DEFENSE;
     
+    /* General */
+    @Property(name = "register.succeed")
+    public static String REGISTER_SUCCEED;
+    @Property(name = "register.failed")
+    public static String REGISTER_FAILED;
+    @Property(name = "login.succeed")
+    public static String LOGIN_SUCCEED;
+    @Property(name = "login.failed")
+    public static String LOGIN_FAILED;
+    @Property(name = "logout.succeed")
+    public static String LOGOUT_SUCCEED;
+    @Property(name = "logout.failed")
+    public static String LOGOUT_FAILED;
+    @Property(name = "relogin.succeed")
+    public static String RELOGIN_SUCCEED;
+    
     /* Commands */
     @Property(name = "command.help")
     public static String COMMAND_HELP;

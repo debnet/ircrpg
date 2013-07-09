@@ -5,6 +5,7 @@
 *.war
 *.ear
 
-# Netbeans specifics #
+# Netbeans #
 build/
 dist/
+nbproject/private/
