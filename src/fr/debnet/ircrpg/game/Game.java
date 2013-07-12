@@ -96,6 +96,15 @@ public class Game {
             queue.register(notifiable);
         }
     }
+    
+    /**
+     * Update queues
+     */
+    public void updateQueues() {
+        for (IGameQueue queue : this.queues) {
+            queue.update();
+        }
+    }
 
     /**
      * Get all players
@@ -158,7 +167,7 @@ public class Game {
      * @param sender Player's nickname
      * @return Result
      */
-    public Result update(String sender) {
+    public Result updatePlayerByNickname(String sender) {
         Player player = this.getPlayerByNickname(sender);
         if (player != null) {
             return this.update(player);
@@ -172,7 +181,7 @@ public class Game {
      * @param player Player instance
      * @return Result
      */
-    protected Result update(Player player) {
+    public Result update(Player player) {
         return this.update(player, null);
     }
     
