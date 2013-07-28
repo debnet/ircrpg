@@ -17,6 +17,28 @@ public class Strings {
     @Property(name = "format.time")
     public static String FORMAT_TIME;
     
+    /* Equipment */
+    @Property(name = "equipment.weapon")
+    public static String EQUIPMENT_WEAPON;
+    @Property(name = "equipment.shield")
+    public static String EQUIPMENT_SHIELD;
+    @Property(name = "equipment.head")
+    public static String EQUIPMENT_HEAD;
+    @Property(name = "equipment.chest")
+    public static String EQUIPMENT_CHEST;
+    @Property(name = "equipment.arms")
+    public static String EQUIPMENT_ARMS;
+    @Property(name = "equipment.legs")
+    public static String EQUIPMENT_LEGS;
+    @Property(name = "equipment.feet")
+    public static String EQUIPMENT_FEET;
+    @Property(name = "equipment.amulet")
+    public static String EQUIPMENT_AMULET;
+    @Property(name = "equipment.ring")
+    public static String EQUIPMENT_RING;
+    @Property(name = "equipment.back")
+    public static String EQUIPMENT_BACK;
+    
     /* Activities */
     @Property(name = "activity.none")
     public static String ACTIVITY_NONE;
@@ -298,6 +320,8 @@ public class Strings {
     public static String RETURN_ITEM_STOCK_EMPTY;
     @Property(name = "return.admin_only_item")
     public static String RETURN_ADMIN_ONLY_ITEM;
+    @Property(name = "return.type_already_equipped")
+    public static String RETURN_TYPE_ALREADY_EQUIPPED;
     @Property(name = "return.item_successfully_bought")
     public static String RETURN_ITEM_SUCCESSFULLY_BOUGHT;
     @Property(name = "return.item_successfully_sold")

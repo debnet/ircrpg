@@ -182,20 +182,17 @@ public class Game {
      * @return Result
      */
     public Result update(Player player) {
-        return this.update(player, null);
+        return this.update(player, false);
     }
     
     /**
      * Update player data (activity, status and experience)
      * @param player Player instance
-     * @param result Result where append to (can be null)
+     * @param save Save the player's information in database
      * @return Result
      */
-    protected Result update(Player player, Result result) {
-        // Append result
-        if (result == null) {
-            result = new Result(Action.UPDATE, player);
-        }
+    protected Result update(Player player, boolean save) {
+        Result result = new Result(Action.UPDATE, player);
         // Get time difference
         java.util.Calendar lastUpdate = player.getLastUpdate();
         Calendar current = Calendar.getInstance();
@@ -350,7 +347,7 @@ public class Game {
         // Save object
         player.addTimeIngame(diff);
         player.setLastUpdate(current);
-        if (Config.PERSISTANCE) {
+        if (Config.PERSISTANCE && save) {
             player.setLastUpdate(Calendar.getInstance());
             if (!DAO.<Player>setObject(player)) {
                 result.addReturn(Return.PERSISTANCE_ERROR);
@@ -359,6 +356,9 @@ public class Game {
         }
         // Return
         result.setSuccess(true);
+        if (Config.PERSISTANCE && !result.getReturns().isEmpty()) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
 
@@ -369,7 +369,7 @@ public class Game {
      * @param spell Spell code (or null if physical fight)
      * @return Result
      */
-    protected Result fight(String sender, String target, String magic) {
+    public Result fight(String sender, String target, String magic) {
         Result result = new Result(Action.FIGHT);
         boolean self = sender.equals(target);
         // Get attacker
@@ -502,7 +502,7 @@ public class Game {
             }
         } else {
             // With spell
-            if (self && !spell.getSelf()) {
+            if (self && !spell.getIsSelf()) {
                 // Update return
                 result.addReturn(Return.NOT_SELF_SPELL);
                 return result;
@@ -567,7 +567,7 @@ public class Game {
                     }
                 }
                 // Experience earned (if offensive spell)
-                if (!spell.getSelf()) {
+                if (!spell.getIsSelf()) {
                     double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
                     bonus = bonus < 0 ? 0 : bonus;
                     double xp = Config.EXPERIENCE_ATTACK * bonus;
@@ -581,6 +581,9 @@ public class Game {
             // Update return
             result.addPlayerManaChanges(-spell.getManaCost());
         }
+        // Update players
+        this.update(attacker);
+        if (!self) this.update(defender);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -673,6 +676,9 @@ public class Game {
             // Update statistics
             attacker.addMoneyStolen(gold);
         }
+        // Update players
+        this.update(attacker);
+        this.update(defender);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -754,6 +760,8 @@ public class Game {
                 break;
             }
         }
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -793,11 +801,10 @@ public class Game {
         // Set player activity
         player.setActivity(activity);
         player.setActivityDuration(0);
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
     
@@ -848,12 +855,11 @@ public class Game {
         // Clear activity
         player.setActivity(Activity.WAITING);
         player.setActivityDuration(0);
+        // Update player
+        this.update(player);
         // Return
         result.setValue(earned);
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
     
@@ -910,11 +916,10 @@ public class Game {
                 break;
             }
         }
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
     
@@ -947,7 +952,8 @@ public class Game {
                     CheckItem.CAN_BE_WORN,
                     CheckItem.HAS_ENOUGH_STOCK,
                     CheckItem.IS_ADMIN_ONLY,
-                    CheckItem.IS_ALREADY_BOUGHT
+                    CheckItem.IS_ALREADY_BOUGHT,
+                    CheckItem.TYPE_ALREADY_EQUIPPED
                 )
             )) return result;
         }
@@ -1017,16 +1023,15 @@ public class Game {
             result.addReturn(Return.POTION_SUCCESSFULLY_BOUGHT);
             result.setDetails(potion.getText());
         }
-        // Increase stock
+        // Decrease stock
         item.addStock(-1);
         if (Config.PERSISTANCE) {
-            DAO.<Item>addObject(item);
+            DAO.<Item>setObject(item);
         }
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
     
@@ -1056,13 +1061,12 @@ public class Game {
         // Increase stock
         item.addStock(1);
         if (Config.PERSISTANCE) {
-            DAO.<Item>addObject(item);
+            DAO.<Item>setObject(item);
         }
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
     
@@ -1104,11 +1108,10 @@ public class Game {
         result.addReturn(Return.SPELL_SUCCESSFULLY_LEARNED);
         // Update statistics
         player.addMoneySpent(spell.getGoldCost());
+        // Update player
+        this.update(player);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
         return result;
     }
 

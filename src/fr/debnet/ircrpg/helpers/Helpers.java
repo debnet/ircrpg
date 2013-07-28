@@ -80,7 +80,7 @@ public class Helpers {
                 }
                 // Check if the item is not admin only
                 if (checks.contains(CheckItem.IS_ADMIN_ONLY) && 
-                        item.getAdmin() && !player.getAdmin()) {
+                        item.getIsAdmin() && !player.getAdmin()) {
                     result.addReturn(Return.ADMIN_ONLY_ITEM);
                     return false;
                 }
@@ -90,6 +90,16 @@ public class Helpers {
                     result.addReturn(Return.ITEM_LEVEL_TOO_HIGH);
                     result.setValue(item.getMinLevel());
                     return false;
+                }
+                // Check if the item type is already equipped
+                if (checks.contains(CheckItem.TYPE_ALREADY_EQUIPPED)) {
+                    for (Item equipment : player.getItems()) {
+                        if (equipment.getType() == item.getType()) {
+                            result.addReturn(Return.TYPE_ALREADY_EQUIPPED);
+                            result.setDetails(item.getType().getText());
+                            return false;
+                        }
+                    }
                 }
                 // Check if the item can be bought
                 if (checks.contains(CheckItem.CAN_BE_AFFORDED) && 
@@ -144,7 +154,7 @@ public class Helpers {
         }
         // Check if the spell is not admin only
         if (checks.contains(CheckSpell.IS_ADMIN_ONLY) && 
-                spell.getAdmin() && !player.getAdmin()) {
+                spell.getIsAdmin() && !player.getAdmin()) {
             result.addReturn(Return.ADMIN_ONLY_SPELL);
             return false;
         }

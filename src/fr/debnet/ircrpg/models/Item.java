@@ -4,10 +4,13 @@
  */
 package fr.debnet.ircrpg.models;
 
+import fr.debnet.ircrpg.enums.Equipment;
 import fr.debnet.ircrpg.enums.Model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -26,7 +29,9 @@ public class Item implements Serializable, IEntity {
     private String code;
     private String name;
     private String description;
-    private Boolean admin = false;
+    @Enumerated(EnumType.STRING)
+    private Equipment type;
+    private Boolean isAdmin = false;
     private Integer stock = 0;
     private Integer goldCost = 0;
     private Integer minLevel = 0;
@@ -99,12 +104,20 @@ public class Item implements Serializable, IEntity {
         this.description = description;
     }
 
-    public Boolean getAdmin() {
-        return admin;
+    public Equipment getType() {
+        return type;
     }
 
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
+    public void setType(Equipment type) {
+        this.type = type;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public Integer getStock() {

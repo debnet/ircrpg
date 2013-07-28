@@ -42,7 +42,7 @@ public class Robot extends IRCBot implements INotifiable {
         }
     }
     
-    public void sendFormattedMessage(String message, Object... args) {
+    private void sendFormattedMessage(String message, Object... args) {
         if (this.isConnected()) {
             for (String channel : this.getChannels()) {
                 message = String.format(message, args);
@@ -52,7 +52,7 @@ public class Robot extends IRCBot implements INotifiable {
         }
     }
     
-    public void sendFormattedMessage(String target, String message, Object... args) {
+    private void sendFormattedMessage(String target, String message, Object... args) {
         if (this.isConnected()) {
             message = String.format(message, args);
             message = Strings.formatMessage(message);
@@ -60,6 +60,182 @@ public class Robot extends IRCBot implements INotifiable {
         }
     }
 
+    private void processMessage(String sender, String hostname, String message) {
+        String[] words = message.split(" ");
+        if (words.length > 0) {
+            String command = words[0];
+            if (!command.startsWith("!")) {
+                return;
+            }
+            // Register
+            if (Strings.COMMAND_REGISTER.equalsIgnoreCase(command)) {
+                if (words.length == 3) {
+                    String username = words[1];
+                    String password = words[2];
+                    if (this.game.register(username, password, sender, hostname)) {
+                        this.sendFormattedMessage(sender, Strings.REGISTER_SUCCEED);
+                    } else {
+                        this.sendFormattedMessage(sender, Strings.REGISTER_FAILED);
+                    }
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_REGISTER);
+                }
+            }
+            // Login
+            else if (Strings.COMMAND_LOGIN.equalsIgnoreCase(command)) {
+                if (words.length == 3) {
+                    String username = words[1];
+                    String password = words[2];
+                    if (this.game.login(username, password, sender, hostname)) {
+                        this.sendFormattedMessage(sender, Strings.LOGIN_SUCCEED);
+                    } else {
+                        this.sendFormattedMessage(sender, Strings.LOGIN_FAILED);
+                    }
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_LOGIN);
+                }
+            }
+            // Infos
+            else if (Strings.COMMAND_INFOS.equalsIgnoreCase(command)) {
+                Player player = null;
+                boolean all = false; 
+                if (words.length == 1) {
+                    all = true;
+                    player = this.game.getPlayerByNickname(sender);
+                } else if (words.length == 2) {
+                    String target = words[2];
+                    all = false;
+                    player = this.game.getPlayerByNickname(target);
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_INFOS);
+                }
+                if (player != null) {
+                    // TODO:
+                }
+            }
+            // Attack
+            else if (Strings.COMMAND_ATTACK.equalsIgnoreCase(command)) {
+                if (words.length == 2) {
+                    String target = words[1];
+                    Result result = this.game.fight(sender, target, null);
+                    if (result.isSuccess()) {
+                        this.sendFormattedMessage(result.getMessage());
+                    } else {
+                        this.sendFormattedMessage(sender, result.getMessage());
+                    }
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_ATTACK);
+                }
+            }
+            // Magic
+            else if (Strings.COMMAND_MAGIC.equalsIgnoreCase(command)) {
+                if (words.length > 3) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_MAGIC);
+                }
+            }
+            // Steal
+            else if (Strings.COMMAND_STEAL.equalsIgnoreCase(command)) {
+                if (words.length == 2) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_STEAL);
+                }
+            }
+            // Work
+            else if (Strings.COMMAND_WORK.equalsIgnoreCase(command)) {
+                if (words.length == 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_WORK);
+                }
+            }
+            // Rest
+            else if (Strings.COMMAND_REST.equalsIgnoreCase(command)) {
+                if (words.length == 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_REST);
+                }
+            }
+            // Train
+            else if (Strings.COMMAND_TRAIN.equalsIgnoreCase(command)) {
+                if (words.length == 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_TRAIN);
+                }
+            }
+            // Return
+            else if (Strings.COMMAND_RETURN.equalsIgnoreCase(command)) {
+                if (words.length == 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_RETURN);
+                }
+            }
+            // Buy
+            else if (Strings.COMMAND_BUY.equalsIgnoreCase(command)) {
+                if (words.length > 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_BUY);
+                }
+            }
+            // Sell
+            else if (Strings.COMMAND_SELL.equalsIgnoreCase(command)) {
+                if (words.length > 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_SELL);
+                }
+            }
+            // Look
+            else if (Strings.COMMAND_LOOK.equalsIgnoreCase(command)) {
+                if (words.length > 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_LOOK);
+                }
+            }
+            // Drink
+            else if (Strings.COMMAND_DRINK.equalsIgnoreCase(command)) {
+                if (words.length > 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_DRINK);
+                }
+            }
+            // Learn
+            else if (Strings.COMMAND_LEARN.equalsIgnoreCase(command)) {
+                if (words.length > 1) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_LEARN);
+                }
+            }
+            // Level up
+            else if (Strings.COMMAND_LEVELUP.equalsIgnoreCase(command)) {
+                if (words.length == 2) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_LEVELUP);
+                }
+            }
+            // Stats
+            else if (Strings.COMMAND_STATS.equalsIgnoreCase(command)) {
+                if (words.length == 1) {
+                    
+                } else if (words.length == 2) {
+                    
+                } else {
+                    this.sendFormattedMessage(sender, Strings.HELP_STATS);
+                }
+            }
+        }
+    }
+    
     @Override
     public void notify(Result result) {
         for (String channel : this.getChannels()) {
@@ -89,55 +265,12 @@ public class Robot extends IRCBot implements INotifiable {
 
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String[] words = message.split(" ");
-        if (words.length > 0) {
-            String first = words[0];
-            // Register
-            if (Strings.COMMAND_REGISTER.equalsIgnoreCase(first)) {
-                if (words.length == 3) {
-                    String username = words[1];
-                    String password = words[2];
-                    if (this.game.register(username, password, sender, hostname)) {
-                        this.sendFormattedMessage(sender, Strings.REGISTER_SUCCEED);
-                    } else {
-                        this.sendFormattedMessage(sender, Strings.REGISTER_FAILED);
-                    }
-                }
-            }
-            // Login
-            else if (Strings.COMMAND_LOGIN.equalsIgnoreCase(first)) {
-                if (words.length == 3) {
-                    String username = words[1];
-                    String password = words[2];
-                    if (this.game.login(username, password, sender, hostname)) {
-                        this.sendFormattedMessage(sender, Strings.LOGIN_SUCCEED);
-                    } else {
-                        this.sendFormattedMessage(sender, Strings.LOGIN_FAILED);
-                    }
-                }
-            }
-            // Infos
-            else if (Strings.COMMAND_INFOS.equalsIgnoreCase(first)) {
-                Player player = null;
-                boolean all = false; 
-                if (words.length == 1) {
-                    all = true;
-                    player = this.game.getPlayerByNickname(sender);
-                } else if (words.length == 2) {
-                    String target = words[2];
-                    all = false;
-                    player = this.game.getPlayerByNickname(target);
-                }
-                if (player != null) {
-                    
-                }
-            }
-        }
+        this.processMessage(sender, hostname, message);
     }
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        
+        this.processMessage(sender, hostname, message);
     }
 
     @Override

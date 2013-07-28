@@ -30,10 +30,10 @@ public class Spell implements Serializable, IEntity {
     @Column(unique = true)
     private String name;
     private String description;
-    private Boolean admin = false;
+    private Boolean isAdmin = false;
     private Integer goldCost = 0;
     private Integer minLevel = 0;
-    private Boolean self = false;
+    private Boolean isSelf = false;
     private Double healthDamage = 0d;
     private Double manaCost = 0d;
     @Enumerated(EnumType.STRING)
@@ -93,12 +93,12 @@ public class Spell implements Serializable, IEntity {
         this.description = description;
     }
 
-    public Boolean getAdmin() {
-        return admin;
+    public Boolean getIsAdmin() {
+        return isAdmin;
     }
 
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
     
     public Integer getGoldCost() {
@@ -117,12 +117,12 @@ public class Spell implements Serializable, IEntity {
         this.minLevel = minLevel;
     }
 
-    public Boolean getSelf() {
-        return self;
+    public Boolean getIsSelf() {
+        return isSelf;
     }
 
-    public void setSelf(Boolean self) {
-        this.self = self;
+    public void setIsSelf(Boolean isSelf) {
+        this.isSelf = isSelf;
     }
 
     public Double getHealthDamage() {
