@@ -937,7 +937,7 @@ public class Game {
         // Check if item is potion
         Potion potion = Potion.NONE;
         for (Potion p : Potion.values()) {
-            if (p.getText().toLowerCase().equals(code)) {
+            if (p.getText().equalsIgnoreCase(code)) {
                 potion = p;
                 break;
             }

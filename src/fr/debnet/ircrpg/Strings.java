@@ -92,8 +92,6 @@ public class Strings {
     public static String LOGOUT_SUCCEED;
     @Property(name = "logout.failed")
     public static String LOGOUT_FAILED;
-    @Property(name = "relogin.succeed")
-    public static String RELOGIN_SUCCEED;
     
     /* Commands */
     @Property(name = "command.help")
