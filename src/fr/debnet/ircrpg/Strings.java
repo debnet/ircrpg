@@ -130,6 +130,8 @@ public class Strings {
     public static String COMMAND_LEVELUP;
     @Property(name = "command.stats")
     public static String COMMAND_STATS;
+    @Property(name = "command.items")
+    public static String COMMAND_ITEMS;
     
     /* Command helps */
     @Property(name = "help.help")
@@ -348,10 +350,20 @@ public class Strings {
     public static String RETURN_USERNAME_ALREADY_TAKEN;
     @Property(name = "return.username_not_found")
     public static String RETURN_USERNAME_NOT_FOUND;
+    @Property(name = "return.nickname_in_use")
+    public static String RETURN_NICKNAME_IN_USE;
     @Property(name = "return.wrong_password")
     public static String RETURN_WRONG_PASSWORD;
     @Property(name = "return.already_online")
     public static String RETURN_ALREADY_ONLINE;
+    @Property(name = "return.not_online")
+    public static String RETURN_NOT_ONLINE;
+    @Property(name = "return.register_succeed")
+    public static String RETURN_REGISTER_SUCCEED;
+    @Property(name = "return.login_succeed")
+    public static String RETURN_LOGIN_SUCCEED;
+    @Property(name = "return.logout_succeed")
+    public static String RETURN_LOGOUT_SUCCEED;
     
     static {
         Config.loadProperties("strings.properties", Strings.class);

@@ -10,13 +10,18 @@ package fr.debnet.ircrpg.enums;
  */
 public enum Action {
     NONE,
+    LOGIN,
+    LOGOUT,
+    REGISTER,
     UPDATE,
     FIGHT,
+    MAGIC,
     STEAL,
     DRINK,
-    PRACTICE,
-    UPGRADE,
+    START_ACTIVITY,
+    END_ACTIVITY,
     BUY,
     SELL,
     LEARN,
+    UPGRADE,
 }

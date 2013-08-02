@@ -106,8 +106,13 @@ public enum Return {
     // Logon returns
     USERNAME_ALREADY_TAKEN      (0xB0, Strings.RETURN_USERNAME_ALREADY_TAKEN),
     USERNAME_NOT_FOUND          (0xB1, Strings.RETURN_USERNAME_NOT_FOUND),
-    WRONG_PASSWORD              (0xB2, Strings.RETURN_WRONG_PASSWORD),
-    ALREADY_ONLINE              (0xB2, Strings.RETURN_ALREADY_ONLINE);
+    NICKNAME_IN_USE             (0xB2, Strings.RETURN_NICKNAME_IN_USE),
+    WRONG_PASSWORD              (0xB3, Strings.RETURN_WRONG_PASSWORD),
+    ALREADY_ONLINE              (0xB4, Strings.RETURN_ALREADY_ONLINE),
+    NOT_ONLINE                  (0xB5, Strings.RETURN_NOT_ONLINE),
+    REGISTER_SUCCEED            (0xB6, Strings.RETURN_REGISTER_SUCCEED),
+    LOGIN_SUCCEED               (0xB7, Strings.RETURN_LOGIN_SUCCEED),
+    LOGOUT_SUCCEED              (0xB8, Strings.RETURN_LOGOUT_SUCCEED);
     
     private final int value;
     private final String text;

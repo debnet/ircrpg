@@ -44,11 +44,11 @@ public class StealTest {
         // Override configuration
         Config.loadConfig("config.tests.properties");
         // Create player
-        boolean b = this.game.register("p1", null, "p1", null);
-        assertTrue("Creating player", b);
+        Result r = this.game.register("p1", null, "p1", null);
+        assertTrue("Creating player", r.isSuccess());
         // Create enemy
-        b = this.game.register("p2", null, "p2", null);
-        assertTrue("Creating enemy", b);
+        r = this.game.register("p2", null, "p2", null);
+        assertTrue("Creating enemy", r.isSuccess());
         // Add gold to enemy
         Player p2 = this.game.getPlayerByNickname("p2");
         p2.addGold(100d);

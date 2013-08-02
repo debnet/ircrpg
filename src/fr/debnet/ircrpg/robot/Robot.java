@@ -75,11 +75,8 @@ public class Robot extends IRCBot implements INotifiable {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    if (this.game.register(username, password, sender, hostname)) {
-                        this.sendFormattedMessage(sender, Strings.REGISTER_SUCCEED);
-                    } else {
-                        this.sendFormattedMessage(sender, Strings.REGISTER_FAILED);
-                    }
+                    Result result = this.game.register(username, password, sender, hostname);
+                    this.displayResult(result, sender);
                 }
             }
             // Login
@@ -87,12 +84,8 @@ public class Robot extends IRCBot implements INotifiable {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    if (this.game.login(username, password, sender, hostname)) {
-                        Player player = this.game.getPlayerByUsername(username);
-                        this.sendFormattedMessage(Strings.LOGIN_SUCCEED, player.getNickname(), player.getLevel());
-                    } else {
-                        this.sendFormattedMessage(sender, Strings.LOGIN_FAILED);
-                    }
+                    Result result = this.game.login(username, password, sender, hostname);
+                    this.displayResult(result, sender);
                 }
             }
             // Infos
@@ -233,7 +226,7 @@ public class Robot extends IRCBot implements INotifiable {
                             break;
                         }
                     }
-                    Result result = this.game.levelUp(sender, stat);
+                    Result result = this.game.upgrade(sender, stat);
                     this.displayResult(result, sender);
                 }
             }
@@ -250,6 +243,10 @@ public class Robot extends IRCBot implements INotifiable {
                 } else if (words.length == 2) {
                     
                 }
+            }
+            // Items 
+            else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
+                
             }
         }
     }
@@ -311,18 +308,14 @@ public class Robot extends IRCBot implements INotifiable {
 
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
-        if (this.game.tryRelogin(sender, hostname)) {
-            Player player = this.game.getPlayerByNickname(sender);
-            this.sendFormattedMessage(Strings.LOGIN_SUCCEED, player.getNickname(), player.getLevel());
-        }
+        Result result = this.game.tryRelogin(sender, hostname);
+        if (result.isSuccess()) this.displayResult(result, sender);
     }
 
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
-        if (this.game.logout(sender)) {
-            Player player = this.game.getPlayerByNickname(sender);
-            this.sendFormattedMessage(Strings.LOGOUT_SUCCEED, player.getNickname(), player.getLevel());
-        }
+        Result result = this.game.logout(sender);
+        this.displayResult(result, sender);
     }
 
     @Override
@@ -337,9 +330,8 @@ public class Robot extends IRCBot implements INotifiable {
 
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (this.game.logout(sourceNick)) {
-            //TODO:
-        }
+        Result result = this.game.logout(sourceNick);
+        this.displayResult(result, sourceNick);
     }
 
     @Override

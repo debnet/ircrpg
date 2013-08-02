@@ -71,25 +71,21 @@ public class Result implements Serializable, IEntity {
     
     public Result() {
         this.date = Calendar.getInstance();
+        this.returns = new ArrayList<Return>();
     }
     
     public Result(Action action) {
         this();
-        this.date = Calendar.getInstance();
-        this.returns = new ArrayList<Return>();
         this.action = action;
     }
     
     public Result(Action action, Player player) {
         this(action);
-        this.date = Calendar.getInstance();
         this.player = player;
     }
     
     public Result(Action action, Player player, Player target) {
-        this(action);
-        this.date = Calendar.getInstance();
-        this.player = player;
+        this(action, player);
         this.target = target;
     }
         
@@ -121,38 +117,38 @@ public class Result implements Serializable, IEntity {
             build.append(this.formatString(r.getText()).trim());
             build.append(" ");
         }
-        return build.toString();
+        return build.toString().trim();
     }
     
     private String formatString(String string) {
-        String value = string;
+        String ret = string;
         // Player values
         if (this.player != null) {
-            value = value.replaceAll("<player.nickname>", this.player.getNickname());
-            value = value.replaceAll("<player.hp>", String.format("%.2f", Math.abs(this.getPlayerHealthChanges())));
-            value = value.replaceAll("<player.mp>", String.format("%.2f", Math.abs(this.getPlayerManaChanges())));
-            value = value.replaceAll("<player.xp>", String.format("%.2f", Math.abs(this.getPlayerExperienceChanges())));
-            value = value.replaceAll("<player.gold>", String.format("%.2f", Math.abs(this.getPlayerGoldChanges())));
-            value = value.replaceAll("<player.level>", String.format("%d", this.player.getLevel()));
-            value = value.replaceAll("<player.sp>", String.format("%d", this.player.getSkillPoints()));
-            value = value.replaceAll("<player.status>", String.format(Strings.FORMAT_TIME, 
+            ret = ret.replaceAll("<player.nickname>", this.player.getNickname());
+            ret = ret.replaceAll("<player.hp>", String.format("%.2f", Math.abs(this.getPlayerHealthChanges())));
+            ret = ret.replaceAll("<player.mp>", String.format("%.2f", Math.abs(this.getPlayerManaChanges())));
+            ret = ret.replaceAll("<player.xp>", String.format("%.2f", Math.abs(this.getPlayerExperienceChanges())));
+            ret = ret.replaceAll("<player.gold>", String.format("%.2f", Math.abs(this.getPlayerGoldChanges())));
+            ret = ret.replaceAll("<player.level>", String.format("%d", this.player.getLevel()));
+            ret = ret.replaceAll("<player.sp>", String.format("%d", this.player.getSkillPoints()));
+            ret = ret.replaceAll("<player.status>", String.format(Strings.FORMAT_TIME, 
                 TimeUnit.MICROSECONDS.toSeconds(this.player.getStatusDuration() / 60), 
                 TimeUnit.MICROSECONDS.toSeconds(this.player.getStatusDuration() % 60)
             ));
         }
         // Target values
         if (this.target != null) {
-            value = value.replaceAll("<target.nickname>", this.target.getNickname());
-            value = value.replaceAll("<target.hp>", String.format("%.2f", Math.abs(this.getTargetHealthChanges())));
-            value = value.replaceAll("<target.mp>", String.format("%.2f", Math.abs(this.getTargetManaChanges())));
-            value = value.replaceAll("<target.xp>", String.format("%.2f", Math.abs(this.getTargetExperienceChanges())));
-            value = value.replaceAll("<target.gold>", String.format("%.2f", Math.abs(this.getTargetGoldChanges())));
+            ret = ret.replaceAll("<target.nickname>", this.target.getNickname());
+            ret = ret.replaceAll("<target.hp>", String.format("%.2f", Math.abs(this.getTargetHealthChanges())));
+            ret = ret.replaceAll("<target.mp>", String.format("%.2f", Math.abs(this.getTargetManaChanges())));
+            ret = ret.replaceAll("<target.xp>", String.format("%.2f", Math.abs(this.getTargetExperienceChanges())));
+            ret = ret.replaceAll("<target.gold>", String.format("%.2f", Math.abs(this.getTargetGoldChanges())));
         }
         // Others values
-        value = value.replaceAll("<value.int>", String.format("%d", this.getValue()));
-        value = value.replaceAll("<value.double>", String.format("%.2f", this.getValue()));
-        value = value.replaceAll("<details>", this.getDetails());
-        return value;
+        ret = ret.replaceAll("<value.int>", String.format("%d", this.getValue()));
+        ret = ret.replaceAll("<value.double>", String.format("%.2f", this.getValue()));
+        ret = ret.replaceAll("<details>", this.getDetails());
+        return ret;
     }
     
     /* Getters & setters */

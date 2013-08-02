@@ -348,7 +348,6 @@ public class Game {
         player.addTimeIngame(diff);
         player.setLastUpdate(current);
         if (Config.PERSISTANCE && save) {
-            player.setLastUpdate(Calendar.getInstance());
             if (!DAO.<Player>setObject(player)) {
                 result.addReturn(Return.PERSISTANCE_ERROR);
                 return result;
@@ -501,6 +500,7 @@ public class Game {
                 }
             }
         } else {
+            result.setAction(Action.MAGIC);
             // With spell
             if (self && !spell.getIsSelf()) {
                 // Update return
@@ -777,7 +777,7 @@ public class Game {
      * @return Result
      */
     public Result startActivity(String sender, Activity activity) {
-        Result result = new Result(Action.PRACTICE);
+        Result result = new Result(Action.START_ACTIVITY);
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
@@ -814,7 +814,7 @@ public class Game {
      * @return Result
      */
     public Result endActivity(String sender) {
-        Result result = new Result(Action.PRACTICE);
+        Result result = new Result(Action.END_ACTIVITY);
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
@@ -864,12 +864,12 @@ public class Game {
     }
     
     /**
-     * Level up a player
+     * Upgrade a player
      * @param sender Player's nickname
      * @param stat Stat to raise
      * @return Result
      */
-    public Result levelUp(String sender, Stat stat) {
+    public Result upgrade(String sender, Stat stat) {
         Result result = new Result(Action.UPGRADE);
         // Get the player
         Player player = this.getPlayer(result, sender);
@@ -1026,7 +1026,10 @@ public class Game {
         // Decrease stock
         item.addStock(-1);
         if (Config.PERSISTANCE) {
-            DAO.<Item>setObject(item);
+            if (!DAO.<Item>setObject(item)) {
+                result.addReturn(Return.PERSISTANCE_ERROR);
+                return result;
+            }
         }
         // Update player
         this.update(player);
@@ -1121,22 +1124,27 @@ public class Game {
      * @param password Player's password
      * @param nickname Player's nickname
      * @param hostname Player's hostname
-     * @return True if successful, false else
+     * @return Result
      */
-    public boolean login(String username, String password, String nickname, String hostname) {
+    public Result login(String username, String password, String nickname, String hostname) {
+        Result result = new Result(Action.LOGIN);
+        result.setDetails(username);
         Player player = this.getPlayerByUsername(username);
         if (player != null) {
             if (player.getPassword().equals(password)) {
-                if (!this.playersByNickname.containsKey(nickname)) {
-                    this.playersByNickname.put(nickname, player);
-                }
+                this.playersByNickname.remove(player.getNickname());
+                this.playersByNickname.remove(nickname);
+                this.playersByNickname.put(nickname, player);
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
-                return this.update(player).isSuccess();
-            }
-        }
-        return false;
+                if (this.update(player, true).isSuccess()) {
+                    result.addReturn(Return.LOGIN_SUCCEED);
+                    result.setSuccess(true);
+                } else result.addReturn(Return.PERSISTANCE_ERROR);
+            } else result.addReturn(Return.WRONG_PASSWORD);
+        } else result.addReturn(Return.USERNAME_NOT_FOUND);
+        return result;
     }
     
     /**
@@ -1144,32 +1152,41 @@ public class Game {
      * If fail, the player must use the login function to proceed
      * @param nickname Player's nickname
      * @param hostname Player's hostname
-     * @return True if successful, false else
+     * @return Result
      */
-    public boolean tryRelogin(String nickname, String hostname) {
+    public Result tryRelogin(String nickname, String hostname) {
+        Result result = new Result(Action.LOGIN);
+        result.setDetails(nickname);
         Player player = this.getPlayerByNickname(nickname);
         if (player != null) {
             if (hostname.equals(player.getHostname())) {
                 player.setOnline(true);
-                return this.update(player).isSuccess();
+                if (this.update(player, true).isSuccess()) {
+                    result.addReturn(Return.LOGIN_SUCCEED);
+                    result.setSuccess(true);
+                }
             }
         }
-        return false;
+        return result;
     }
 
     /**
      * Log out a player
      * @param nickname Player's nickname
-     * @return True if successfully logout, false else
+     * @return Result
      */
-    public boolean logout(String nickname) {
+    public Result logout(String nickname) {
+        Result result = new Result(Action.LOGOUT);
+        result.setDetails(nickname);
         Player player = this.getPlayerByNickname(nickname);
         if (player != null) {
             player.setOnline(false);
-            //this.playersByNickname.remove(nickname);
-            return this.update(player).isSuccess();
-        }
-        return false;
+            if (this.update(player, true).isSuccess()) {
+                result.addReturn(Return.LOGOUT_SUCCEED);
+                result.setSuccess(true);
+            } else result.addReturn(Return.PERSISTANCE_ERROR);
+        } else result.addReturn(Return.NOT_ONLINE);
+        return result;
     }
 
     /**
@@ -1178,21 +1195,27 @@ public class Game {
      * @param password Password
      * @param nickname Nickname
      * @param hostname Hostname
-     * @return True if successfully registred, false else
+     * @return Result
      */
-    public boolean register(String username, String password, String nickname, String hostname) {
-        if (!this.playersByUsername.containsKey(username) && !this.playersByNickname.containsKey(nickname)) {
-            Player player = new Player();
-            player.setUsername(username);
-            player.setPassword(password);
-            player.setNickname(nickname);
-            player.setHostname(hostname);
-            player.setOnline(true);
-            this.playersByUsername.put(username, player);
-            this.playersByNickname.put(nickname, player);
-            return this.update(player).isSuccess();
-        }
-        return false;
+    public Result register(String username, String password, String nickname, String hostname) {
+        Result result = new Result(Action.REGISTER);
+        if (!this.playersByUsername.containsKey(username)) {
+            if (!this.playersByNickname.containsKey(nickname)) {
+                Player player = new Player();
+                player.setUsername(username);
+                player.setPassword(password);
+                player.setNickname(nickname);
+                player.setHostname(hostname);
+                player.setOnline(true);
+                this.playersByUsername.put(username, player);
+                this.playersByNickname.put(nickname, player);
+                if (this.update(player, true).isSuccess()) {
+                    result.addReturn(Return.REGISTER_SUCCEED);
+                    result.setSuccess(true);
+                } else result.addReturn(Return.PERSISTANCE_ERROR);
+            } else result.addReturn(Return.NICKNAME_IN_USE);
+        } else result.addReturn(Return.USERNAME_ALREADY_TAKEN);
+        return result;
     }
     
     /**

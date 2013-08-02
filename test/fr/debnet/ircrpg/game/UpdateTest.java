@@ -49,8 +49,8 @@ public class UpdateTest {
         // Override configuration
         Config.loadConfig("config.tests.properties");
         // Create player
-        boolean b = this.game.register("p1", null, "p1", null);
-        assertTrue("Creating player", b);
+        Result r = this.game.register("p1", null, "p1", null);
+        assertTrue("Creating player", r.isSuccess());
         // Change player last time update
         Calendar time = Calendar.getInstance();
         time.add(Calendar.HOUR, -1);

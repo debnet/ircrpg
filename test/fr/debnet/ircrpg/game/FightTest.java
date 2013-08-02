@@ -47,17 +47,17 @@ public class FightTest {
         // Override configuration
         Config.loadConfig("config.tests.properties");
         // Create player
-        boolean b = this.game.register("p1", null, "p1", null);
-        assertTrue("Creating player", b);
+        Result r = this.game.register("p1", null, "p1", null);
+        assertTrue("Creating player", r.isSuccess());
         // Create enemy
-        b = this.game.register("p2", null, "p2", null);
-        assertTrue("Creating enemy", b);
+        r = this.game.register("p2", null, "p2", null);
+        assertTrue("Creating enemy", r.isSuccess());
         // Create spell
         Spell s = new Spell();
         s.setCode("s");
         s.setHealthDamage(10d);
         s.setManaCost(10d);
-        b = this.game.addSpell(s);
+        boolean b = this.game.addSpell(s);
         assertTrue("Creating spell", b);
         // Learn spell to player
         this.game.getPlayerByUsername("p1").addSpell(s);
