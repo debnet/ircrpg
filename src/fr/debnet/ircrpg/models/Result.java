@@ -8,12 +8,11 @@ import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Return;
-import java.io.Serializable;
+import fr.debnet.ircrpg.helpers.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -28,8 +27,8 @@ import org.hibernate.annotations.Index;
  *
  * @author Marc
  */
-@Entity
-public class Result implements Serializable, IEntity {
+@javax.persistence.Entity
+public class Result extends Entity {
     
     @Id
     private Long id;
@@ -121,34 +120,33 @@ public class Result implements Serializable, IEntity {
     }
     
     private String formatString(String string) {
-        String ret = string;
+        HashMap<String, String> values = new HashMap<String, String>();
         // Player values
         if (this.player != null) {
-            ret = ret.replaceAll("<player.nickname>", this.player.getNickname());
-            ret = ret.replaceAll("<player.hp>", String.format("%.2f", Math.abs(this.getPlayerHealthChanges())));
-            ret = ret.replaceAll("<player.mp>", String.format("%.2f", Math.abs(this.getPlayerManaChanges())));
-            ret = ret.replaceAll("<player.xp>", String.format("%.2f", Math.abs(this.getPlayerExperienceChanges())));
-            ret = ret.replaceAll("<player.gold>", String.format("%.2f", Math.abs(this.getPlayerGoldChanges())));
-            ret = ret.replaceAll("<player.level>", String.format("%d", this.player.getLevel()));
-            ret = ret.replaceAll("<player.sp>", String.format("%d", this.player.getSkillPoints()));
-            ret = ret.replaceAll("<player.status>", String.format(Strings.FORMAT_TIME, 
-                TimeUnit.MICROSECONDS.toSeconds(this.player.getStatusDuration() / 60), 
-                TimeUnit.MICROSECONDS.toSeconds(this.player.getStatusDuration() % 60)
-            ));
+            values.put(Strings.PLAYER_NICKNAME, this.player.getNickname());
+            values.put(Strings.PLAYER_HP, String.format("%.2f", Math.abs(this.getPlayerHealthChanges())));
+            values.put(Strings.PLAYER_MP, String.format("%.2f", Math.abs(this.getPlayerManaChanges())));
+            values.put(Strings.PLAYER_XP, String.format("%.2f", Math.abs(this.getPlayerExperienceChanges())));
+            values.put(Strings.PLAYER_GOLD, String.format("%.2f", Math.abs(this.getPlayerGoldChanges())));
+            values.put(Strings.PLAYER_LEVEL, String.format("%d", this.player.getLevel()));
+            values.put(Strings.PLAYER_SP, String.format("%d", this.player.getSkillPoints()));
+            values.put(Strings.PLAYER_STATUS, new Time(this.player.getStatusDuration()).toString());
+            values.put(Strings.PLAYER_ITEMS, Strings.join(this.player.getItems(), ", "));
+            values.put(Strings.PLAYER_SPELLS, Strings.join(this.player.getSpells(), ", "));
         }
         // Target values
         if (this.target != null) {
-            ret = ret.replaceAll("<target.nickname>", this.target.getNickname());
-            ret = ret.replaceAll("<target.hp>", String.format("%.2f", Math.abs(this.getTargetHealthChanges())));
-            ret = ret.replaceAll("<target.mp>", String.format("%.2f", Math.abs(this.getTargetManaChanges())));
-            ret = ret.replaceAll("<target.xp>", String.format("%.2f", Math.abs(this.getTargetExperienceChanges())));
-            ret = ret.replaceAll("<target.gold>", String.format("%.2f", Math.abs(this.getTargetGoldChanges())));
+            values.put(Strings.TARGET_NICKNAME, this.target.getNickname());
+            values.put(Strings.TARGET_HP, String.format("%.2f", Math.abs(this.getTargetHealthChanges())));
+            values.put(Strings.TARGET_MP, String.format("%.2f", Math.abs(this.getTargetManaChanges())));
+            values.put(Strings.TARGET_XP, String.format("%.2f", Math.abs(this.getTargetExperienceChanges())));
+            values.put(Strings.TARGET_GOLD, String.format("%.2f", Math.abs(this.getTargetGoldChanges())));
         }
         // Others values
-        ret = ret.replaceAll("<value.int>", String.format("%d", this.getValue()));
-        ret = ret.replaceAll("<value.double>", String.format("%.2f", this.getValue()));
-        ret = ret.replaceAll("<details>", this.getDetails());
-        return ret;
+        values.put(Strings.VALUE_INT, String.format("%d", this.getValue()));
+        values.put(Strings.VALUE_DOUBLE, String.format("%.2f", this.getValue()));
+        values.put(Strings.DETAILS, this.getDetails());
+        return Strings.format(string, values);
     }
     
     /* Getters & setters */

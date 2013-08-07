@@ -25,4 +25,5 @@ Commandes
 * !voir
 * !stats
 * !objets
+* !sorts
 

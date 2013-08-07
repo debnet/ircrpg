@@ -5,9 +5,7 @@
 package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.enums.Model;
-import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -15,8 +13,8 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@Entity
-public class Event implements Serializable, IEntity {
+@javax.persistence.Entity
+public class Event extends Entity {
     
     @Id
     private Long id;

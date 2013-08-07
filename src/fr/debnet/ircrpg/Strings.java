@@ -6,6 +6,10 @@ package fr.debnet.ircrpg;
 
 import fr.debnet.ircbot.Colors;
 import fr.debnet.ircrpg.annotations.Property;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -16,6 +20,14 @@ public class Strings {
     // Format time
     @Property(name = "format.time")
     public static String FORMAT_TIME;
+    @Property(name = "format.player_infos")
+    public static String FORMAT_PLAYER_INFOS;
+    @Property(name = "format.player_stats")
+    public static String FORMAT_PLAYER_STATS;
+    @Property(name = "format.player_items")
+    public static String FORMAT_PLAYER_ITEMS;
+    @Property(name = "format.player_spells")
+    public static String FORMAT_PLAYER_SPELLS;
     
     /* Equipment */
     @Property(name = "equipment.weapon")
@@ -132,6 +144,8 @@ public class Strings {
     public static String COMMAND_STATS;
     @Property(name = "command.items")
     public static String COMMAND_ITEMS;
+    @Property(name = "command.spells")
+    public static String COMMAND_SPELLS;
     
     /* Command helps */
     @Property(name = "help.help")
@@ -365,32 +379,100 @@ public class Strings {
     @Property(name = "return.logout_succeed")
     public static String RETURN_LOGOUT_SUCCEED;
     
+    /* Constants */
+    // Result variables
+    public static final String PLAYER_NICKNAME = "<player.nickname>";
+    public static final String PLAYER_HP = "<player.hp>";
+    public static final String PLAYER_MP = "<player.mp>";
+    public static final String PLAYER_XP = "<player.xp>";
+    public static final String PLAYER_GOLD = "<player.gold>";
+    public static final String PLAYER_LEVEL = "<player.level>";
+    public static final String PLAYER_SP = "<player.sp>";
+    public static final String PLAYER_STATUS = "<player.status>";
+    public static final String PLAYER_ITEMS = "<player.items>";
+    public static final String PLAYER_SPELLS = "<player.spells>";
+    public static final String TARGET_NICKNAME = "<target.nickname>";
+    public static final String TARGET_HP = "<target.hp>";
+    public static final String TARGET_MP = "<target.mp>";
+    public static final String TARGET_XP = "<target.xp>";
+    public static final String TARGET_GOLD = "<target.gold>";
+    public static final String VALUE_INT = "<value.int>";
+    public static final String VALUE_DOUBLE = "<value.double>";
+    public static final String DETAILS = "<details>";
+    // Colors
+    public static final String NORMAL = "<n>";
+    public static final String BOLD = "<b>";
+    public static final String ITALIC = "<i>";
+    public static final String UNDERLINED = "<u>";
+    public static final String BLACK = "<black>";
+    public static final String BLUE = "<blue>";
+    public static final String BROWN = "<brown>";
+    public static final String CYAN = "<cyan>";
+    public static final String DARK_BLUE = "<dblue>";
+    public static final String DARK_GRAY = "<dgray>";
+    public static final String DARK_GREEN = "<dgreen>";
+    public static final String GREEN = "<green>";
+    public static final String LIGHT_GRAY = "<lgray>";
+    public static final String MAGENTA = "<magenta>";
+    public static final String OLIVE = "<olive>";
+    public static final String PURPLE = "<purple>";
+    public static final String RED = "<red>";
+    public static final String TEAL = "<teal>";
+    public static final String WHITE = "<white>";
+    public static final String YELLOW = "<yellow>";
+    
+    // Map of colors
+    private final static Map<String, String> COLORS = new HashMap<String, String>() {
+        {
+            this.put(Strings.NORMAL, Colors.NORMAL);
+            this.put(Strings.BOLD, Colors.BOLD);
+            this.put(Strings.ITALIC, Colors.REVERSE);
+            this.put(Strings.UNDERLINED, Colors.UNDERLINE);
+            this.put(Strings.BLACK, Colors.BLACK);
+            this.put(Strings.BLUE, Colors.BLUE);
+            this.put(Strings.BROWN, Colors.BROWN);
+            this.put(Strings.CYAN, Colors.CYAN);
+            this.put(Strings.DARK_BLUE, Colors.DARK_BLUE);
+            this.put(Strings.DARK_GRAY, Colors.DARK_GRAY);
+            this.put(Strings.DARK_GREEN, Colors.DARK_GREEN);
+            this.put(Strings.GREEN, Colors.GREEN);
+            this.put(Strings.LIGHT_GRAY, Colors.LIGHT_GRAY);
+            this.put(Strings.MAGENTA, Colors.MAGENTA);
+            this.put(Strings.OLIVE, Colors.OLIVE);
+            this.put(Strings.PURPLE, Colors.PURPLE);
+            this.put(Strings.RED, Colors.RED);
+            this.put(Strings.TEAL, Colors.TEAL);
+            this.put(Strings.WHITE, Colors.WHITE);
+            this.put(Strings.YELLOW, Colors.YELLOW);
+        }
+    };
+    
     static {
         Config.loadProperties("strings.properties", Strings.class);
     }
     
     public static String formatMessage(String message) {
-        String value = message;
-        value = value.replaceAll("<n>", Colors.NORMAL);
-        value = value.replaceAll("<b>", Colors.BOLD);
-        value = value.replaceAll("<i>", Colors.REVERSE);
-        value = value.replaceAll("<u>", Colors.UNDERLINE);
-        value = value.replaceAll("<black>", Colors.BLACK);
-        value = value.replaceAll("<blue>", Colors.BLUE);
-        value = value.replaceAll("<brown>", Colors.BROWN);
-        value = value.replaceAll("<cyan>", Colors.CYAN);
-        value = value.replaceAll("<dblue>", Colors.DARK_BLUE);
-        value = value.replaceAll("<dgray>", Colors.DARK_GRAY);
-        value = value.replaceAll("<dgreen>", Colors.DARK_GREEN);
-        value = value.replaceAll("<green>", Colors.GREEN);
-        value = value.replaceAll("<lgray>", Colors.LIGHT_GRAY);
-        value = value.replaceAll("<magenta>", Colors.MAGENTA);
-        value = value.replaceAll("<olive>", Colors.OLIVE);
-        value = value.replaceAll("<purple>", Colors.PURPLE);
-        value = value.replaceAll("<red>", Colors.RED);
-        value = value.replaceAll("<teal>", Colors.TEAL);
-        value = value.replaceAll("<white>", Colors.WHITE);
-        value = value.replaceAll("<yellow>", Colors.YELLOW);
-        return value;
+        return Strings.format(message, Strings.COLORS);
+    }
+    
+    public static String join(Collection s, String delimiter) {
+        StringBuilder builder = new StringBuilder();
+        Iterator iter = s.iterator();
+        while (iter.hasNext()) {
+            builder.append(iter.next());
+            if (iter.hasNext()) {
+                builder.append(delimiter);
+            }
+        }
+        return builder.toString();
+    }
+    
+    public static String format(String template, Map<String, String> values) {
+        for (String key : values.keySet()) {
+            template = template.replace(
+                String.format("<%s>", key), values.get(key)
+            );
+        }
+        return template;
     }
 }

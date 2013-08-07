@@ -6,9 +6,7 @@ package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
-import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -18,8 +16,8 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@Entity
-public class Spell implements Serializable, IEntity {
+@javax.persistence.Entity
+public class Spell extends Entity {
 
     @Id
     private Long id;
@@ -177,5 +175,10 @@ public class Spell implements Serializable, IEntity {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", this.name, this.code);
     }
 }

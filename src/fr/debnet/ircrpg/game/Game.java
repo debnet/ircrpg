@@ -6,6 +6,7 @@ package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.DAO;
+import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
@@ -177,7 +178,7 @@ public class Game {
     
     /**
      * Update player data
-     * @see #update(fr.debnet.ircrpg.models.Player, fr.debnet.ircrpg.Result) 
+     * @see #update(fr.debnet.ircrpg.models.Player, boolean, fr.debnet.ircrpg.Result) 
      * @param player Player instance
      * @return Result
      */
@@ -353,6 +354,8 @@ public class Game {
                 return result;
             }
         }
+        // Update queues
+        this.updateQueues();
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE && !result.getReturns().isEmpty()) {
@@ -983,6 +986,8 @@ public class Game {
             result.addPlayerGoldChanges(-item.getGoldCost());
             // Update statistics
             player.addMoneySpent(item.getGoldCost());
+            // Decrease stock
+            item.addStock(-1);
         } else {
             // Check potion price
             if (!Helpers.checkPotion(result, player, potion, 
@@ -1023,8 +1028,6 @@ public class Game {
             result.addReturn(Return.POTION_SUCCESSFULLY_BOUGHT);
             result.setDetails(potion.getText());
         }
-        // Decrease stock
-        item.addStock(-1);
         if (Config.PERSISTANCE) {
             if (!DAO.<Item>setObject(item)) {
                 result.addReturn(Return.PERSISTANCE_ERROR);
@@ -1116,6 +1119,55 @@ public class Game {
         // Return
         result.setSuccess(true);
         return result;
+    }
+    
+    /**
+     * Show the items of a player
+     * @param sender Player's nickname
+     * @return List of items in a string
+     */
+    public String showItems(String sender) {
+        Player player = this.getPlayerByNickname(sender);
+        if (player == null) return null;
+        // Return
+        StringBuilder builder = new StringBuilder();
+        for (Item item : player.getItems()) {
+            builder.append(String.format(Strings.FORMAT_PLAYER_ITEMS, item.getName(), item.getCode()));
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Show the spells of a player
+     * @param sender Player's nickname
+     * @return List of spells in a string
+     */
+    public String showSpells(String sender) {
+        Player player = this.getPlayerByNickname(sender);
+        if (player == null) return null;
+        // Return
+        StringBuilder builder = new StringBuilder();
+        for (Spell spell : player.getSpells()) {
+            builder.append(String.format(Strings.FORMAT_PLAYER_SPELLS, spell.getName(), spell.getCode()));
+        }
+        return builder.toString();
+    }
+    
+    public String showInfos(String sender) {
+        Player player = this.getPlayerByNickname(sender);
+        if (player == null) return null;
+        // Build player's data
+        
+        // Return
+        StringBuilder builder = new StringBuilder();
+        
+        return builder.toString();
+    }
+    
+    public String showStats(String sender) {
+        Player player = this.getPlayerByNickname(sender);
+        if (player == null) return null;
+        return "";
     }
 
     /**

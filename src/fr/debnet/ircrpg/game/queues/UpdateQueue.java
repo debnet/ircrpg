@@ -69,7 +69,7 @@ public class UpdateQueue extends Thread implements IGameQueue {
 
     @Override
     public void update() {
-        if (!this.player.getOnline()) {
+        if (this.player != null && !this.player.getOnline()) {
             this.player = null;
             this.date = null;
         }

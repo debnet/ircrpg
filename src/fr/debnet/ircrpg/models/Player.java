@@ -8,13 +8,11 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.Config;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -27,8 +25,8 @@ import org.hibernate.annotations.Index;
  *
  * @author Marc
  */
-@Entity
-public class Player implements Serializable, IEntity {
+@javax.persistence.Entity
+public class Player extends Entity {
 
     @Id
     private Long id;
@@ -551,5 +549,10 @@ public class Player implements Serializable, IEntity {
 
     public void addGold(int gold) {
         this.gold += gold;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", this.nickname, this.username);
     }
 }
