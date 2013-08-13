@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg;
 
-import fr.debnet.ircrpg.annotations.Type;
 import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.robot.Robot;
 

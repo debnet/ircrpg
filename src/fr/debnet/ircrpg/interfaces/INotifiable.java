@@ -1,8 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package fr.debnet.ircrpg.game.queues;
+package fr.debnet.ircrpg.interfaces;
 
 import fr.debnet.ircrpg.models.Result;
 

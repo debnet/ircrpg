@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.models;
 
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -16,8 +14,8 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@javax.persistence.Entity
-public class Spell extends Entity {
+@Entity
+public class Spell implements IEntity {
 
     @Id
     private Long id;

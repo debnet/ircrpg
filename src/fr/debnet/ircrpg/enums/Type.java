@@ -1,15 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package fr.debnet.ircrpg.annotations;
+package fr.debnet.ircrpg.enums;
 
 /**
  *
  * @author Marc
  */
 public enum Type {
-    NONE    (null),
+    OBJECT  (null),
     STRING  ("String"),
     BOOLEAN ("boolean"),
     INTEGER ("int"),
@@ -31,6 +27,6 @@ public enum Type {
                 return t;
             }
         }
-        return Type.NONE;
+        return Type.OBJECT;
     }
 }

@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.helpers;
 
 import fr.debnet.ircrpg.Config;
+import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Activity;
@@ -13,8 +10,16 @@ import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.interfaces.IEntity;
+import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Result;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -266,5 +271,62 @@ public class Helpers {
             }
         }
         return true;
+    }
+    
+    public static Map<String, Object> toMap(IEntity entity) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        switch (entity.getModel()) {
+            case PLAYER: {
+                Player player = (Player)entity;
+                map = getEntityMap(player);
+                map.put(Strings.STATUS_TIME, new Time(player.getStatusDuration()));
+                break;
+            }
+            case ITEM: {
+                Item item = (Item)entity;
+                map = getEntityMap(item);
+                break;
+            }
+            case SPELL: {
+                Spell spell = (Spell)entity;
+                map = getEntityMap(spell);
+                break;
+            }
+            case EVENT: {
+                Event event = (Event)entity;
+                map = getEntityMap(event);
+                break;
+            }
+            case RESULT: {
+                Result result = (Result)entity;
+                map = getEntityMap(result);
+                if (result.getPlayer() != null) {
+                    for (Map.Entry<String, Object> entry : toMap(result.getPlayer()).entrySet()) {
+                        map.put(String.format("%s.%s", Strings.PLAYER, entry.getKey()), entry.getValue());
+                    }
+                }
+                if (result.getTarget() != null) {
+                    for (Map.Entry<String, Object> entry : toMap(result.getTarget()).entrySet()) {
+                        map.put(String.format("%s.%s", Strings.TARGET, entry.getKey()), entry.getValue());
+                    }
+                }
+                break;
+            }
+        }
+        return map;
+    }
+    
+    private static Map<String, Object> getEntityMap(IEntity entity) {
+        Map<String, Object> values = new HashMap<String, Object>();
+        try {
+            BeanInfo info = Introspector.getBeanInfo(entity.getClass());
+            for (PropertyDescriptor property : info.getPropertyDescriptors()) {
+                Method getter = property.getReadMethod();
+                if (getter != null) values.put(property.getName(), getter.invoke(entity));
+            }
+        } catch (Exception ex) {
+            // TODO: 
+        }
+        return values;
     }
 }

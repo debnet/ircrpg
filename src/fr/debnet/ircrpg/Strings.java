@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg;
 
 import fr.debnet.ircbot.Colors;
@@ -10,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -380,25 +378,11 @@ public class Strings {
     public static String RETURN_LOGOUT_SUCCEED;
     
     /* Constants */
-    // Result variables
-    public static final String PLAYER_NICKNAME = "<player.nickname>";
-    public static final String PLAYER_HP = "<player.hp>";
-    public static final String PLAYER_MP = "<player.mp>";
-    public static final String PLAYER_XP = "<player.xp>";
-    public static final String PLAYER_GOLD = "<player.gold>";
-    public static final String PLAYER_LEVEL = "<player.level>";
-    public static final String PLAYER_SP = "<player.sp>";
-    public static final String PLAYER_STATUS = "<player.status>";
-    public static final String PLAYER_ITEMS = "<player.items>";
-    public static final String PLAYER_SPELLS = "<player.spells>";
-    public static final String TARGET_NICKNAME = "<target.nickname>";
-    public static final String TARGET_HP = "<target.hp>";
-    public static final String TARGET_MP = "<target.mp>";
-    public static final String TARGET_XP = "<target.xp>";
-    public static final String TARGET_GOLD = "<target.gold>";
-    public static final String VALUE_INT = "<value.int>";
-    public static final String VALUE_DOUBLE = "<value.double>";
-    public static final String DETAILS = "<details>";
+    // Global
+    public static final String PLAYER = "player";
+    public static final String TARGET = "target";
+    public static final String STATUS_TIME = "statusTime";
+    public static final String ACTIVITY_TIME = "activityTime";
     // Colors
     public static final String NORMAL = "<n>";
     public static final String BOLD = "<b>";
@@ -422,7 +406,7 @@ public class Strings {
     public static final String YELLOW = "<yellow>";
     
     // Map of colors
-    private final static Map<String, String> COLORS = new HashMap<String, String>() {
+    private final static Map<String, Object> COLORS = new HashMap<String, Object>() {
         {
             this.put(Strings.NORMAL, Colors.NORMAL);
             this.put(Strings.BOLD, Colors.BOLD);
@@ -447,6 +431,9 @@ public class Strings {
         }
     };
     
+    // Pattern for formatting "<fieldName(,format)>"
+    public static final Pattern FORMAT_PATTERN = Pattern.compile("<(\\w+\\.?\\w*);?(\\S*)>");
+    
     static {
         Config.loadProperties("strings.properties", Strings.class);
     }
@@ -467,12 +454,24 @@ public class Strings {
         return builder.toString();
     }
     
-    public static String format(String template, Map<String, String> values) {
-        for (String key : values.keySet()) {
-            template = template.replace(
-                String.format("<%s>", key), values.get(key)
-            );
+    public static String format(String template, Map<String, Object> values) {
+        StringBuffer buffer = new StringBuffer();
+        Matcher matcher = FORMAT_PATTERN.matcher(template);
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            if (values.containsKey(key)) {
+                String format = matcher.group(2);
+                boolean hasFormat = !"".equals(format);
+                boolean isAbsolute = hasFormat && format.contains("=");
+                if (isAbsolute) format = format.replace("=", "");
+                
+                Object value = values.get(key);
+                String result = hasFormat ? String.format(format, value) : value.toString();
+                if (isAbsolute) result = result.replace("-", "");
+                matcher.appendReplacement(buffer, result);
+            }
         }
-        return template;
+        matcher.appendTail(buffer);
+        return buffer.toString();
     }
 }

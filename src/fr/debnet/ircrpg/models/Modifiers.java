@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.models;
 
 /**
@@ -114,15 +110,7 @@ public class Modifiers {
         return theftChance;
     }
 
-    public void setTheftChance(double theftChance) {
-        this.theftChance = theftChance;
-    }
-
     public double getTheftGold() {
         return theftGold;
-    }
-
-    public void setTheftGold(double theftGold) {
-        this.theftGold = theftGold;
     }
 }

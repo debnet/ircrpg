@@ -1,9 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.game.queues;
 
+import fr.debnet.ircrpg.interfaces.IGameQueue;
+import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.Game;
 import java.util.ArrayList;
 import java.util.List;

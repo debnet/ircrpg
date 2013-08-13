@@ -1,18 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.models;
 
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Return;
-import fr.debnet.ircrpg.helpers.Time;
+import fr.debnet.ircrpg.helpers.Helpers;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -27,8 +25,8 @@ import org.hibernate.annotations.Index;
  *
  * @author Marc
  */
-@javax.persistence.Entity
-public class Result extends Entity {
+@Entity
+public class Result implements IEntity {
     
     @Id
     private Long id;
@@ -111,42 +109,13 @@ public class Result extends Entity {
     }
     
     public String getMessage() {
+        Map<String, Object> map = Helpers.toMap(this);
         StringBuilder build = new StringBuilder(); 
         for (Return r : this.getReturns()) {
-            build.append(this.formatString(r.getText()).trim());
+            build.append(Strings.format(r.getText(), map).trim());
             build.append(" ");
         }
         return build.toString().trim();
-    }
-    
-    private String formatString(String string) {
-        HashMap<String, String> values = new HashMap<String, String>();
-        // Player values
-        if (this.player != null) {
-            values.put(Strings.PLAYER_NICKNAME, this.player.getNickname());
-            values.put(Strings.PLAYER_HP, String.format("%.2f", Math.abs(this.getPlayerHealthChanges())));
-            values.put(Strings.PLAYER_MP, String.format("%.2f", Math.abs(this.getPlayerManaChanges())));
-            values.put(Strings.PLAYER_XP, String.format("%.2f", Math.abs(this.getPlayerExperienceChanges())));
-            values.put(Strings.PLAYER_GOLD, String.format("%.2f", Math.abs(this.getPlayerGoldChanges())));
-            values.put(Strings.PLAYER_LEVEL, String.format("%d", this.player.getLevel()));
-            values.put(Strings.PLAYER_SP, String.format("%d", this.player.getSkillPoints()));
-            values.put(Strings.PLAYER_STATUS, new Time(this.player.getStatusDuration()).toString());
-            values.put(Strings.PLAYER_ITEMS, Strings.join(this.player.getItems(), ", "));
-            values.put(Strings.PLAYER_SPELLS, Strings.join(this.player.getSpells(), ", "));
-        }
-        // Target values
-        if (this.target != null) {
-            values.put(Strings.TARGET_NICKNAME, this.target.getNickname());
-            values.put(Strings.TARGET_HP, String.format("%.2f", Math.abs(this.getTargetHealthChanges())));
-            values.put(Strings.TARGET_MP, String.format("%.2f", Math.abs(this.getTargetManaChanges())));
-            values.put(Strings.TARGET_XP, String.format("%.2f", Math.abs(this.getTargetExperienceChanges())));
-            values.put(Strings.TARGET_GOLD, String.format("%.2f", Math.abs(this.getTargetGoldChanges())));
-        }
-        // Others values
-        values.put(Strings.VALUE_INT, String.format("%d", this.getValue()));
-        values.put(Strings.VALUE_DOUBLE, String.format("%.2f", this.getValue()));
-        values.put(Strings.DETAILS, this.getDetails());
-        return Strings.format(string, values);
     }
     
     /* Getters & setters */

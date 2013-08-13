@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.robot;
 
 import fr.debnet.ircbot.DccChat;
@@ -14,7 +10,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.game.Game;
-import fr.debnet.ircrpg.game.queues.INotifiable;
+import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.util.logging.Logger;

@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg;
 
 import fr.debnet.ircrpg.annotations.Property;
-import fr.debnet.ircrpg.annotations.Type;
+import fr.debnet.ircrpg.enums.Type;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;

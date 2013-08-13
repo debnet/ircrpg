@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg;
 
-import fr.debnet.ircrpg.models.Entity;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +45,12 @@ public class DAO {
         return sessionFactory;
     }
 
-    public static <T extends Entity> T getObject(String sql, Object... args) {
+    public static <T extends IEntity> T getObject(String sql, Object... args) {
         return DAO.getObject(sql, false, args);
     }
 
-    public static <T extends Entity> T getObject(String sql, boolean limit, Object... args) {
-        Entity object = null;
+    public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
+        IEntity object = null;
         Session session = sessionFactory.openSession();
         try {
             Query query = session.createQuery(sql);
@@ -62,7 +58,7 @@ public class DAO {
                 for (int i = 0; i < args.length; i++)
                     query.setParameter(sql, args[i]);
             if (limit) query.setMaxResults(1);
-            object = (Entity)query.uniqueResult();
+            object = (IEntity)query.uniqueResult();
         } catch (HibernateException e) {
             Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
         } finally {
@@ -71,12 +67,12 @@ public class DAO {
         return (T)object;
     }
 
-    public static <T extends Entity> List<T> getObjectList(String sql, Object... args) {
+    public static <T extends IEntity> List<T> getObjectList(String sql, Object... args) {
         return DAO.getObjectList(sql, 0, args);
     }
 
-    public static <T extends Entity> List<T> getObjectList(String sql, int limit, Object... args) {
-        List<Entity> list = new ArrayList<Entity>();
+    public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
+        List<IEntity> list = new ArrayList<IEntity>();
         Session session = sessionFactory.openSession();
         try {
             Query query = session.createQuery(sql);
@@ -93,7 +89,7 @@ public class DAO {
         return (List<T>)list;
     }
 
-    public static <T extends Entity> boolean setObject(T object) {
+    public static <T extends IEntity> boolean setObject(T object) {
         boolean b = false;
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -111,7 +107,7 @@ public class DAO {
         return b;
     }
 
-    public static <T extends Entity> Long addObject(T object) {
+    public static <T extends IEntity> Long addObject(T object) {
         Long id = null;
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -129,7 +125,7 @@ public class DAO {
         return id;
     }
 
-    public static <T extends Entity> boolean delObject(T object) {
+    public static <T extends IEntity> boolean delObject(T object) {
         boolean b = false;
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();

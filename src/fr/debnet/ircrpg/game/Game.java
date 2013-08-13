@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.Config;
@@ -15,8 +11,8 @@ import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.game.queues.EventQueue;
-import fr.debnet.ircrpg.game.queues.IGameQueue;
-import fr.debnet.ircrpg.game.queues.INotifiable;
+import fr.debnet.ircrpg.interfaces.IGameQueue;
+import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.queues.UpdateQueue;
 import fr.debnet.ircrpg.helpers.CheckItem;
 import fr.debnet.ircrpg.helpers.CheckPlayer;
