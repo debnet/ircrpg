@@ -1,6 +1,7 @@
 package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.enums.Model;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -12,7 +13,7 @@ import javax.persistence.Version;
  * @author Marc
  */
 @Entity
-public class Event extends MappedEntity {
+public class Event extends MappedEntity implements IEntity {
     
     @Id
     private Long id;
@@ -20,11 +21,6 @@ public class Event extends MappedEntity {
     private Integer version;
     
     public Event() {
-        
-    }
-    
-    @Override
-    protected void setDefaultValues() {
         this.setId(0l);
         this.setVersion(0);
     }

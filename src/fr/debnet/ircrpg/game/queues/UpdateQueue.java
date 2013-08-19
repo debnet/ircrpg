@@ -20,6 +20,14 @@ import java.util.logging.Logger;
  */
 public class UpdateQueue extends Thread implements IQueue {
 
+    private static IQueue queue;
+    
+    public static IQueue getInstance(Game game) {
+        if (queue == null || queue.getGame() != game)
+            queue = new UpdateQueue(game);
+        return queue;
+    }
+    
     private Game game;
     private boolean run = true;
     private final List<INotifiable> notifiables;
@@ -112,5 +120,15 @@ public class UpdateQueue extends Thread implements IQueue {
                 // TODO: 
             }
         }
+    }
+    
+    @Override
+    public void interrupt() {
+        this.run = false;
+    }
+    
+    @Override
+    public Game getGame() {
+        return this.game;
     }
 }

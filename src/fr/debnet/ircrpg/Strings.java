@@ -389,11 +389,6 @@ public class Strings {
     public static String RETURN_LOGOUT_SUCCEED;
     
     /* Constants */
-    // Global
-    public static final String PLAYER = "player";
-    public static final String TARGET = "target";
-    public static final String STATUS_TIME = "statusTime";
-    public static final String ACTIVITY_TIME = "activityTime";
     // Colors
     public static final String NORMAL = "<n>";
     public static final String BOLD = "<b>";

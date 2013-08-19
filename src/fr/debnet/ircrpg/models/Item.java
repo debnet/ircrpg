@@ -2,6 +2,7 @@ package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.enums.Equipment;
 import fr.debnet.ircrpg.enums.Model;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import javax.persistence.Version;
  * @author Marc
  */
 @Entity
-public class Item extends MappedEntity {
+public class Item extends MappedEntity implements IEntity {
 
     @Id
     private Long id;
@@ -48,11 +49,6 @@ public class Item extends MappedEntity {
     private Double stealingGoldModifier;
 
     public Item() {
-        
-    }
-    
-    @Override
-    protected void setDefaultValues() {
         this.setId(0l);
         this.setVersion(0);
         this.setCode(null);
@@ -77,7 +73,7 @@ public class Item extends MappedEntity {
         this.setManaPotionRegenModifier(0d);
         this.setPoisonEffectModifier(0d);
         this.setStealingChanceModifier(0d);
-        this.setStealingGoldModifier(0d);
+        this.setStealingGoldModifier(0d);        
     }
     
     @Override

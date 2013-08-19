@@ -1,7 +1,6 @@
-package fr.debnet.ircrpg.helpers;
+package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.Strings;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**

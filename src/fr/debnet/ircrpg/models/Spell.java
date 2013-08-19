@@ -2,6 +2,7 @@ package fr.debnet.ircrpg.models;
 
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import javax.persistence.Version;
  * @author Marc
  */
 @Entity
-public class Spell extends MappedEntity {
+public class Spell extends MappedEntity implements IEntity {
 
     @Id
     private Long id;
@@ -37,11 +38,6 @@ public class Spell extends MappedEntity {
     private Integer statusDuration;
 
     public Spell() {
-        
-    }
-    
-    @Override
-    protected void setDefaultValues() {
         this.setId(0l);
         this.setVersion(0);
         this.setCode(null);
@@ -54,7 +50,7 @@ public class Spell extends MappedEntity {
         this.setHealthDamage(0d);
         this.setManaCost(0d);
         this.setStatus(Status.NONE);
-        this.setStatusDuration(0);
+        this.setStatusDuration(0); 
     }
     
     @Override

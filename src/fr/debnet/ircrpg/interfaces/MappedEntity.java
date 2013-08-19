@@ -1,6 +1,5 @@
 package fr.debnet.ircrpg.interfaces;
 
-import fr.debnet.ircrpg.enums.Model;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,30 +7,17 @@ import java.util.Map;
  *
  * @author Marc
  */
-public abstract class MappedEntity implements IEntity {
+public abstract class MappedEntity {
 
     private Map<String, Object> map;
-    
-    @Override
-    public abstract Long getId();
-
-    @Override
-    public abstract void setId(Long id);
-
-    @Override
-    public abstract Integer getVersion();
-
-    @Override
-    public abstract void setVersion(Integer version);
-
-    @Override
-    public abstract Model getModel();
-    
-    protected abstract void setDefaultValues();
+    private boolean enableMapping = true;
     
     public MappedEntity() {
         this.map = new HashMap<String, Object>();
-        this.setDefaultValues();
+    }
+    
+    public void setEnableMapping(boolean enable) {
+        this.enableMapping = enable;
     }
     
     public Map<String, Object> toMap() {
@@ -39,7 +25,19 @@ public abstract class MappedEntity implements IEntity {
     }
     
     protected void set(String key, Object value) {
-        if (this.map.containsKey(key)) this.map.remove(key);
-        this.map.put(key, value);
+        if (this.enableMapping) {
+            if (this.map.containsKey(key)) this.map.remove(key);
+            this.map.put(key, value);
+
+            if (value instanceof MappedEntity) {
+                MappedEntity entity = (MappedEntity) value;
+                for (Map.Entry<String, Object> entry : entity.toMap().entrySet()) {
+                    String subkey = String.format("%s.%s", key, entry.getKey());
+
+                    if (this.map.containsKey(subkey)) this.map.remove(subkey);
+                    this.map.put(subkey, entry.getValue());
+                }
+            }
+        }
     }
 }

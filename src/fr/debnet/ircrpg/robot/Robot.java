@@ -10,6 +10,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.game.Game;
+import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
@@ -253,16 +254,16 @@ public class Robot extends IRCBot implements INotifiable {
     
     private void displayResult(Result result, String sender) {
         if (result.isSuccess()) {
-            this.sendFormattedMessage(result.getMessage());
+            this.sendFormattedMessage(Helpers.getMessage(result));
         } else {
-            this.sendFormattedMessage(sender, result.getMessage());
+            this.sendFormattedMessage(sender, Helpers.getMessage(result));
         }
     }
     
     @Override
     public void notify(Result result) {
         for (String channel : this.getChannels()) {
-            this.sendFormattedMessage(channel, result.getMessage());
+            this.sendFormattedMessage(channel, Helpers.getMessage(result));
         }
     }
     

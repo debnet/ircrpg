@@ -1,15 +1,13 @@
 package fr.debnet.ircrpg.models;
 
-import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Return;
-import fr.debnet.ircrpg.helpers.Helpers;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,7 +24,7 @@ import org.hibernate.annotations.Index;
  * @author Marc
  */
 @Entity
-public class Result extends MappedEntity {
+public class Result extends MappedEntity implements IEntity {
     
     @Id
     private Long id;
@@ -67,26 +65,6 @@ public class Result extends MappedEntity {
     private String details;
     
     public Result() {
-        
-    }
-    
-    public Result(Action action) {
-        this();
-        this.setAction(action);
-    }
-    
-    public Result(Action action, Player player) {
-        this(action);
-        this.setPlayer(player);
-    }
-    
-    public Result(Action action, Player player, Player target) {
-        this(action, player);
-        this.setTarget(target);
-    }
-    
-    @Override
-    protected void setDefaultValues() {
         this.setId(0l);
         this.setVersion(0);
         this.setDate(Calendar.getInstance());
@@ -105,6 +83,21 @@ public class Result extends MappedEntity {
         this.setTargetExperienceChanges(0d);
         this.setValue(0d);
         this.setDetails(null);
+    }
+    
+    public Result(Action action) {
+        this();
+        this.setAction(action);
+    }
+    
+    public Result(Action action, Player player) {
+        this(action);
+        this.setPlayer(player);
+    }
+    
+    public Result(Action action, Player player, Player target) {
+        this(action, player);
+        this.setTarget(target);
     }
         
     @Override
@@ -127,16 +120,6 @@ public class Result extends MappedEntity {
                 this.targetHealthChanges, this.targetManaChanges));
         }
         return build.toString();
-    }
-    
-    public String getMessage() {
-        Map<String, Object> map = Helpers.toMap(this);
-        StringBuilder build = new StringBuilder(); 
-        for (Return r : this.getReturns()) {
-            build.append(Strings.format(r.getText(), map).trim());
-            build.append(" ");
-        }
-        return build.toString().trim();
     }
     
     /* Getters & setters */

@@ -79,8 +79,8 @@ public class Game {
         }
         
         // Run queues
-        this.queues.add(new UpdateQueue(this));
-        this.queues.add(new EventQueue(this));
+        this.queues.add(UpdateQueue.getInstance(this));
+        this.queues.add(EventQueue.getInstance(this));
     }
     
     /**

@@ -4,6 +4,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.Config;
+import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,7 +25,7 @@ import org.hibernate.annotations.Index;
  * @author Marc
  */
 @Entity
-public class Player extends MappedEntity {
+public class Player extends MappedEntity implements IEntity {
 
     @Id
     private Long id;
@@ -78,11 +79,6 @@ public class Player extends MappedEntity {
     private Integer kills;
 
     public Player() {
-        
-    }
-    
-    @Override
-    protected void setDefaultValues() {
         this.setId(0l);
         this.setVersion(0);
         this.setUsername(null);
@@ -459,11 +455,13 @@ public class Player extends MappedEntity {
     public void setActivityDuration(Integer activityDuration) {
         this.activityDuration = activityDuration;
         this.set("activityDuration", this.activityDuration);
+        this.set("activityTime", new Time(this.activityDuration));
     }
     
     public void addActivityDuration(Integer activityDuration) {
         this.activityDuration += activityDuration;
         this.set("activityDuration", this.activityDuration);
+        this.set("activityTime", new Time(this.activityDuration));
     }
 
     public Integer getStatusDuration() {
@@ -473,11 +471,13 @@ public class Player extends MappedEntity {
     public void setStatusDuration(Integer statusDuration) {
         this.statusDuration = statusDuration;
         this.set("statusDuration", this.statusDuration);
+        this.set("statusTime", new Time(this.statusDuration));
     }
     
     public void addStatusDuration(Integer statusDuration) {
         this.statusDuration += statusDuration;
         this.set("statusDuration", this.statusDuration);
+        this.set("statusTime", new Time(this.statusDuration));
     }
 
     public Integer getTimeIngame() {
@@ -486,12 +486,12 @@ public class Player extends MappedEntity {
 
     public void setTimeIngame(Integer timeIngame) {
         this.timeIngame = timeIngame;
-        this.set("timeIngame", this.timeIngame);
+        this.set("timeIngame", new Time(this.timeIngame));
     }
     
     public void addTimeIngame(Integer timeIngame) {
         this.timeIngame += timeIngame;
-        this.set("timeIngame", this.timeIngame);
+        this.set("timeIngame", new Time(this.timeIngame));
     }
 
     public Integer getTimeWorking() {
@@ -500,12 +500,12 @@ public class Player extends MappedEntity {
 
     public void setTimeWorking(Integer timeWorking) {
         this.timeWorking = timeWorking;
-        this.set("timeWorking", this.timeWorking);
+        this.set("timeWorking", new Time(this.timeWorking));
     }
     
     public void addTimeWorking(Integer timeWorking) {
         this.timeWorking += timeWorking;
-        this.set("timeWorking", this.timeWorking);
+        this.set("timeWorking", new Time(this.timeWorking));
     }
 
     public Integer getTimeResting() {
@@ -514,12 +514,12 @@ public class Player extends MappedEntity {
 
     public void setTimeResting(Integer timeResting) {
         this.timeResting = timeResting;
-        this.set("timeResting", this.timeResting);
+        this.set("timeResting", new Time(this.timeResting));
     }
     
     public void addTimeResting(Integer timeResting) {
         this.timeResting += timeResting;
-        this.set("timeResting", this.timeResting);
+        this.set("timeResting", new Time(this.timeResting));
     }
 
     public Integer getTimeTraining() {

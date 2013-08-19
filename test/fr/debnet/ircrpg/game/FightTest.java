@@ -6,6 +6,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.models.Result;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -72,7 +73,7 @@ public class FightTest {
         Result r = this.game.fight("u1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
@@ -96,7 +97,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_OFFLINE));
@@ -124,7 +125,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
@@ -148,7 +149,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_FAILED));
@@ -172,7 +173,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
@@ -196,7 +197,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_FAILED));
@@ -219,7 +220,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.MAGIC_SUCCEED));
@@ -242,7 +243,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.MAGIC_FAILED));
@@ -270,7 +271,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.MAGIC_SUCCEED));
@@ -293,7 +294,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_MANA));
@@ -310,7 +311,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.SPELL_NOT_LEARNED));
@@ -328,7 +329,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_PARALYZED));
@@ -339,7 +340,7 @@ public class FightTest {
         r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_DEAD));
@@ -352,7 +353,7 @@ public class FightTest {
         r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.TARGET_DEAD));
@@ -375,7 +376,7 @@ public class FightTest {
             Result r = this.game.fight("p1", "p2", null);
             // Returns
             System.out.println(r);
-            System.out.println(r.getMessage());
+            System.out.println(Helpers.getMessage(r));
             assertFalse(r.isSuccess());
             // Test return values
             assertTrue(r.hasReturn(Return.PLAYER_BUSY));
@@ -390,7 +391,7 @@ public class FightTest {
             r = this.game.fight("p1", "p2", null);
             // Returns
             System.out.println(r);
-            System.out.println(r.getMessage());
+            System.out.println(Helpers.getMessage(r));
             assertFalse(r.isSuccess());
             // Test return values
             assertTrue(r.hasReturn(Return.TARGET_BUSY));
@@ -413,7 +414,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
@@ -440,7 +441,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_FAILED));
@@ -468,7 +469,7 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
-        System.out.println(r.getMessage());
+        System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));

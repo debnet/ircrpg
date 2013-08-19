@@ -10,11 +10,8 @@ import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
 import fr.debnet.ircrpg.enums.Status;
-import fr.debnet.ircrpg.interfaces.IEntity;
-import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Result;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -269,63 +266,13 @@ public class Helpers {
         return true;
     }
     
-    public static Map<String, Object> toMap(IEntity entity) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        switch (entity.getModel()) {
-            case PLAYER: {
-                Player player = (Player)entity;
-                map = player.toMap();
-                map.put(Strings.STATUS_TIME, new Time(player.getStatusDuration()));
-                map.put(Strings.ACTIVITY_TIME, new Time(player.getActivityDuration()));
-                break;
-            }
-            case ITEM: {
-                Item item = (Item)entity;
-                map = item.toMap();
-                break;
-            }
-            case SPELL: {
-                Spell spell = (Spell)entity;
-                map = spell.toMap();
-                break;
-            }
-            case EVENT: {
-                Event event = (Event)entity;
-                map = event.toMap();
-                break;
-            }
-            case RESULT: {
-                Result result = (Result)entity;
-                map = result.toMap();
-                if (result.getPlayer() != null) {
-                    for (Map.Entry<String, Object> entry : toMap(result.getPlayer()).entrySet()) {
-                        map.put(String.format("%s.%s", Strings.PLAYER, entry.getKey()), entry.getValue());
-                    }
-                }
-                if (result.getTarget() != null) {
-                    for (Map.Entry<String, Object> entry : toMap(result.getTarget()).entrySet()) {
-                        map.put(String.format("%s.%s", Strings.TARGET, entry.getKey()), entry.getValue());
-                    }
-                }
-                break;
-            }
+    public static String getMessage(Result result) {
+        Map<String, Object> map = result.toMap();
+        StringBuilder build = new StringBuilder(); 
+        for (Return r : result.getReturns()) {
+            build.append(Strings.format(r.getText(), map).trim());
+            build.append(" ");
         }
-        return map;
+        return build.toString().trim();
     }
-    
-    /*
-    private static Map<String, Object> getEntityMap(IEntity entity) {
-        Map<String, Object> values = new HashMap<String, Object>();
-        try {
-            BeanInfo info = Introspector.getBeanInfo(entity.getClass());
-            for (PropertyDescriptor property : info.getPropertyDescriptors()) {
-                Method getter = property.getReadMethod();
-                if (getter != null) values.put(property.getName(), getter.invoke(entity));
-            }
-        } catch (Exception ex) {
-            // TODO: 
-        }
-        return values;
-    }
-    */
 }
