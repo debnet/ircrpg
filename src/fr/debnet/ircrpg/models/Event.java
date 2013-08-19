@@ -78,7 +78,7 @@ public class Event extends MappedEntity implements IEntity {
     }
     
     @Override
-    public void refresh() {
+    public void updateMapping() {
         
     }
 }

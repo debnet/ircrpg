@@ -369,7 +369,7 @@ public class Result extends MappedEntity implements IEntity {
     }
     
     @Override
-    public void refresh() {
+    public void updateMapping() {
         this.set("player", this.player);
         this.set("target", this.target);
     }

@@ -622,10 +622,6 @@ public class Player extends MappedEntity implements IEntity {
         this.kills += kills;
         this.set("kills", this.kills);
     }
-    
-    public Modifiers getModifiers() {
-        return new Modifiers(this);
-    }
 
     @Override
     public int hashCode() {
@@ -655,8 +651,12 @@ public class Player extends MappedEntity implements IEntity {
     }
     
     @Override
-    public void refresh() {
-        
+    public void updateMapping() {
+        Modifiers modifiers = new Modifiers(this);
+        this.set("maxHealthCalculated", this.maxHealth + modifiers.getHealth());
+        this.set("maxManaCalculated", this.maxMana + modifiers.getMana());
+        this.set("attackCalculated", this.attack + modifiers.getAttack());
+        this.set("defenseCalculated", this.defense + modifiers.getDefense());
     }
     
     /* Specific methods */

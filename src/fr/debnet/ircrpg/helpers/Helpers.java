@@ -184,7 +184,7 @@ public class Helpers {
     public static boolean checkPotion(Result result, Player player, 
             Potion potion, EnumSet<CheckPotion> checks) {
         // Get player modifiers
-        Modifiers modifiers = player.getModifiers();
+        Modifiers modifiers = new Modifiers(player);
         // Potion type
         switch (potion) {
             case NONE: {

@@ -62,24 +62,12 @@ public class Modifiers {
         return attackAccuracy;
     }
 
-    public void setAttackAccuracy(double attackAccuracy) {
-        this.attackAccuracy = attackAccuracy;
-    }
-
     public double getDefenseAccuracy() {
         return defenseAccuracy;
     }
 
-    public void setDefenseAccuracy(double defenseAccuracy) {
-        this.defenseAccuracy = defenseAccuracy;
-    }
-
     public double getMagicAccuracy() {
         return magicAccuracy;
-    }
-
-    public void setMagicAccuracy(double magicAccuracy) {
-        this.magicAccuracy = magicAccuracy;
     }
 
     public double getExperienceRate() {

@@ -21,6 +21,7 @@ public abstract class MappedEntity {
     }
     
     public Map<String, Object> toMap() {
+        this.updateMapping();
         return new HashMap<String, Object>(this.map);
     }
     
@@ -41,5 +42,5 @@ public abstract class MappedEntity {
         }
     }
     
-    public abstract void refresh();
+    public abstract void updateMapping();
 }

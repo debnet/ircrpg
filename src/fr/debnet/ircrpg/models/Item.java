@@ -346,7 +346,7 @@ public class Item extends MappedEntity implements IEntity {
     }
     
     @Override
-    public void refresh() {
+    public void updateMapping() {
         
     }
 }

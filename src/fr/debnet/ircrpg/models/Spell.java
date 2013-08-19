@@ -210,7 +210,7 @@ public class Spell extends MappedEntity implements IEntity {
     }
     
     @Override
-    public void refresh() {
+    public void updateMapping() {
         
     }
 }

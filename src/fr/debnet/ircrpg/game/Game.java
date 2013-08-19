@@ -27,6 +27,7 @@ import fr.debnet.ircrpg.models.Result;
 import fr.debnet.ircrpg.models.Spell;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,8 +106,8 @@ public class Game {
      * Get all players
      * @return Collection of all players
      */
-    public List<Player> getAllPlayers() {
-        return new ArrayList<Player>(this.playersByNickname.values());
+    public Collection<Player> getAllPlayers() {
+        return this.playersByNickname.values();
     }
     
     /**
@@ -367,7 +368,6 @@ public class Game {
         // Update queues
         this.updateQueues();
         // Return
-        result.refresh();
         result.setSuccess(true);
         if (Config.PERSISTANCE && !result.getReturns().isEmpty()) {
             DAO.<Result>addObject(result);
@@ -426,8 +426,8 @@ public class Game {
             }
         }
         // Items modifiers
-        Modifiers attackerModifiers = attacker.getModifiers();
-        Modifiers defenderModifiers = defender.getModifiers();
+        Modifiers attackerModifiers = new Modifiers(attacker);
+        Modifiers defenderModifiers = new Modifiers(defender);
         // Attacker phase
         if (spell == null) {
             if (self) {
@@ -569,13 +569,15 @@ public class Game {
                         defender.setStatusDuration(spell.getStatusDuration());
                         // Update return
                         switch (spell.getStatus()) {
-                            case PARALYZED:
+                            case PARALYZED: {
                                 result.addReturn(Return.TARGET_PARALYZED);
                                 break;
-                            case POISONED:
+                            }
+                            case POISONED: {
                                 result.addReturn(Return.TARGET_POISONED);
                                 break;
-                            case NORMAL:
+                            }
+                            case NORMAL: {
                                 switch (status) {
                                     case NORMAL:
                                         break;
@@ -587,6 +589,7 @@ public class Game {
                                         break;
                                 }
                                 break;
+                            }
                         }
                     }
                 }
@@ -639,8 +642,8 @@ public class Game {
         Player defender = this.getPlayer(result, target, true);
         if (defender == null) return result;
         // Items modifiers
-        Modifiers attackerModifiers = attacker.getModifiers();
-        Modifiers defenderModifiers = defender.getModifiers();
+        Modifiers attackerModifiers = new Modifiers(attacker);
+        Modifiers defenderModifiers = new Modifiers(defender);
         // Check attacker
         if (!Helpers.checkPlayer(result, attacker, 
             CheckPlayer.from(
@@ -736,7 +739,7 @@ public class Game {
             )
         )) return result;
         // Player modifiers
-        Modifiers modifiers = player.getModifiers();
+        Modifiers modifiers = new Modifiers(player);
         // Check potion
         if (!Helpers.checkPotion(result, player, potion, 
             CheckPotion.from(
@@ -849,7 +852,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Player modifiers
-        Modifiers modifiers = player.getModifiers();
+        Modifiers modifiers = new Modifiers(player);
         // Earned
         double earned = player.getActivityDuration() * 1d / Config.HOUR;
         // Activity check
