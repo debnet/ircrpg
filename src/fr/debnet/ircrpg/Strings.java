@@ -16,8 +16,13 @@ import java.util.regex.Pattern;
 public class Strings {
     
     // Format time
-    @Property(name = "format.time")
-    public static String FORMAT_TIME;
+    @Property(name = "format.time_seconds")
+    public static String FORMAT_TIME_SECONDS;
+    @Property(name = "format.time_minutes")
+    public static String FORMAT_TIME_MINUTES;
+    @Property(name = "format.time_hours")
+    public static String FORMAT_TIME_HOURS;
+    
     @Property(name = "format.player_infos")
     public static String FORMAT_PLAYER_INFOS;
     @Property(name = "format.player_stats")

@@ -5,6 +5,8 @@ import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -12,10 +14,11 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@Entity
+@Entity(name = "Event")
 public class Event extends MappedEntity implements IEntity {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private Integer version;
@@ -72,5 +75,10 @@ public class Event extends MappedEntity implements IEntity {
             return false;
         }
         return true;
+    }
+    
+    @Override
+    public void refresh() {
+        
     }
 }

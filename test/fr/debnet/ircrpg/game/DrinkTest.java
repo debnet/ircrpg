@@ -129,7 +129,7 @@ public class DrinkTest {
         // Modify player
         this.player.addRemedyPotions(1);
         this.player.setStatus(Status.PARALYZED);
-        this.player.setStatusDuration(Integer.MAX_VALUE);
+        this.player.setStatusDuration(Long.MAX_VALUE);
         // Drink health potion
         Result r = this.game.drink("p1", Potion.REMEDY);
         // Returns
@@ -149,7 +149,7 @@ public class DrinkTest {
         // Modify player
         this.player.addRemedyPotions(1);
         this.player.setStatus(Status.POISONED);
-        this.player.setStatusDuration(Integer.MAX_VALUE);
+        this.player.setStatusDuration(Long.MAX_VALUE);
         // Drink health potion
         Result r = this.game.drink("p1", Potion.REMEDY);
         // Returns

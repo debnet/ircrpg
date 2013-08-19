@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -15,10 +17,11 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@Entity
+@Entity(name = "Item")
 public class Item extends MappedEntity implements IEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private Integer version;
@@ -340,5 +343,10 @@ public class Item extends MappedEntity implements IEntity {
     @Override
     public String toString() {
         return String.format("%s (%s)", this.name, this.code);
+    }
+    
+    @Override
+    public void refresh() {
+        
     }
 }

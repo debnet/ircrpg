@@ -14,6 +14,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -24,10 +26,11 @@ import org.hibernate.annotations.Index;
  *
  * @author Marc
  */
-@Entity
+@Entity(name = "Player")
 public class Player extends MappedEntity implements IEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private Integer version;
@@ -55,8 +58,8 @@ public class Player extends MappedEntity implements IEntity {
     private Integer healthPotions;
     private Integer manaPotions;
     private Integer remedyPotions;
-    private Integer activityDuration;
-    private Integer statusDuration;
+    private Long activityDuration;
+    private Long statusDuration;
     
     @Index(name = "player_lastupdate")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -67,10 +70,10 @@ public class Player extends MappedEntity implements IEntity {
     private List<Spell> spells;
     
     // Statistics
-    private Integer timeIngame;
-    private Integer timeWorking;
-    private Integer timeResting;
-    private Integer timeTraining;
+    private Long timeIngame;
+    private Long timeWorking;
+    private Long timeResting;
+    private Long timeTraining;
     private Integer moneySpent;
     private Double moneyStolen;
     private Double damageTaken;
@@ -102,16 +105,16 @@ public class Player extends MappedEntity implements IEntity {
         this.setHealthPotions(0);
         this.setManaPotions(0);
         this.setRemedyPotions(0);
-        this.setActivityDuration(0);
-        this.setStatusDuration(0);
+        this.setActivityDuration(0l);
+        this.setStatusDuration(0l);
         this.setLastUpdate(Calendar.getInstance());
         this.setItems(new ArrayList<Item>());
         this.setSpells(new ArrayList<Spell>());
         
-        this.setTimeIngame(0);
-        this.setTimeWorking(0);
-        this.setTimeResting(0);
-        this.setTimeTraining(0);
+        this.setTimeIngame(0l);
+        this.setTimeWorking(0l);
+        this.setTimeResting(0l);
+        this.setTimeTraining(0l);
         this.setMoneySpent(0);
         this.setMoneyStolen(0d);
         this.setDamageTaken(0d);
@@ -448,90 +451,90 @@ public class Player extends MappedEntity implements IEntity {
         this.set("spells", this.spells);
     }
 
-    public Integer getActivityDuration() {
+    public Long getActivityDuration() {
         return activityDuration;
     }
 
-    public void setActivityDuration(Integer activityDuration) {
+    public void setActivityDuration(Long activityDuration) {
         this.activityDuration = activityDuration;
         this.set("activityDuration", this.activityDuration);
         this.set("activityTime", new Time(this.activityDuration));
     }
     
-    public void addActivityDuration(Integer activityDuration) {
+    public void addActivityDuration(Long activityDuration) {
         this.activityDuration += activityDuration;
         this.set("activityDuration", this.activityDuration);
         this.set("activityTime", new Time(this.activityDuration));
     }
 
-    public Integer getStatusDuration() {
+    public Long getStatusDuration() {
         return statusDuration;
     }
 
-    public void setStatusDuration(Integer statusDuration) {
+    public void setStatusDuration(Long statusDuration) {
         this.statusDuration = statusDuration;
         this.set("statusDuration", this.statusDuration);
         this.set("statusTime", new Time(this.statusDuration));
     }
     
-    public void addStatusDuration(Integer statusDuration) {
+    public void addStatusDuration(Long statusDuration) {
         this.statusDuration += statusDuration;
         this.set("statusDuration", this.statusDuration);
         this.set("statusTime", new Time(this.statusDuration));
     }
 
-    public Integer getTimeIngame() {
+    public Long getTimeIngame() {
         return timeIngame;
     }
 
-    public void setTimeIngame(Integer timeIngame) {
+    public void setTimeIngame(Long timeIngame) {
         this.timeIngame = timeIngame;
         this.set("timeIngame", new Time(this.timeIngame));
     }
     
-    public void addTimeIngame(Integer timeIngame) {
+    public void addTimeIngame(Long timeIngame) {
         this.timeIngame += timeIngame;
         this.set("timeIngame", new Time(this.timeIngame));
     }
 
-    public Integer getTimeWorking() {
+    public Long getTimeWorking() {
         return timeWorking;
     }
 
-    public void setTimeWorking(Integer timeWorking) {
+    public void setTimeWorking(Long timeWorking) {
         this.timeWorking = timeWorking;
         this.set("timeWorking", new Time(this.timeWorking));
     }
     
-    public void addTimeWorking(Integer timeWorking) {
+    public void addTimeWorking(Long timeWorking) {
         this.timeWorking += timeWorking;
         this.set("timeWorking", new Time(this.timeWorking));
     }
 
-    public Integer getTimeResting() {
+    public Long getTimeResting() {
         return timeResting;
     }
 
-    public void setTimeResting(Integer timeResting) {
+    public void setTimeResting(Long timeResting) {
         this.timeResting = timeResting;
         this.set("timeResting", new Time(this.timeResting));
     }
     
-    public void addTimeResting(Integer timeResting) {
+    public void addTimeResting(Long timeResting) {
         this.timeResting += timeResting;
         this.set("timeResting", new Time(this.timeResting));
     }
 
-    public Integer getTimeTraining() {
+    public Long getTimeTraining() {
         return timeTraining;
     }
 
-    public void setTimeTraining(Integer timeTraining) {
+    public void setTimeTraining(Long timeTraining) {
         this.timeTraining = timeTraining;
         this.set("timeTraining", this.timeTraining);
     }
     
-    public void addTimeTraining(Integer timeTraining) {
+    public void addTimeTraining(Long timeTraining) {
         this.timeTraining += timeTraining;
         this.set("timeTraining", this.timeTraining);
     }
@@ -649,6 +652,11 @@ public class Player extends MappedEntity implements IEntity {
     @Override
     public String toString() {
         return String.format("%s (%s)", this.nickname, this.username);
+    }
+    
+    @Override
+    public void refresh() {
+        
     }
     
     /* Specific methods */

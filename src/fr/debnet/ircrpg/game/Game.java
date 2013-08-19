@@ -27,7 +27,6 @@ import fr.debnet.ircrpg.models.Result;
 import fr.debnet.ircrpg.models.Spell;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,8 +105,8 @@ public class Game {
      * Get all players
      * @return Collection of all players
      */
-    public Collection<Player> getAllPlayers() {
-        return this.playersByNickname.values();
+    public List<Player> getAllPlayers() {
+        return new ArrayList<Player>(this.playersByNickname.values());
     }
     
     /**
@@ -204,7 +203,7 @@ public class Game {
         // Get time difference
         java.util.Calendar lastUpdate = player.getLastUpdate();
         Calendar current = Calendar.getInstance();
-        int diff = (int) (current.getTimeInMillis() - lastUpdate.getTimeInMillis());
+        long diff = current.getTimeInMillis() - lastUpdate.getTimeInMillis();
         // Items modifiers
         Modifiers modifiers = new Modifiers(player);
         // Status
@@ -216,7 +215,7 @@ public class Game {
                 if (diff >= player.getStatusDuration()) {
                     result.addReturn(target ? Return.TARGET_POISON_CURED : Return.PLAYER_POISON_CURED);
                     player.setStatus(Status.NORMAL);
-                    player.setStatusDuration(0);
+                    player.setStatusDuration(0l);
                 } else {
                     player.addStatusDuration(-diff);
                 }
@@ -235,7 +234,7 @@ public class Game {
                 if (diff >= player.getStatusDuration()) {
                     result.addReturn(target ? Return.TARGET_PARALYSIS_CURED : Return.PLAYER_PARALYSIS_CURED);
                     player.setStatus(Status.NORMAL);
-                    player.setStatusDuration(0);
+                    player.setStatusDuration(0l);
                 } else {
                     player.addStatusDuration(-diff);
                 }
@@ -246,7 +245,7 @@ public class Game {
                 if (diff >= player.getStatusDuration()) {
                     result.addReturn(target ? Return.TARGET_DEATH_CURED : Return.PLAYER_DEATH_CURED);
                     player.setStatus(Status.NORMAL);
-                    player.setStatusDuration(0);
+                    player.setStatusDuration(0l);
                     double hp = player.getMaxHealth() + modifiers.getHealth();
                     player.setCurrentHealth(hp);
                     double mp = player.getMaxMana() + modifiers.getMana();
@@ -265,63 +264,69 @@ public class Game {
         switch (player.getActivity()) {
             case RESTING: {
                 // Restoring health points
-                double heal = (Config.RATE_HEALTH + modifiers.getHealthRate()) * hours;
+                double healRate = Config.RATE_HEALTH + modifiers.getHealthRate();
+                double heal = healRate * hours;
                 int maxHp = player.getMaxHealth() + modifiers.getHealth();
                 double hp = player.getCurrentHealth() + heal;
                 hp = hp > maxHp ? maxHp : hp;
                 player.setCurrentHealth(hp);
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
-                if (player.getActivityDuration() >= Config.RESTING_TIME_MAX) {
+                if (player.getActivityDuration() >= Config.RESTING_TIME_MAX * Config.MINUTE) {
+                    result.setValue(healRate * Config.RESTING_TIME_MAX / 60);
                     player.setActivity(Activity.WAITING);
-                    player.setActivityDuration(0);
+                    player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_RESTING_ENDED : Return.PLAYER_RESTING_ENDED);
                 }
                 // Update statistics
-                player.addTimeResting((int) (hours * Config.HOUR));
+                player.addTimeResting((long) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerHealthChanges(heal);
                 break;
             }
             case TRAINING: {
                 // Add experience points
-                double xp = (Config.RATE_EXPERIENCE + modifiers.getExperienceRate()) * hours;
+                double xpRate = Config.RATE_EXPERIENCE + modifiers.getExperienceRate();
+                double xp = xpRate * hours;
                 player.addExperience(xp);
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
-                if (player.getActivityDuration() >= Config.TRAINING_TIME_MAX) {
+                if (player.getActivityDuration() >= Config.TRAINING_TIME_MAX * Config.MINUTE) {
+                    result.setValue(xpRate * Config.TRAINING_TIME_MAX / 60);
                     player.setActivity(Activity.WAITING);
-                    player.setActivityDuration(0);
+                    player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_TRAINING_ENDED : Return.PLAYER_TRAINING_ENDED);
                 }
                 // Update statistics
-                player.addTimeTraining((int) (hours * Config.HOUR));
+                player.addTimeTraining((long) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerExperienceChanges(xp);
                 break;
             }
             case WORKING: {
                 // Earn gold coins 
-                double gold = (Config.RATE_GOLD + modifiers.getGoldRate()) * hours;
+                double goldRate = Config.RATE_GOLD + modifiers.getGoldRate();
+                double gold = goldRate * hours;
                 player.addGold(gold);
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
-                if (player.getActivityDuration() >= Config.WORKING_TIME_MAX) {
+                if (player.getActivityDuration() >= Config.WORKING_TIME_MAX * Config.MINUTE) {
+                    result.setValue(goldRate * Config.WORKING_TIME_MAX / 60);
                     player.setActivity(Activity.WAITING);
-                    player.setActivityDuration(0);
+                    player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_WORKING_ENDED : Return.PLAYER_WORKING_ENDED);
                 }
                 // Update statistics
-                player.addTimeWorking((int) (hours * Config.HOUR));
+                player.addTimeWorking((long) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerGoldChanges(gold);
                 break;
             }
             case WAITING: {
                 player.addActivityDuration(diff);
-                if (player.getActivityDuration() >= Config.ACTIVITY_PENALTY) {
+                if (player.getActivityDuration() >= Config.ACTIVITY_PENALTY * Config.MINUTE) {
                     player.setActivity(Activity.NONE);
-                    player.setActivityDuration(0);
+                    player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_WAITING_ENDED : Return.PLAYER_WAITING_ENDED);
                 }
                 break;
@@ -331,11 +336,11 @@ public class Game {
         if (player.getCurrentHealth() <= 0 && player.getStatus() != Status.DEAD) {
             // Change status
             player.setStatus(Status.DEAD);
-            player.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
+            player.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
             player.setCurrentHealth(0d);
             // Reset activity
             player.setActivity(Activity.NONE);
-            player.setActivityDuration(0);
+            player.setActivityDuration(0l);
             // Update return
             result.addReturn(target ? Return.TARGET_KILLED_BY_POISON : Return.PLAYER_KILLED_BY_POISON);
             // Update statistics
@@ -362,6 +367,7 @@ public class Game {
         // Update queues
         this.updateQueues();
         // Return
+        result.refresh();
         result.setSuccess(true);
         if (Config.PERSISTANCE && !result.getReturns().isEmpty()) {
             DAO.<Result>addObject(result);
@@ -449,7 +455,7 @@ public class Game {
                 // Is defender dead?
                 if (defender.getCurrentHealth() <= 0) {
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
+                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                     defender.setCurrentHealth(0d);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
@@ -489,7 +495,7 @@ public class Game {
                         // Is attacker dead?
                         if (attacker.getCurrentHealth() <= 0) {
                             attacker.setStatus(Status.DEAD);
-                            attacker.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
+                            attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                             attacker.setCurrentHealth(0d);
                             // Update return
                             result.addReturn(Return.PLAYER_KILLED);
@@ -548,7 +554,7 @@ public class Game {
                 // Is defender dead?
                 if (hp <= 0) {
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
+                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                     defender.setCurrentHealth(0d);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
@@ -668,7 +674,7 @@ public class Game {
             // Is attacker dead?
             if (attacker.getCurrentHealth() <= 0) {
                 attacker.setStatus(Status.DEAD);
-                attacker.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
+                attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                 attacker.setCurrentHealth(0d);
                 // Update return
                 result.addReturn(Return.PLAYER_KILLED);
@@ -770,7 +776,7 @@ public class Game {
                 Status status = player.getStatus();
                 // Update player
                 player.setStatus(Status.NORMAL);
-                player.setStatusDuration(0);
+                player.setStatusDuration(0l);
                 player.addRemedyPotions(-1);
                 // Update return
                 switch (status) {
@@ -824,7 +830,7 @@ public class Game {
         }
         // Set player activity
         player.setActivity(activity);
-        player.setActivityDuration(0);
+        player.setActivityDuration(0l);
         // Update player
         this.update(player, true);
         // Return
@@ -842,6 +848,8 @@ public class Game {
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
+        // Player modifiers
+        Modifiers modifiers = player.getModifiers();
         // Earned
         double earned = player.getActivityDuration() * 1d / Config.HOUR;
         // Activity check
@@ -856,7 +864,7 @@ public class Game {
                     result.addReturn(Return.NOT_RESTED_ENOUGH);
                     return result;
                 }
-                earned *= Config.RATE_HEALTH;
+                earned *= Config.RATE_HEALTH + modifiers.getHealthRate();
                 break;
             }
             case WORKING: {
@@ -864,7 +872,7 @@ public class Game {
                     result.addReturn(Return.NOT_WORKED_ENOUGH);
                     return result;
                 }
-                earned *= Config.RATE_GOLD;
+                earned *= Config.RATE_GOLD + modifiers.getGoldRate();
                 break;
             }
             case TRAINING: {
@@ -872,13 +880,13 @@ public class Game {
                     result.addReturn(Return.NOT_TRAINED_ENOUGH);
                     return result;
                 }
-                earned *= Config.RATE_EXPERIENCE;
+                earned *= Config.RATE_EXPERIENCE + modifiers.getExperienceRate();
                 break;
             }
         }
         // Clear activity
         player.setActivity(Activity.WAITING);
-        player.setActivityDuration(0);
+        player.setActivityDuration(0l);
         // Update player
         this.update(player, true);
         // Return
@@ -1285,14 +1293,18 @@ public class Game {
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
+                if (Config.PERSISTANCE) {
+                    if (DAO.<Player>addObject(player) == 0) {
+                        result.addReturn(Return.PERSISTANCE_ERROR);
+                        return result;
+                    }
+                }
                 this.playersByUsername.put(username, player);
                 this.playersByNickname.put(nickname, player);
-                if (this.update(player, true).isSuccess()) {
-                    result.addReturn(Return.REGISTER_SUCCEED);
-                    result.setSuccess(true);
-                } else result.addReturn(Return.PERSISTANCE_ERROR);
             } else result.addReturn(Return.NICKNAME_IN_USE);
         } else result.addReturn(Return.USERNAME_ALREADY_TAKEN);
+        result.addReturn(Return.REGISTER_SUCCEED);
+        result.setSuccess(true);
         return result;
     }
     

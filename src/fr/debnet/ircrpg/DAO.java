@@ -26,7 +26,7 @@ public class DAO {
     
     static {
         try {
-           //sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+            //sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
             
             Properties properties = new Properties();
             properties.load(new FileInputStream("config.properties"));

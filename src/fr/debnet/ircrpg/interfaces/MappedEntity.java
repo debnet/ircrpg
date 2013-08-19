@@ -40,4 +40,6 @@ public abstract class MappedEntity {
             }
         }
     }
+    
+    public abstract void refresh();
 }

@@ -117,7 +117,9 @@ public class Config {
     public static Map<String, String> HIBERNATE_CONFIG;
     
     /* Constants */
-    public static final int HOUR = 3600000;
+    public static final long HOUR = 3600000;
+    public static final long MINUTE = 60000;
+    public static final long SECOND = 1000;
     
     static {
         Config.loadConfig("config.properties");

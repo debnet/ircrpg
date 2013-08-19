@@ -81,6 +81,7 @@ public class FightTest {
         r = this.game.fight("p1", "u2", null);
         // Returns
         System.out.println(r);
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_TARGET));
@@ -109,6 +110,7 @@ public class FightTest {
         r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.TARGET_OFFLINE));
@@ -266,7 +268,7 @@ public class FightTest {
         Spell s = this.game.getSpellByCode("s");
         s.setHealthDamage(0d);
         s.setStatus(Status.POISONED);
-        s.setStatusDuration(Integer.MAX_VALUE);
+        s.setStatusDuration(Long.MAX_VALUE);
         // Create fight
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
@@ -324,7 +326,7 @@ public class FightTest {
         // Change player status
         Player p = this.game.getPlayerByUsername("p1");
         p.setStatus(Status.PARALYZED);
-        p.setStatusDuration(Integer.MAX_VALUE);
+        p.setStatusDuration(Config.HOUR);
         // Create fight
         Result r = this.game.fight("p1", "p2", null);
         // Returns
@@ -335,7 +337,7 @@ public class FightTest {
         assertTrue(r.hasReturn(Return.PLAYER_PARALYZED));
         // Change player status
         p.setStatus(Status.DEAD);
-        p.setStatusDuration(Integer.MAX_VALUE);
+        p.setStatusDuration(Config.HOUR);
         // Create fight
         r = this.game.fight("p1", "p2", null);
         // Returns
@@ -348,7 +350,7 @@ public class FightTest {
         p.setStatus(Status.NORMAL);
         p = this.game.getPlayerByUsername("p2");
         p.setStatus(Status.DEAD);
-        p.setStatusDuration(Integer.MAX_VALUE);
+        p.setStatusDuration(Config.HOUR);
         // Create fight
         r = this.game.fight("p1", "p2", null);
         // Returns
@@ -371,7 +373,7 @@ public class FightTest {
             // Change player activity
             Player p = this.game.getPlayerByUsername("p1");
             p.setActivity(activity);
-            p.setActivityDuration(0);
+            p.setActivityDuration(0l);
             // Create fight
             Result r = this.game.fight("p1", "p2", null);
             // Returns
@@ -382,11 +384,11 @@ public class FightTest {
             assertTrue(r.hasReturn(Return.PLAYER_BUSY));
             // Reset player status
             p.setActivity(Activity.WAITING);
-            p.setActivityDuration(0);
+            p.setActivityDuration(0l);
             // Change player activity
             p = this.game.getPlayerByUsername("p2");
             p.setActivity(activity);
-            p.setActivityDuration(0);
+            p.setActivityDuration(0l);
             // Create fight
             r = this.game.fight("p1", "p2", null);
             // Returns
@@ -397,7 +399,7 @@ public class FightTest {
             assertTrue(r.hasReturn(Return.TARGET_BUSY));
             // Reset player status
             p.setActivity(Activity.WAITING);
-            p.setActivityDuration(0);
+            p.setActivityDuration(0l);
         }
     }
     

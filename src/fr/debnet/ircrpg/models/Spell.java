@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -15,10 +17,11 @@ import javax.persistence.Version;
  *
  * @author Marc
  */
-@Entity
+@Entity(name = "Spell")
 public class Spell extends MappedEntity implements IEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private Integer version;
@@ -35,7 +38,7 @@ public class Spell extends MappedEntity implements IEntity {
     private Double manaCost;
     @Enumerated(EnumType.STRING)
     private Status status;
-    private Integer statusDuration;
+    private Long statusDuration;
 
     public Spell() {
         this.setId(0l);
@@ -50,7 +53,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.setHealthDamage(0d);
         this.setManaCost(0d);
         this.setStatus(Status.NONE);
-        this.setStatusDuration(0); 
+        this.setStatusDuration(0l); 
     }
     
     @Override
@@ -170,11 +173,11 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("status", this.status);
     }
 
-    public Integer getStatusDuration() {
+    public Long getStatusDuration() {
         return statusDuration;
     }
 
-    public void setStatusDuration(Integer statusDuration) {
+    public void setStatusDuration(Long statusDuration) {
         this.statusDuration = statusDuration;
         this.set("statusDuration", this.statusDuration);
     }
@@ -204,5 +207,10 @@ public class Spell extends MappedEntity implements IEntity {
     @Override
     public String toString() {
         return String.format("%s (%s)", this.name, this.code);
+    }
+    
+    @Override
+    public void refresh() {
+        
     }
 }

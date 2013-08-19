@@ -11,6 +11,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -23,10 +25,11 @@ import org.hibernate.annotations.Index;
  *
  * @author Marc
  */
-@Entity
+@Entity(name = "Result")
 public class Result extends MappedEntity implements IEntity {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private Integer version;
@@ -363,5 +366,11 @@ public class Result extends MappedEntity implements IEntity {
     public void addReturnList(List<Return> list) {
         this.returns.addAll(list);
         this.set("returns", this.returns);
+    }
+    
+    @Override
+    public void refresh() {
+        this.set("player", this.player);
+        this.set("target", this.target);
     }
 }

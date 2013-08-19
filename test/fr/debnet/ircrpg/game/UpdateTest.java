@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 public class UpdateTest {
     
     private static final double EPSILON = 0.01;
-    private static final int HOUR = 3600000;
     
     private Game game;
     private Player player;
@@ -50,7 +49,7 @@ public class UpdateTest {
         assertTrue("Creating player", r.isSuccess());
         // Change player last time update
         Calendar time = Calendar.getInstance();
-        time.add(Calendar.HOUR, -1);
+        time.add(Calendar.HOUR, -24);
         this.player = this.game.getPlayerByUsername("p1");
         this.player.setLastUpdate(time);
     }
@@ -69,6 +68,7 @@ public class UpdateTest {
         // Returns
         assertTrue(r.isSuccess());
         System.out.println(r);
+        System.out.println(Helpers.getMessage(r));
     }
     
     @Test
@@ -77,7 +77,7 @@ public class UpdateTest {
         System.out.println("- poison cured:");
         // Change player status
         this.player.setStatus(Status.POISONED);
-        this.player.setStatusDuration(HOUR);
+        this.player.setStatusDuration(Config.HOUR);
         // Update player
         Result r = this.game.update(this.player);
         // Returns
@@ -95,7 +95,7 @@ public class UpdateTest {
         System.out.println("- paralysis cured:");
         // Change player status
         this.player.setStatus(Status.PARALYZED);
-        this.player.setStatusDuration(HOUR);
+        this.player.setStatusDuration(Config.HOUR);
         // Update player
         Result r = this.game.update(this.player);
         // Returns
@@ -113,7 +113,7 @@ public class UpdateTest {
         System.out.println("- death cured:");
         // Change player status
         this.player.setStatus(Status.DEAD);
-        this.player.setStatusDuration(HOUR);
+        this.player.setStatusDuration(Config.HOUR * 24);
         // Update player
         Result r = this.game.update(this.player);
         // Returns
@@ -131,7 +131,7 @@ public class UpdateTest {
         System.out.println("- killed by poison:");
         // Change player status
         this.player.setStatus(Status.POISONED);
-        this.player.setStatusDuration(HOUR * 2);
+        this.player.setStatusDuration(Config.HOUR);
         this.player.setCurrentHealth(1d);
         // Update player
         Result r = this.game.update(this.player);
@@ -150,7 +150,6 @@ public class UpdateTest {
         System.out.println("- player resting:");
         // Change player activity
         this.player.setActivity(Activity.RESTING);
-        this.player.setActivityDuration(HOUR);
         this.player.setCurrentHealth(50d);
         // Update player
         Result r = this.game.update(this.player);
@@ -160,7 +159,7 @@ public class UpdateTest {
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_RESTING_ENDED));
-        assertEquals("HP changes", 5d, r.getPlayerHealthChanges(), EPSILON);
+        assertEquals("HP changes", 120d, r.getPlayerHealthChanges(), EPSILON);
     }
     
     @Test
@@ -169,7 +168,6 @@ public class UpdateTest {
         System.out.println("- player working:");
         // Change player activity
         this.player.setActivity(Activity.WORKING);
-        this.player.setActivityDuration(HOUR);
         // Update player
         Result r = this.game.update(this.player);
         // Returns
@@ -178,7 +176,7 @@ public class UpdateTest {
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_WORKING_ENDED));
-        assertEquals("Gold changes", 5d, r.getPlayerGoldChanges(), EPSILON);
+        assertEquals("Gold changes", 120d, r.getPlayerGoldChanges(), EPSILON);
     }
     
     @Test
@@ -187,7 +185,6 @@ public class UpdateTest {
         System.out.println("- player training:");
         // Change player activity
         this.player.setActivity(Activity.TRAINING);
-        this.player.setActivityDuration(HOUR);
         // Update player
         Result r = this.game.update(this.player);
         // Returns
@@ -196,7 +193,7 @@ public class UpdateTest {
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_TRAINING_ENDED));
-        assertEquals("XP changes", 5d, r.getPlayerExperienceChanges(), EPSILON);
+        assertEquals("XP changes", 120d, r.getPlayerExperienceChanges(), EPSILON);
     }
     
     @Test
@@ -205,7 +202,6 @@ public class UpdateTest {
         System.out.println("- player waiting:");
         // Change player activity
         this.player.setActivity(Activity.WAITING);
-        this.player.setActivityDuration(HOUR);
         // Update player
         Result r = this.game.update(this.player);
         // Returns

@@ -62,7 +62,6 @@ public class UpdateQueue extends Thread implements IQueue {
                     for (INotifiable notifiable : this.notifiables) {
                         notifiable.notify(result);
                     }
-                    this.update();
                 }
             }
             try {
@@ -86,7 +85,7 @@ public class UpdateQueue extends Thread implements IQueue {
             // Check if the player's current activity will end
             if (player.getActivity() != Activity.NONE) {
                 Calendar nextDate = Calendar.getInstance();
-                nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration());
+                nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration().intValue());
                 switch (player.getActivity()) {
                     case WAITING:
                         nextDate.add(Calendar.MINUTE, Config.ACTIVITY_PENALTY);
@@ -109,7 +108,7 @@ public class UpdateQueue extends Thread implements IQueue {
             // Check if the player's current status will be cured by itself
             if (player.getStatus() != Status.NORMAL) {
                 Calendar nextDate = Calendar.getInstance();
-                nextDate.add(Calendar.MILLISECOND, player.getStatusDuration());
+                nextDate.add(Calendar.MILLISECOND, player.getStatusDuration().intValue());
                 if (this.date == null || nextDate.before(this.date)) {
                     this.player = player;
                     this.date = nextDate;

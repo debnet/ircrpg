@@ -64,6 +64,7 @@ public class StealTest {
         Result r = this.game.steal("u1", "p2");
         // Returns
         System.out.println(r);
+        System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
