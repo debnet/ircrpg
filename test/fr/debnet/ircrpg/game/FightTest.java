@@ -72,16 +72,17 @@ public class FightTest {
         Result r = this.game.fight("u1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.UNKNOWN_PLAYER));
+        assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
         // Create fight
         r = this.game.fight("p1", "u2", null);
         // Returns
         System.out.println(r);
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.UNKNOWN_TARGET));
+        assertTrue(r.hasReturn(Return.UNKNOWN_TARGET));
     }
     
     @Test
@@ -95,9 +96,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.PLAYER_OFFLINE));
+        assertTrue(r.hasReturn(Return.PLAYER_OFFLINE));
         // Set player 1 online and player 2 offline
         p1.setOnline(true);
         Player p2 = this.game.getPlayerByUsername("p2");
@@ -108,7 +110,7 @@ public class FightTest {
         System.out.println(r);
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.TARGET_OFFLINE));
+        assertTrue(r.hasReturn(Return.TARGET_OFFLINE));
     }
     
     @Test
@@ -122,10 +124,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_SUCCEED));
+        assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
+        assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 30d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -5d, r.getPlayerHealthChanges(), EPSILON);
@@ -145,10 +148,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_FAILED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_SUCCEED));
+        assertTrue(r.hasReturn(Return.ATTACK_FAILED));
+        assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -6d, r.getPlayerHealthChanges(), EPSILON);
@@ -168,10 +172,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_FAILED));
+        assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
+        assertTrue(r.hasReturn(Return.DEFENSE_FAILED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 30d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
@@ -191,10 +196,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_FAILED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_FAILED));
+        assertTrue(r.hasReturn(Return.ATTACK_FAILED));
+        assertTrue(r.hasReturn(Return.DEFENSE_FAILED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
@@ -213,9 +219,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.MAGIC_SUCCEED));
+        assertTrue(r.hasReturn(Return.MAGIC_SUCCEED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 30d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
@@ -235,9 +242,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.MAGIC_FAILED));
+        assertTrue(r.hasReturn(Return.MAGIC_FAILED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
@@ -262,10 +270,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.MAGIC_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.TARGET_POISONED));
+        assertTrue(r.hasReturn(Return.MAGIC_SUCCEED));
+        assertTrue(r.hasReturn(Return.TARGET_POISONED));
         assertTrue("Defender poisoned", r.getTarget().getStatus() == Status.POISONED);
         assertTrue("Defender poison duration", r.getTarget().getStatusDuration() > 0);
         // Test attacker changes
@@ -284,9 +293,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.NOT_ENOUGH_MANA));
+        assertTrue(r.hasReturn(Return.NOT_ENOUGH_MANA));
     }
     
     @Test
@@ -300,9 +310,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.SPELL_NOT_LEARNED));
+        assertTrue(r.hasReturn(Return.SPELL_NOT_LEARNED));
     }
     
     @Test
@@ -317,9 +328,10 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.PLAYER_PARALYZED));
+        assertTrue(r.hasReturn(Return.PLAYER_PARALYZED));
         // Change player status
         p.setStatus(Status.DEAD);
         p.setStatusDuration(Integer.MAX_VALUE);
@@ -327,9 +339,10 @@ public class FightTest {
         r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.PLAYER_DEAD));
+        assertTrue(r.hasReturn(Return.PLAYER_DEAD));
         // Change player status
         p.setStatus(Status.NORMAL);
         p = this.game.getPlayerByUsername("p2");
@@ -339,9 +352,10 @@ public class FightTest {
         r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.TARGET_DEAD));
+        assertTrue(r.hasReturn(Return.TARGET_DEAD));
     }
     
     @Test
@@ -361,9 +375,10 @@ public class FightTest {
             Result r = this.game.fight("p1", "p2", null);
             // Returns
             System.out.println(r);
+            System.out.println(r.getMessage());
             assertFalse(r.isSuccess());
             // Test return values
-            assertTrue(r.getReturns().contains(Return.PLAYER_BUSY));
+            assertTrue(r.hasReturn(Return.PLAYER_BUSY));
             // Reset player status
             p.setActivity(Activity.WAITING);
             p.setActivityDuration(0);
@@ -375,9 +390,10 @@ public class FightTest {
             r = this.game.fight("p1", "p2", null);
             // Returns
             System.out.println(r);
+            System.out.println(r.getMessage());
             assertFalse(r.isSuccess());
             // Test return values
-            assertTrue(r.getReturns().contains(Return.TARGET_BUSY));
+            assertTrue(r.hasReturn(Return.TARGET_BUSY));
             // Reset player status
             p.setActivity(Activity.WAITING);
             p.setActivityDuration(0);
@@ -397,10 +413,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.TARGET_KILLED));
+        assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
+        assertTrue(r.hasReturn(Return.TARGET_KILLED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 30d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
@@ -423,11 +440,12 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_FAILED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.PLAYER_KILLED));
+        assertTrue(r.hasReturn(Return.ATTACK_FAILED));
+        assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
+        assertTrue(r.hasReturn(Return.PLAYER_KILLED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -500d, r.getPlayerHealthChanges(), EPSILON);
@@ -450,10 +468,11 @@ public class FightTest {
         Result r = this.game.fight("p1", "p2", null);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.ATTACK_SUCCEED));
-        assertTrue(r.getReturns().contains(Return.DEFENSE_SUCCEED));
+        assertTrue(r.hasReturn(Return.ATTACK_SUCCEED));
+        assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 33d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -5d, r.getPlayerHealthChanges(), EPSILON);

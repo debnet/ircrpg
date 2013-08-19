@@ -244,6 +244,10 @@ public class Robot extends IRCBot implements INotifiable {
             else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
                 
             }
+            // Spells 
+            else if (Strings.COMMAND_SPELLS.equalsIgnoreCase(command)) {
+                
+            }
         }
     }
     

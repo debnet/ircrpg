@@ -1,8 +1,8 @@
 package fr.debnet.ircrpg.models;
 
-import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.interfaces.MappedEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,7 +15,7 @@ import javax.persistence.Version;
  * @author Marc
  */
 @Entity
-public class Spell implements IEntity {
+public class Spell extends MappedEntity {
 
     @Id
     private Long id;
@@ -26,18 +26,35 @@ public class Spell implements IEntity {
     @Column(unique = true)
     private String name;
     private String description;
-    private Boolean isAdmin = false;
-    private Integer goldCost = 0;
-    private Integer minLevel = 0;
-    private Boolean isSelf = false;
-    private Double healthDamage = 0d;
-    private Double manaCost = 0d;
+    private Boolean isAdmin;
+    private Integer goldCost;
+    private Integer minLevel;
+    private Boolean isSelf;
+    private Double healthDamage;
+    private Double manaCost;
     @Enumerated(EnumType.STRING)
-    private Status status = Status.NONE;
-    private Integer statusDuration = 0;
+    private Status status;
+    private Integer statusDuration;
 
     public Spell() {
         
+    }
+    
+    @Override
+    protected void setDefaultValues() {
+        this.setId(0l);
+        this.setVersion(0);
+        this.setCode(null);
+        this.setName(null);
+        this.setDescription(null);
+        this.setIsAdmin(false);
+        this.setGoldCost(0);
+        this.setMinLevel(0);
+        this.setIsSelf(false);
+        this.setHealthDamage(0d);
+        this.setManaCost(0d);
+        this.setStatus(Status.NONE);
+        this.setStatusDuration(0);
     }
     
     @Override
@@ -53,6 +70,7 @@ public class Spell implements IEntity {
     @Override
     public void setId(Long id) {
         this.id = id;
+        this.set("id", this.id);
     }
 
     @Override
@@ -63,6 +81,7 @@ public class Spell implements IEntity {
     @Override
     public void setVersion(Integer version) {
         this.version = version;
+        this.set("version", this.version);
     }
 
     public String getCode() {
@@ -71,6 +90,7 @@ public class Spell implements IEntity {
 
     public void setCode(String code) {
         this.code = code;
+        this.set("code", this.code);
     }
 
     public String getName() {
@@ -79,6 +99,7 @@ public class Spell implements IEntity {
 
     public void setName(String name) {
         this.name = name;
+        this.set("name", this.name);
     }
 
     public String getDescription() {
@@ -87,6 +108,7 @@ public class Spell implements IEntity {
 
     public void setDescription(String description) {
         this.description = description;
+        this.set("description", this.description);
     }
 
     public Boolean getIsAdmin() {
@@ -95,6 +117,7 @@ public class Spell implements IEntity {
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+        this.set("isAdmin", this.isAdmin);
     }
     
     public Integer getGoldCost() {
@@ -103,6 +126,7 @@ public class Spell implements IEntity {
 
     public void setGoldCost(Integer goldCost) {
         this.goldCost = goldCost;
+        this.set("goldCost", this.goldCost);
     }
 
     public Integer getMinLevel() {
@@ -111,6 +135,7 @@ public class Spell implements IEntity {
 
     public void setMinLevel(Integer minLevel) {
         this.minLevel = minLevel;
+        this.set("minLevel", this.minLevel);
     }
 
     public Boolean getIsSelf() {
@@ -119,6 +144,7 @@ public class Spell implements IEntity {
 
     public void setIsSelf(Boolean isSelf) {
         this.isSelf = isSelf;
+        this.set("isSelf", this.isSelf);
     }
 
     public Double getHealthDamage() {
@@ -127,6 +153,7 @@ public class Spell implements IEntity {
 
     public void setHealthDamage(Double healthDamage) {
         this.healthDamage = healthDamage;
+        this.set("healthDamage", this.healthDamage);
     }
 
     public Double getManaCost() {
@@ -135,6 +162,7 @@ public class Spell implements IEntity {
 
     public void setManaCost(Double manaCost) {
         this.manaCost = manaCost;
+        this.set("manaCost", this.manaCost);
     }
 
     public Status getStatus() {
@@ -143,6 +171,7 @@ public class Spell implements IEntity {
 
     public void setStatus(Status status) {
         this.status = status;
+        this.set("status", this.status);
     }
 
     public Integer getStatusDuration() {
@@ -151,6 +180,7 @@ public class Spell implements IEntity {
 
     public void setStatusDuration(Integer statusDuration) {
         this.statusDuration = statusDuration;
+        this.set("statusDuration", this.statusDuration);
     }
 
     @Override

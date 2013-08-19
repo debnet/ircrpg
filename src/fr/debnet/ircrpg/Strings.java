@@ -191,30 +191,11 @@ public class Strings {
     public static String RETURN_PERSISTANCE_ERROR;
     @Property(name = "return.unknown_error")
     public static String RETURN_UNKNOWN_ERROR;
-    // Update returns
-    @Property(name = "return.poison_cured")
-    public static String RETURN_POISON_CURED;
-    @Property(name = "return.paralysis_cured")
-    public static String RETURN_PARALYSIS_CURED;
-    @Property(name = "return.death_cured")
-    public static String RETURN_DEATH_CURED;
-    @Property(name = "return.killed_by_poison")
-    public static String RETURN_KILLED_BY_POISON;
-    @Property(name = "return.working_ended")
-    public static String RETURN_WORKING_ENDED;
-    @Property(name = "return.resting_ended")
-    public static String RETURN_RESTING_ENDED;
-    @Property(name = "return.training_ended")
-    public static String RETURN_TRAINING_ENDED;
-    @Property(name = "return.waiting_ended")
-    public static String RETURN_WAITING_ENDED;
-    @Property(name = "return.level_up")
-    public static String RETURN_LEVEL_UP;
     // General returns (player)
     @Property(name = "return.unknown_player")
     public static String RETURN_UNKNOWN_PLAYER;
-    @Property(name = "return.player_offline")
-    public static String RETURN_PLAYER_OFFLINE;
+    @Property(name = "return.offline_player")
+    public static String RETURN_OFFLINE_PLAYER;
     @Property(name = "return.player_dead")
     public static String RETURN_PLAYER_DEAD;
     @Property(name = "return.player_paralyzed")
@@ -225,11 +206,25 @@ public class Strings {
     public static String RETURN_PLAYER_BUSY;
     @Property(name = "return.player_killed")
     public static String RETURN_PLAYER_KILLED;
+    @Property(name = "return.player_level_up")
+    public static String RETURN_PLAYER_LEVEL_UP;
+    @Property(name = "return.player_poison_cured")
+    public static String RETURN_PLAYER_POISON_CURED;
+    @Property(name = "return.player_paralysis_cured")
+    public static String RETURN_PLAYER_PARALYSIS_CURED;
+    @Property(name = "return.player_death_cured")
+    public static String RETURN_PLAYER_DEATH_CURED;
+    @Property(name = "return.player_killed_by_poison")
+    public static String RETURN_PLAYER_KILLED_BY_POISON;
+    @Property(name = "return.player_working_ended")
+    public static String RETURN_PLAYER_WORKING_ENDED;
+    @Property(name = "return.player_resting_ended")
+    public static String RETURN_PLAYER_RESTING_ENDED;
+    @Property(name = "return.player_training_ended")
+    public static String RETURN_PLAYER_TRAINING_ENDED;
+    @Property(name = "return.player_waiting_ended")
+    public static String RETURN_PLAYER_WAITING_ENDED;
     // General returns (target)
-    @Property(name = "return.unknown_target")
-    public static String RETURN_UNKNOWN_TARGET;
-    @Property(name = "return.target_offline")
-    public static String RETURN_TARGET_OFFLINE;
     @Property(name = "return.target_dead")
     public static String RETURN_TARGET_DEAD;
     @Property(name = "return.target_paralyzed")
@@ -240,8 +235,24 @@ public class Strings {
     public static String RETURN_TARGET_BUSY;
     @Property(name = "return.target_killed")
     public static String RETURN_TARGET_KILLED;
-    @Property(name = "return.target_cured")
-    public static String RETURN_TARGET_CURED;
+    @Property(name = "return.target_level_up")
+    public static String RETURN_TARGET_LEVEL_UP;
+    @Property(name = "return.target_poison_cured")
+    public static String RETURN_TARGET_POISON_CURED;
+    @Property(name = "return.target_paralysis_cured")
+    public static String RETURN_TARGET_PARALYSIS_CURED;
+    @Property(name = "return.target_death_cured")
+    public static String RETURN_TARGET_DEATH_CURED;
+    @Property(name = "return.target_killed_by_poison")
+    public static String RETURN_TARGET_KILLED_BY_POISON;
+    @Property(name = "return.target_working_ended")
+    public static String RETURN_TARGET_WORKING_ENDED;
+    @Property(name = "return.target_resting_ended")
+    public static String RETURN_TARGET_RESTING_ENDED;
+    @Property(name = "return.target_training_ended")
+    public static String RETURN_TARGET_TRAINING_ENDED;
+    @Property(name = "return.target_waiting_ended")
+    public static String RETURN_TARGET_WAITING_ENDED;
     // Fighting returns
     @Property(name = "return.spell_not_learned")
     public static String RETURN_SPELL_NOT_LEARNED;
@@ -466,9 +477,11 @@ public class Strings {
                 if (isAbsolute) format = format.replace("=", "");
                 
                 Object value = values.get(key);
-                String result = hasFormat ? String.format(format, value) : value.toString();
-                if (isAbsolute) result = result.replace("-", "");
-                matcher.appendReplacement(buffer, result);
+                if (value != null) {
+                    String result = hasFormat ? String.format(format, value) : value.toString();
+                    if (isAbsolute) result = result.replace("-", "");
+                    matcher.appendReplacement(buffer, result);
+                }
             }
         }
         matcher.appendTail(buffer);

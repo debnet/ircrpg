@@ -4,7 +4,7 @@ package fr.debnet.ircrpg.interfaces;
  *
  * @author Marc
  */
-public interface IGameQueue {
+public interface IQueue {
     
     boolean register(INotifiable notifiable);
     

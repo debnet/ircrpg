@@ -1,6 +1,6 @@
 package fr.debnet.ircrpg.game.queues;
 
-import fr.debnet.ircrpg.interfaces.IGameQueue;
+import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.Game;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Marc
  */
-public class EventQueue extends Thread implements IGameQueue {
+public class EventQueue extends Thread implements IQueue {
 
     private Game game;
     private boolean run = true;

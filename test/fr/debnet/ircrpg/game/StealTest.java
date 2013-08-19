@@ -65,14 +65,15 @@ public class StealTest {
         System.out.println(r);
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.UNKNOWN_PLAYER));
+        assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
         // Create theft
         r = this.game.steal("p1", "u2");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.UNKNOWN_TARGET));
+        assertTrue(r.hasReturn(Return.UNKNOWN_TARGET));
     }
     
     @Test
@@ -86,9 +87,10 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.PLAYER_OFFLINE));
+        assertTrue(r.hasReturn(Return.PLAYER_OFFLINE));
         // Set player 1 online and player 2 offline
         p1.setOnline(true);
         Player p2 = this.game.getPlayerByUsername("p2");
@@ -97,9 +99,10 @@ public class StealTest {
         r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.TARGET_OFFLINE));
+        assertTrue(r.hasReturn(Return.TARGET_OFFLINE));
     }
     
     @Test
@@ -113,9 +116,10 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.THEFT_SUCCEED));
+        assertTrue(r.hasReturn(Return.THEFT_SUCCEED));
         // Test attacker changes
         assertEquals("Attacker gold changes", 9d, r.getPlayerGoldChanges(), EPSILON);
         // Test defender changes
@@ -132,9 +136,10 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.THEFT_FAILED));
+        assertTrue(r.hasReturn(Return.THEFT_FAILED));
         // Test attacker changes
         assertEquals("Attacker gold changes", 0d, r.getPlayerGoldChanges(), EPSILON);
         assertEquals("Attacker HP changes", -5d, r.getPlayerHealthChanges(), EPSILON);

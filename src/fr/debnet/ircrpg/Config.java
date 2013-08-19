@@ -116,6 +116,9 @@ public class Config {
     /* Hibernate config */
     public static Map<String, String> HIBERNATE_CONFIG;
     
+    /* Constants */
+    public static final int HOUR = 3600000;
+    
     static {
         Config.loadConfig("config.properties");
     }

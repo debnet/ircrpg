@@ -11,7 +11,7 @@ import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.game.queues.EventQueue;
-import fr.debnet.ircrpg.interfaces.IGameQueue;
+import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.queues.UpdateQueue;
 import fr.debnet.ircrpg.helpers.CheckItem;
@@ -39,14 +39,13 @@ import java.util.Map;
 public class Game {
 
     private Random random;
-    private static final int HOUR = 3600000;
     
     private Map<String, Player> playersByNickname;
     private Map<String, Player> playersByUsername;
     private Map<String, Item> itemsByCode;
     private Map<String, Spell> spellsByCode;
     
-    private List<IGameQueue> queues;
+    private List<IQueue> queues;
 
     /**
      * Constructor : initialize the game by fetching in memory all data from database
@@ -57,7 +56,7 @@ public class Game {
         this.playersByUsername = new HashMap<String, Player>();
         this.itemsByCode = new HashMap<String, Item>();
         this.spellsByCode = new HashMap<String, Spell>();
-        this.queues = new ArrayList<IGameQueue>();
+        this.queues = new ArrayList<IQueue>();
 
         if (Config.PERSISTANCE) {
             List<Player> players = DAO.<Player>getObjectList("from " + Model.PLAYER);
@@ -89,7 +88,7 @@ public class Game {
      * @param notifiable Notifiable object
      */
     public void registerNotifiable(INotifiable notifiable) {
-        for (IGameQueue queue : this.queues) {
+        for (IQueue queue : this.queues) {
             queue.register(notifiable);
         }
     }
@@ -98,7 +97,7 @@ public class Game {
      * Update queues
      */
     public void updateQueues() {
-        for (IGameQueue queue : this.queues) {
+        for (IQueue queue : this.queues) {
             queue.update();
         }
     }
@@ -174,7 +173,7 @@ public class Game {
     
     /**
      * Update player data
-     * @see #update(fr.debnet.ircrpg.models.Player, boolean, fr.debnet.ircrpg.Result) 
+     * @see #update(fr.debnet.ircrpg.models.Player, boolean, boolean) 
      * @param player Player instance
      * @return Result
      */
@@ -183,12 +182,24 @@ public class Game {
     }
     
     /**
-     * Update player data (activity, status and experience)
+     * Update player data
+     * @see #update(fr.debnet.ircrpg.models.Player, boolean, boolean) 
      * @param player Player instance
      * @param save Save the player's information in database
      * @return Result
      */
-    protected Result update(Player player, boolean save) {
+    public Result update(Player player, boolean save) {
+        return this.update(player, save, false);
+    }
+    
+    /**
+     * Update player data (activity, status and experience)
+     * @param player Player instance
+     * @param save Save the player's information in database
+     * @param target Is the player targetted in the action ?
+     * @return Result
+     */
+    protected Result update(Player player, boolean save, boolean target) {
         Result result = new Result(Action.UPDATE, player);
         // Get time difference
         java.util.Calendar lastUpdate = player.getLastUpdate();
@@ -198,12 +209,12 @@ public class Game {
         Modifiers modifiers = new Modifiers(player);
         // Status
         double hours = diff > player.getStatusDuration()
-            ? player.getStatusDuration() * 1d / HOUR : diff * 1d / HOUR;
+            ? player.getStatusDuration() * 1d / Config.HOUR : diff * 1d / Config.HOUR;
         switch (player.getStatus()) {
             case POISONED: {
                 // Removing status if timeout
                 if (diff >= player.getStatusDuration()) {
-                    result.addReturn(Return.POISON_CURED);
+                    result.addReturn(target ? Return.TARGET_POISON_CURED : Return.PLAYER_POISON_CURED);
                     player.setStatus(Status.NORMAL);
                     player.setStatusDuration(0);
                 } else {
@@ -222,7 +233,7 @@ public class Game {
             case PARALYZED: {
                 // Removing status if timeout
                 if (diff >= player.getStatusDuration()) {
-                    result.addReturn(Return.PARALYSIS_CURED);
+                    result.addReturn(target ? Return.TARGET_PARALYSIS_CURED : Return.PLAYER_PARALYSIS_CURED);
                     player.setStatus(Status.NORMAL);
                     player.setStatusDuration(0);
                 } else {
@@ -233,7 +244,7 @@ public class Game {
             case DEAD: {
                 // Removing status if timeout
                 if (diff >= player.getStatusDuration()) {
-                    result.addReturn(Return.DEATH_CURED);
+                    result.addReturn(target ? Return.TARGET_DEATH_CURED : Return.PLAYER_DEATH_CURED);
                     player.setStatus(Status.NORMAL);
                     player.setStatusDuration(0);
                     double hp = player.getMaxHealth() + modifiers.getHealth();
@@ -250,7 +261,7 @@ public class Game {
             }
         }
         // Activity
-        hours = diff / HOUR;
+        hours = diff / Config.HOUR;
         switch (player.getActivity()) {
             case RESTING: {
                 // Restoring health points
@@ -264,10 +275,10 @@ public class Game {
                 if (player.getActivityDuration() >= Config.RESTING_TIME_MAX) {
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0);
-                    result.addReturn(Return.RESTING_ENDED);
+                    result.addReturn(target ? Return.TARGET_RESTING_ENDED : Return.PLAYER_RESTING_ENDED);
                 }
                 // Update statistics
-                player.addTimeResting((int) (hours * HOUR));
+                player.addTimeResting((int) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerHealthChanges(heal);
                 break;
@@ -281,10 +292,10 @@ public class Game {
                 if (player.getActivityDuration() >= Config.TRAINING_TIME_MAX) {
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0);
-                    result.addReturn(Return.TRAINING_ENDED);
+                    result.addReturn(target ? Return.TARGET_TRAINING_ENDED : Return.PLAYER_TRAINING_ENDED);
                 }
                 // Update statistics
-                player.addTimeTraining((int) (hours * HOUR));
+                player.addTimeTraining((int) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerExperienceChanges(xp);
                 break;
@@ -298,10 +309,10 @@ public class Game {
                 if (player.getActivityDuration() >= Config.WORKING_TIME_MAX) {
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0);
-                    result.addReturn(Return.WORKING_ENDED);
+                    result.addReturn(target ? Return.TARGET_WORKING_ENDED : Return.PLAYER_WORKING_ENDED);
                 }
                 // Update statistics
-                player.addTimeWorking((int) (hours * HOUR));
+                player.addTimeWorking((int) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerGoldChanges(gold);
                 break;
@@ -311,22 +322,22 @@ public class Game {
                 if (player.getActivityDuration() >= Config.ACTIVITY_PENALTY) {
                     player.setActivity(Activity.NONE);
                     player.setActivityDuration(0);
-                    result.addReturn(Return.WAITING_ENDED);
+                    result.addReturn(target ? Return.TARGET_WAITING_ENDED : Return.PLAYER_WAITING_ENDED);
                 }
                 break;
             }
         }
         // Check if player is dead poisonned
-        if (player.getCurrentHealth() <= 0) {
+        if (player.getCurrentHealth() <= 0 && player.getStatus() != Status.DEAD) {
             // Change status
             player.setStatus(Status.DEAD);
-            player.setStatusDuration(Config.DEATH_PENALTY * HOUR);
+            player.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
             player.setCurrentHealth(0d);
             // Reset activity
             player.setActivity(Activity.NONE);
             player.setActivityDuration(0);
             // Update return
-            result.addReturn(Return.KILLED_BY_POISON);
+            result.addReturn(target ? Return.TARGET_KILLED_BY_POISON : Return.PLAYER_KILLED_BY_POISON);
             // Update statistics
             player.addDeaths(1);
         }
@@ -336,10 +347,8 @@ public class Game {
             if (player.getExperience() >= needed) {
                 player.addLevel(1);
                 player.addSkillPoints(Config.RATE_SKILL);
-                result.addReturn(Return.LEVEL_UP);
-            } else {
-                break;
-            }
+                result.addReturn(target ? Return.TARGET_LEVEL_UP : Return.PLAYER_LEVEL_UP);
+            } else break;
         }
         // Save object
         player.addTimeIngame(diff);
@@ -440,7 +449,7 @@ public class Game {
                 // Is defender dead?
                 if (defender.getCurrentHealth() <= 0) {
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * HOUR);
+                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
                     defender.setCurrentHealth(0d);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
@@ -480,7 +489,7 @@ public class Game {
                         // Is attacker dead?
                         if (attacker.getCurrentHealth() <= 0) {
                             attacker.setStatus(Status.DEAD);
-                            attacker.setStatusDuration(Config.DEATH_PENALTY * HOUR);
+                            attacker.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
                             attacker.setCurrentHealth(0d);
                             // Update return
                             result.addReturn(Return.PLAYER_KILLED);
@@ -539,7 +548,7 @@ public class Game {
                 // Is defender dead?
                 if (hp <= 0) {
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * HOUR);
+                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
                     defender.setCurrentHealth(0d);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
@@ -547,6 +556,7 @@ public class Game {
                     attacker.addKills(1);
                     defender.addDeaths(1);
                 } else {
+                    Status status = defender.getStatus();
                     // Status change
                     if (spell.getStatus() != Status.NONE) {
                         defender.setStatus(spell.getStatus());
@@ -560,7 +570,16 @@ public class Game {
                                 result.addReturn(Return.TARGET_POISONED);
                                 break;
                             case NORMAL:
-                                result.addReturn(Return.TARGET_CURED);
+                                switch (status) {
+                                    case NORMAL:
+                                        break;
+                                    case PARALYZED:
+                                        result.addReturn(Return.TARGET_PARALYSIS_CURED);
+                                        break;
+                                    case POISONED:
+                                        result.addReturn(Return.TARGET_POISON_CURED);
+                                        break;
+                                }
                                 break;
                         }
                     }
@@ -581,8 +600,12 @@ public class Game {
             result.addPlayerManaChanges(-spell.getManaCost());
         }
         // Update players
-        this.update(attacker);
-        if (!self) this.update(defender);
+        Result update = this.update(attacker, true);
+        result.addReturnList(update.getReturns());
+        if (!self) {
+            update = this.update(defender, true, true);
+            result.addReturnList(update.getReturns());
+        }
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -645,7 +668,7 @@ public class Game {
             // Is attacker dead?
             if (attacker.getCurrentHealth() <= 0) {
                 attacker.setStatus(Status.DEAD);
-                attacker.setStatusDuration(Config.DEATH_PENALTY * HOUR);
+                attacker.setStatusDuration(Config.DEATH_PENALTY * Config.HOUR);
                 attacker.setCurrentHealth(0d);
                 // Update return
                 result.addReturn(Return.PLAYER_KILLED);
@@ -676,8 +699,10 @@ public class Game {
             attacker.addMoneyStolen(gold);
         }
         // Update players
-        this.update(attacker);
-        this.update(defender);
+        Result update = this.update(attacker, true);
+        result.addReturnList(update.getReturns());
+        update = this.update(defender, true, true);
+        result.addReturnList(update.getReturns());
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -750,17 +775,17 @@ public class Game {
                 // Update return
                 switch (status) {
                     case PARALYZED: 
-                        result.addReturn(Return.PARALYSIS_CURED);
+                        result.addReturn(Return.PLAYER_PARALYSIS_CURED);
                         break;
                     case POISONED:
-                        result.addReturn(Return.POISON_CURED);
+                        result.addReturn(Return.PLAYER_POISON_CURED);
                         break;
                 }
                 break;
             }
         }
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -801,7 +826,7 @@ public class Game {
         player.setActivity(activity);
         player.setActivityDuration(0);
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setSuccess(true);
         return result;
@@ -818,7 +843,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Earned
-        double earned = player.getActivityDuration() * 1d / HOUR;
+        double earned = player.getActivityDuration() * 1d / Config.HOUR;
         // Activity check
         switch (player.getActivity()) {
             case NONE:
@@ -855,7 +880,7 @@ public class Game {
         player.setActivity(Activity.WAITING);
         player.setActivityDuration(0);
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setValue(earned);
         result.setSuccess(true);
@@ -916,7 +941,7 @@ public class Game {
             }
         }
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setSuccess(true);
         return result;
@@ -964,8 +989,17 @@ public class Game {
                 CheckPlayer.IS_PARALYZED
             )
         )) return result;
-        // Add item in player's inventory
+        // Item
         if (item != null) {
+            // Decrease stock
+            item.addStock(-1);
+            if (Config.PERSISTANCE) {
+                if (!DAO.<Item>setObject(item)) {
+                    result.addReturn(Return.PERSISTANCE_ERROR);
+                    return result;
+                }
+            }
+            // Add item in player's inventory
             player.addItem(item);
             player.addGold(-item.getGoldCost());
             result.addReturn(Return.ITEM_SUCCESSFULLY_BOUGHT);
@@ -982,8 +1016,7 @@ public class Game {
             result.addPlayerGoldChanges(-item.getGoldCost());
             // Update statistics
             player.addMoneySpent(item.getGoldCost());
-            // Decrease stock
-            item.addStock(-1);
+        // Potion
         } else {
             // Check potion price
             if (!Helpers.checkPotion(result, player, potion, 
@@ -1024,14 +1057,8 @@ public class Game {
             result.addReturn(Return.POTION_SUCCESSFULLY_BOUGHT);
             result.setDetails(potion.getText());
         }
-        if (Config.PERSISTANCE) {
-            if (!DAO.<Item>setObject(item)) {
-                result.addReturn(Return.PERSISTANCE_ERROR);
-                return result;
-            }
-        }
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setSuccess(true);
         return result;
@@ -1055,16 +1082,19 @@ public class Game {
                 CheckItem.IS_ALREADY_BOUGHT
             )
         )) return result;
+        // Increase stock
+        item.addStock(1);
+        if (Config.PERSISTANCE) {
+            if (!DAO.<Item>setObject(item)) {
+                result.addReturn(Return.PERSISTANCE_ERROR);
+                return result;
+            }
+        }
         // Sell item
         player.removeItem(item);
         player.addGold(item.getGoldCost() * Config.SELL_MALUS);
         result.addReturn(Return.ITEM_SUCCESSFULLY_SOLD);
         result.setDetails(item.getName());
-        // Increase stock
-        item.addStock(1);
-        if (Config.PERSISTANCE) {
-            DAO.<Item>setObject(item);
-        }
         // Update player
         this.update(player);
         // Return
@@ -1111,7 +1141,7 @@ public class Game {
         // Update statistics
         player.addMoneySpent(spell.getGoldCost());
         // Update player
-        this.update(player);
+        this.update(player, true);
         // Return
         result.setSuccess(true);
         return result;
@@ -1285,6 +1315,7 @@ public class Game {
      * @return Player if found and online, null else
      */
     private Player getPlayer(Result result, String name, boolean target) {
+        result.setDetails(name);
         // Check if the player exists
         Player player = this.getPlayerByNickname(name);
         if (player == null) {

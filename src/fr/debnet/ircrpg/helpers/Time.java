@@ -23,10 +23,6 @@ public class Time {
         this.seconds = (int)TimeUnit.MICROSECONDS.toSeconds(microseconds % 60);
     }
     
-    public Time(Calendar calendar, int microseconds) {
-        // TODO:
-    }
-    
     public int getMinutes() {
         return this.minutes;
     }

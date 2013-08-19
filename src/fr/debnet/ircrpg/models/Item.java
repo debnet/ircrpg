@@ -1,8 +1,8 @@
 package fr.debnet.ircrpg.models;
 
-import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.enums.Equipment;
 import fr.debnet.ircrpg.enums.Model;
+import fr.debnet.ircrpg.interfaces.MappedEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,7 +15,7 @@ import javax.persistence.Version;
  * @author Marc
  */
 @Entity
-public class Item implements IEntity {
+public class Item extends MappedEntity {
 
     @Id
     private Long id;
@@ -27,28 +27,57 @@ public class Item implements IEntity {
     private String description;
     @Enumerated(EnumType.STRING)
     private Equipment type;
-    private Boolean isAdmin = false;
-    private Integer stock = 0;
-    private Integer goldCost = 0;
-    private Integer minLevel = 0;
-    private Integer healthModifier = 0;
-    private Integer manaModifier = 0;
-    private Integer attackModifier = 0;
-    private Integer defenseModifier = 0;
-    private Double attackAccuracyModifier = 0d;
-    private Double defenseAccuracyModifier = 0d;
-    private Double magicAccuracyModifier = 0d;
-    private Double experienceRateModifier = 0d;
-    private Double goldRateModifier = 0d;
-    private Double healthRateModifier = 0d;
-    private Double healthPotionRegenModifier = 0d;
-    private Double manaPotionRegenModifier = 0d;
-    private Double poisonEffectModifier = 0d;
-    private Double stealingChanceModifier = 0d;
-    private Double stealingGoldModifier = 0d;
+    private Boolean isAdmin;
+    private Integer stock;
+    private Integer goldCost;
+    private Integer minLevel;
+    private Integer healthModifier;
+    private Integer manaModifier;
+    private Integer attackModifier;
+    private Integer defenseModifier;
+    private Double attackAccuracyModifier;
+    private Double defenseAccuracyModifier;
+    private Double magicAccuracyModifier;
+    private Double experienceRateModifier;
+    private Double goldRateModifier;
+    private Double healthRateModifier;
+    private Double healthPotionRegenModifier;
+    private Double manaPotionRegenModifier;
+    private Double poisonEffectModifier;
+    private Double stealingChanceModifier;
+    private Double stealingGoldModifier;
 
     public Item() {
         
+    }
+    
+    @Override
+    protected void setDefaultValues() {
+        this.setId(0l);
+        this.setVersion(0);
+        this.setCode(null);
+        this.setName(null);
+        this.setDescription(null);
+        this.setType(Equipment.NONE);
+        this.setIsAdmin(false);
+        this.setStock(0);
+        this.setGoldCost(0);
+        this.setMinLevel(0);
+        this.setHealthModifier(0);
+        this.setManaModifier(0);
+        this.setAttackModifier(0);
+        this.setDefenseModifier(0);
+        this.setAttackAccuracyModifier(0d);
+        this.setDefenseAccuracyModifier(0d);
+        this.setMagicAccuracyModifier(0d);
+        this.setExperienceRateModifier(0d);
+        this.setGoldRateModifier(0d);
+        this.setHealthRateModifier(0d);
+        this.setHealthPotionRegenModifier(0d);
+        this.setManaPotionRegenModifier(0d);
+        this.setPoisonEffectModifier(0d);
+        this.setStealingChanceModifier(0d);
+        this.setStealingGoldModifier(0d);
     }
     
     @Override
@@ -64,6 +93,7 @@ public class Item implements IEntity {
     @Override
     public void setId(Long id) {
         this.id = id;
+        this.set("id", this.id);
     }
 
     @Override
@@ -74,6 +104,7 @@ public class Item implements IEntity {
     @Override
     public void setVersion(Integer version) {
         this.version = version;
+        this.set("version", this.version);
     }
 
     public String getCode() {
@@ -82,6 +113,7 @@ public class Item implements IEntity {
 
     public void setCode(String code) {
         this.code = code;
+        this.set("code", this.code);
     }
 
     public String getName() {
@@ -90,6 +122,7 @@ public class Item implements IEntity {
 
     public void setName(String name) {
         this.name = name;
+        this.set("name", this.name);
     }
 
     public String getDescription() {
@@ -98,6 +131,7 @@ public class Item implements IEntity {
 
     public void setDescription(String description) {
         this.description = description;
+        this.set("description", this.description);
     }
 
     public Equipment getType() {
@@ -106,6 +140,7 @@ public class Item implements IEntity {
 
     public void setType(Equipment type) {
         this.type = type;
+        this.set("type", this.type);
     }
 
     public Boolean getIsAdmin() {
@@ -114,6 +149,7 @@ public class Item implements IEntity {
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+        this.set("isAdmin", this.isAdmin);
     }
 
     public Integer getStock() {
@@ -122,10 +158,12 @@ public class Item implements IEntity {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+        this.set("stock", this.stock);
     }
     
     public void addStock(Integer stock) {
         this.stock += stock;
+        this.set("stock", this.stock);
     }
     
     public Integer getGoldCost() {
@@ -134,6 +172,7 @@ public class Item implements IEntity {
 
     public void setGoldCost(Integer goldCost) {
         this.goldCost = goldCost;
+        this.set("goldCost", this.goldCost);
     }
 
     public Integer getMinLevel() {
@@ -142,6 +181,7 @@ public class Item implements IEntity {
 
     public void setMinLevel(Integer minLevel) {
         this.minLevel = minLevel;
+        this.set("minLevel", this.minLevel);
     }
 
     public Integer getHealthModifier() {
@@ -150,6 +190,7 @@ public class Item implements IEntity {
 
     public void setHealthModifier(Integer healthModifier) {
         this.healthModifier = healthModifier;
+        this.set("healthModifier", this.healthModifier);
     }
 
     public Integer getManaModifier() {
@@ -158,6 +199,7 @@ public class Item implements IEntity {
 
     public void setManaModifier(Integer manaModifier) {
         this.manaModifier = manaModifier;
+        this.set("manaModifier", this.manaModifier);
     }
 
     public Integer getAttackModifier() {
@@ -166,6 +208,7 @@ public class Item implements IEntity {
 
     public void setAttackModifier(Integer attackModifier) {
         this.attackModifier = attackModifier;
+        this.set("attackModifier", this.attackModifier);
     }
 
     public Integer getDefenseModifier() {
@@ -174,6 +217,7 @@ public class Item implements IEntity {
 
     public void setDefenseModifier(Integer defenseModifier) {
         this.defenseModifier = defenseModifier;
+        this.set("defenseModifier", this.defenseModifier);
     }
 
     public Double getAttackAccuracyModifier() {
@@ -182,6 +226,7 @@ public class Item implements IEntity {
 
     public void setAttackAccuracyModifier(Double attackAccuracyModifier) {
         this.attackAccuracyModifier = attackAccuracyModifier;
+        this.set("attackAccuracyModifier", this.attackAccuracyModifier);
     }
 
     public Double getDefenseAccuracyModifier() {
@@ -190,6 +235,7 @@ public class Item implements IEntity {
 
     public void setDefenseAccuracyModifier(Double defenseAccuracyModifier) {
         this.defenseAccuracyModifier = defenseAccuracyModifier;
+        this.set("defenseAccuracyModifier", this.defenseAccuracyModifier);
     }
 
     public Double getMagicAccuracyModifier() {
@@ -198,6 +244,7 @@ public class Item implements IEntity {
 
     public void setMagicAccuracyModifier(Double magicAccuracyModifier) {
         this.magicAccuracyModifier = magicAccuracyModifier;
+        this.set("magicAccuracyModifier", this.magicAccuracyModifier);
     }
 
     public Double getExperienceRateModifier() {
@@ -206,6 +253,7 @@ public class Item implements IEntity {
 
     public void setExperienceRateModifier(Double experienceRateModifier) {
         this.experienceRateModifier = experienceRateModifier;
+        this.set("experienceRateModifier", this.experienceRateModifier);
     }
 
     public Double getGoldRateModifier() {
@@ -214,6 +262,7 @@ public class Item implements IEntity {
 
     public void setGoldRateModifier(Double goldRateModifier) {
         this.goldRateModifier = goldRateModifier;
+        this.set("goldRateModifier", this.goldRateModifier);
     }
 
     public Double getHealthRateModifier() {
@@ -222,6 +271,7 @@ public class Item implements IEntity {
 
     public void setHealthRateModifier(Double healthRateModifier) {
         this.healthRateModifier = healthRateModifier;
+        this.set("healthRateModifier", this.healthRateModifier);
     }
 
     public Double getHealthPotionRegenModifier() {
@@ -230,6 +280,7 @@ public class Item implements IEntity {
 
     public void setHealthPotionRegenModifier(Double healthPotionRegenModifier) {
         this.healthPotionRegenModifier = healthPotionRegenModifier;
+        this.set("healthPotionRegenModifier", this.healthPotionRegenModifier);
     }
 
     public Double getManaPotionRegenModifier() {
@@ -238,6 +289,7 @@ public class Item implements IEntity {
 
     public void setManaPotionRegenModifier(Double manaPotionRegenModifier) {
         this.manaPotionRegenModifier = manaPotionRegenModifier;
+        this.set("manaPotionRegenModifier", this.manaPotionRegenModifier);
     }
 
     public Double getPoisonEffectModifier() {
@@ -246,6 +298,7 @@ public class Item implements IEntity {
 
     public void setPoisonEffectModifier(Double poisonEffectModifier) {
         this.poisonEffectModifier = poisonEffectModifier;
+        this.set("poisonEffectModifier", this.poisonEffectModifier);
     }
 
     public Double getStealingChanceModifier() {
@@ -254,6 +307,7 @@ public class Item implements IEntity {
 
     public void setStealingChanceModifier(Double stealingChanceModifier) {
         this.stealingChanceModifier = stealingChanceModifier;
+        this.set("stealingChanceModifier", this.stealingChanceModifier);
     }
 
     public Double getStealingGoldModifier() {
@@ -262,6 +316,7 @@ public class Item implements IEntity {
 
     public void setStealingGoldModifier(Double stealingGoldModifier) {
         this.stealingGoldModifier = stealingGoldModifier;
+        this.set("stealingGoldModifier", this.stealingGoldModifier);
     }
     
     @Override

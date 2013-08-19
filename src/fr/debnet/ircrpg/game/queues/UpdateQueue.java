@@ -1,6 +1,6 @@
 package fr.debnet.ircrpg.game.queues;
 
-import fr.debnet.ircrpg.interfaces.IGameQueue;
+import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.enums.Activity;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Marc
  */
-public class UpdateQueue extends Thread implements IGameQueue {
+public class UpdateQueue extends Thread implements IQueue {
 
     private Game game;
     private boolean run = true;
@@ -75,6 +75,7 @@ public class UpdateQueue extends Thread implements IGameQueue {
             if (!player.getOnline()) {
                 break;
             }
+            // Check if the player's current activity will end
             if (player.getActivity() != Activity.NONE) {
                 Calendar nextDate = Calendar.getInstance();
                 nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration());
@@ -97,6 +98,7 @@ public class UpdateQueue extends Thread implements IGameQueue {
                     this.date = nextDate;
                 }
             }
+            // Check if the player's current status will be cured by itself
             if (player.getStatus() != Status.NORMAL) {
                 Calendar nextDate = Calendar.getInstance();
                 nextDate.add(Calendar.MILLISECOND, player.getStatusDuration());
@@ -104,6 +106,10 @@ public class UpdateQueue extends Thread implements IGameQueue {
                     this.player = player;
                     this.date = nextDate;
                 }
+            }
+            // Check if the player will earn a level from training
+            if (player.getActivity() == Activity.TRAINING) {
+                // TODO: 
             }
         }
     }

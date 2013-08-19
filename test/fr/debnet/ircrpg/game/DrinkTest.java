@@ -61,23 +61,26 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.NOT_ENOUGH_HEALTH_POTIONS));
+        assertTrue(r.hasReturn(Return.NOT_ENOUGH_HEALTH_POTIONS));
         // Drink health potion
         r = this.game.drink("p1", Potion.MANA);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.NOT_ENOUGH_MANA_POTIONS));
+        assertTrue(r.hasReturn(Return.NOT_ENOUGH_MANA_POTIONS));
         // Drink health potion
         r = this.game.drink("p1", Potion.REMEDY);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.NOT_ENOUGH_REMEDY_POTIONS));
+        assertTrue(r.hasReturn(Return.NOT_ENOUGH_REMEDY_POTIONS));
     }
     
     @Test
@@ -91,9 +94,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.HEALTH_RESTORED));
+        assertTrue(r.hasReturn(Return.HEALTH_RESTORED));
         assertEquals("Health potions", 0, this.player.getHealthPotions().intValue());
         assertEquals("HP restored", 50d, r.getPlayerHealthChanges(), EPSILON);
     }
@@ -109,9 +113,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.MANA);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.MANA_RESTORED));
+        assertTrue(r.hasReturn(Return.MANA_RESTORED));
         assertEquals("Mana potions", 0, this.player.getManaPotions().intValue());
         assertEquals("MP restored", 50d, r.getPlayerManaChanges(), EPSILON);
     }
@@ -128,9 +133,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.PARALYSIS_CURED));
+        assertTrue(r.hasReturn(Return.PLAYER_PARALYSIS_CURED));
         assertEquals("Remedy potions", 0, this.player.getManaPotions().intValue());
         assertEquals("Player status", Status.NORMAL, this.player.getStatus());
     }
@@ -147,9 +153,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertTrue(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.POISON_CURED));
+        assertTrue(r.hasReturn(Return.PLAYER_POISON_CURED));
         assertEquals("Remedy potions", 0, this.player.getManaPotions().intValue());
         assertEquals("Player status", Status.NORMAL, this.player.getStatus());
     }
@@ -164,9 +171,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.HEALTH_ALREADY_RESTORED));
+        assertTrue(r.hasReturn(Return.HEALTH_ALREADY_RESTORED));
         assertEquals("Health potions", 1, this.player.getHealthPotions().intValue());
         assertEquals("HP restored", 0d, r.getPlayerHealthChanges(), EPSILON);
     }
@@ -181,9 +189,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.MANA);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.MANA_ALREADY_RESTORED));
+        assertTrue(r.hasReturn(Return.MANA_ALREADY_RESTORED));
         assertEquals("Mana potions", 1, this.player.getManaPotions().intValue());
         assertEquals("MP restored", 0d, r.getPlayerManaChanges(), EPSILON);
     }
@@ -198,9 +207,10 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY);
         // Returns
         System.out.println(r);
+        System.out.println(r.getMessage());
         assertFalse(r.isSuccess());
         // Test return values
-        assertTrue(r.getReturns().contains(Return.NO_NEGATIVE_STATUS));
+        assertTrue(r.hasReturn(Return.NO_NEGATIVE_STATUS));
         assertEquals("Remedy potions", 1, this.player.getRemedyPotions().intValue());
     }
 }

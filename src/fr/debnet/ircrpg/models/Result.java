@@ -1,11 +1,11 @@
 package fr.debnet.ircrpg.models;
 
-import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.helpers.Helpers;
+import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.hibernate.annotations.Index;
  * @author Marc
  */
 @Entity
-public class Result implements IEntity {
+public class Result extends MappedEntity {
     
     @Id
     private Long id;
@@ -38,11 +38,11 @@ public class Result implements IEntity {
     private Calendar date;
     
     @Transient
-    private Boolean success = false;
+    private Boolean success;
     
     @Index(name = "result_action")
     @Enumerated(value=EnumType.STRING)
-    private Action action = Action.NONE;
+    private Action action;
     
     // List instead of EnumSet because it needs to be sorted
     @CollectionOfElements
@@ -51,39 +51,60 @@ public class Result implements IEntity {
     
     @OneToOne
     private Player player;
-    private Double playerHealthChanges = 0d;
-    private Double playerManaChanges = 0d;
-    private Double playerGoldChanges = 0d;
-    private Double playerExperienceChanges = 0d;
+    private Double playerHealthChanges;
+    private Double playerManaChanges;
+    private Double playerGoldChanges;
+    private Double playerExperienceChanges;
     
     @OneToOne
     private Player target;
-    private Double targetHealthChanges = 0d;
-    private Double targetManaChanges = 0d;
-    private Double targetGoldChanges = 0d;
-    private Double targetExperienceChanges = 0d;
+    private Double targetHealthChanges;
+    private Double targetManaChanges;
+    private Double targetGoldChanges;
+    private Double targetExperienceChanges;
     
-    private double value = 0d;
+    private double value;
     private String details;
     
     public Result() {
-        this.date = Calendar.getInstance();
-        this.returns = new ArrayList<Return>();
+        
     }
     
     public Result(Action action) {
         this();
-        this.action = action;
+        this.setAction(action);
     }
     
     public Result(Action action, Player player) {
         this(action);
-        this.player = player;
+        this.setPlayer(player);
     }
     
     public Result(Action action, Player player, Player target) {
         this(action, player);
-        this.target = target;
+        this.setTarget(target);
+    }
+    
+    @Override
+    protected void setDefaultValues() {
+        this.setId(0l);
+        this.setVersion(0);
+        this.setDate(Calendar.getInstance());
+        this.setSuccess(false);
+        this.setAction(Action.NONE);
+        this.setReturns(new ArrayList<Return>());
+        this.setPlayer(null);
+        this.setPlayerHealthChanges(0d);
+        this.setPlayerManaChanges(0d);
+        this.setPlayerGoldChanges(0d);
+        this.setPlayerExperienceChanges(0d);
+        this.setTarget(null);
+        this.setTargetHealthChanges(0d);
+        this.setTargetManaChanges(0d);
+        this.setTargetGoldChanges(0d);
+        this.setTargetExperienceChanges(0d);
+        this.setValue(0d);
+        this.setDetails(null);
     }
         
     @Override
@@ -133,6 +154,7 @@ public class Result implements IEntity {
     @Override
     public void setId(Long id) {
         this.id = id;
+        this.set("id", this.id);
     }
 
     @Override
@@ -143,6 +165,7 @@ public class Result implements IEntity {
     @Override
     public void setVersion(Integer version) {
         this.version = version;
+        this.set("version", this.version);
     }
 
     public Calendar getDate() {
@@ -151,18 +174,7 @@ public class Result implements IEntity {
 
     public void setDate(Calendar date) {
         this.date = date;
-    }
-    
-    public void addReturn(Return r) {
-        if (!this.returns.contains(r)) {
-            this.returns.add(r);
-        }
-    }
-    
-    public void removeReturn(Return r) {
-        if (this.returns.contains(r)) {
-            this.returns.remove(r);
-        }
+        this.set("date", this.date);
     }
 
     public Boolean isSuccess() {
@@ -171,6 +183,7 @@ public class Result implements IEntity {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+        this.set("success", this.success);
     }
     
     public Action getAction() {
@@ -179,6 +192,7 @@ public class Result implements IEntity {
 
     public void setAction(Action action) {
         this.action = action;
+        this.set("action", this.action);
     }
 
     public List<Return> getReturns() {
@@ -187,6 +201,21 @@ public class Result implements IEntity {
 
     public void setReturns(List<Return> returns) {
         this.returns = returns;
+        this.set("returns", this.returns);
+    }
+    
+    public void addReturn(Return r) {
+        if (!this.returns.contains(r)) {
+            this.returns.add(r);
+            this.set("returns", this.returns);
+        }
+    }
+    
+    public void removeReturn(Return r) {
+        if (this.returns.contains(r)) {
+            this.returns.remove(r);
+            this.set("returns", this.returns);
+        }
     }
 
     public Player getPlayer() {
@@ -195,6 +224,7 @@ public class Result implements IEntity {
 
     public void setPlayer(Player player) {
         this.player = player;
+        this.set("player", this.player);
     }
 
     public Double getPlayerHealthChanges() {
@@ -203,10 +233,12 @@ public class Result implements IEntity {
 
     public void setPlayerHealthChanges(Double playerHealthChanges) {
         this.playerHealthChanges = playerHealthChanges;
+        this.set("playerHealthChanges", this.playerHealthChanges);
     }
     
     public void addPlayerHealthChanges(Double playerHealthChanges) {
         this.playerHealthChanges += playerHealthChanges;
+        this.set("playerHealthChanges", this.playerHealthChanges);
     }
 
     public Double getPlayerManaChanges() {
@@ -215,10 +247,12 @@ public class Result implements IEntity {
 
     public void setPlayerManaChanges(Double playerManaChanges) {
         this.playerManaChanges = playerManaChanges;
+        this.set("playerManaChanges", this.playerManaChanges);
     }
     
     public void addPlayerManaChanges(Double playerManaChanges) {
         this.playerManaChanges += playerManaChanges;
+        this.set("playerManaChanges", this.playerManaChanges);
     }
 
     public Double getPlayerGoldChanges() {
@@ -227,10 +261,12 @@ public class Result implements IEntity {
 
     public void setPlayerGoldChanges(Double playerGoldChanges) {
         this.playerGoldChanges = playerGoldChanges;
+        this.set("playerGoldChanges", this.playerGoldChanges);
     }
     
     public void addPlayerGoldChanges(Double playerGoldChanges) {
         this.playerGoldChanges += playerGoldChanges;
+        this.set("playerGoldChanges", this.playerGoldChanges);
     }
 
     public Double getPlayerExperienceChanges() {
@@ -239,10 +275,12 @@ public class Result implements IEntity {
 
     public void setPlayerExperienceChanges(Double playerExperienceChanges) {
         this.playerExperienceChanges = playerExperienceChanges;
+        this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
     
     public void addPlayerExperienceChanges(Double playerExperienceChanges) {
         this.playerExperienceChanges += playerExperienceChanges;
+        this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
     public Player getTarget() {
@@ -251,6 +289,7 @@ public class Result implements IEntity {
 
     public void setTarget(Player target) {
         this.target = target;
+        this.set("target", this.target);
     }
 
     public Double getTargetHealthChanges() {
@@ -259,10 +298,12 @@ public class Result implements IEntity {
 
     public void setTargetHealthChanges(Double targetHealthChanges) {
         this.targetHealthChanges = targetHealthChanges;
+        this.set("targetHealthChanges", this.targetHealthChanges);
     }
     
     public void addTargetHealthChanges(Double enemyHealthChanges) {
         this.targetHealthChanges += enemyHealthChanges;
+        this.set("targetHealthChanges", this.targetHealthChanges);
     }
 
     public Double getTargetManaChanges() {
@@ -271,10 +312,12 @@ public class Result implements IEntity {
 
     public void setTargetManaChanges(Double targetManaChanges) {
         this.targetManaChanges = targetManaChanges;
+        this.set("targetManaChanges", this.targetManaChanges);
     }
     
     public void addTargetManaChanges(Double enemyManaChanges) {
         this.targetManaChanges += enemyManaChanges;
+        this.set("targetManaChanges", this.targetManaChanges);
     }
 
     public Double getTargetGoldChanges() {
@@ -283,10 +326,12 @@ public class Result implements IEntity {
 
     public void setTargetGoldChanges(Double targetGoldChanges) {
         this.targetGoldChanges = targetGoldChanges;
+        this.set("targetGoldChanges", this.targetGoldChanges);
     }
     
     public void addTargetGoldChanges(Double enemyGoldChanges) {
         this.targetGoldChanges += enemyGoldChanges;
+        this.set("targetGoldChanges", this.targetGoldChanges);
     }
 
     public Double getTargetExperienceChanges() {
@@ -295,10 +340,12 @@ public class Result implements IEntity {
 
     public void setTargetExperienceChanges(Double targetExperienceChanges) {
         this.targetExperienceChanges = targetExperienceChanges;
+        this.set("targetExperienceChanges", this.targetExperienceChanges);
     }
     
     public void addTargetExperienceChanges(Double enemyExperienceChanges) {
         this.targetExperienceChanges += enemyExperienceChanges;
+        this.set("targetExperienceChanges", this.targetExperienceChanges);
     }
 
     public double getValue() {
@@ -307,6 +354,7 @@ public class Result implements IEntity {
 
     public void setValue(double value) {
         this.value = value;
+        this.set("value", this.value);
     }
     
     public String getDetails() {
@@ -315,9 +363,22 @@ public class Result implements IEntity {
 
     public void setDetails(String details) {
         this.details = details;
+        this.set("details", this.details);
     }
 
+    /* Specific methods */
+    
     public void addPlayerGoldChanges(int gold) {
         this.playerGoldChanges += gold;
+        this.set("playerGoldChanges", this.playerGoldChanges);
+    }
+    
+    public boolean hasReturn(Return ret) {
+        return this.getReturns().contains(ret);
+    }
+    
+    public void addReturnList(List<Return> list) {
+        this.returns.addAll(list);
+        this.set("returns", this.returns);
     }
 }
