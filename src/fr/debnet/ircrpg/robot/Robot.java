@@ -12,7 +12,6 @@ import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.interfaces.INotifiable;
-import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.util.logging.Logger;
 
@@ -83,22 +82,6 @@ public class Robot extends IRCBot implements INotifiable {
                     String password = words[2];
                     Result result = this.game.login(username, password, sender, hostname);
                     this.displayResult(result, sender);
-                }
-            }
-            // Infos
-            else if (Strings.COMMAND_INFOS.equalsIgnoreCase(command)) {
-                Player player = null;
-                boolean all = false; 
-                if (words.length == 1) {
-                    all = true;
-                    player = this.game.getPlayerByNickname(sender);
-                } else if (words.length == 2) {
-                    String target = words[2];
-                    all = false;
-                    player = this.game.getPlayerByNickname(target);
-                }
-                if (player != null) {
-                    // TODO:
                 }
             }
             // Attack
@@ -227,27 +210,35 @@ public class Robot extends IRCBot implements INotifiable {
                     this.displayResult(result, sender);
                 }
             }
+            // Infos
+            else if (Strings.COMMAND_INFOS.equalsIgnoreCase(command)) {
+                String nickname = words.length == 2 ? words[2] : sender;
+                String string = this.game.showInfos(nickname);
+                if (string != null) this.sendFormattedMessage(string, nickname);
+            }
+            // Stats
+            else if (Strings.COMMAND_STATS.equalsIgnoreCase(command)) {
+                String nickname = words.length == 2 ? words[2] : sender;
+                String string = this.game.showStats(nickname);
+                if (string != null) this.sendFormattedMessage(string, nickname);
+            }
+            // Items 
+            else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
+                String nickname = words.length == 2 ? words[2] : sender;
+                String string = this.game.showItems(nickname);
+                if (string != null) this.sendFormattedMessage(string, nickname);
+            }
+            // Spells 
+            else if (Strings.COMMAND_SPELLS.equalsIgnoreCase(command)) {
+                String nickname = words.length == 2 ? words[2] : sender;
+                String string = this.game.showSpells(nickname);
+                if (string != null) this.sendFormattedMessage(string, nickname);
+            }
             // Look
             else if (Strings.COMMAND_LOOK.equalsIgnoreCase(command)) {
                 if (words.length > 1) {
                     // TODO:
                 }
-            }
-            // Stats
-            else if (Strings.COMMAND_STATS.equalsIgnoreCase(command)) {
-                if (words.length == 1) {
-                    
-                } else if (words.length == 2) {
-                    
-                }
-            }
-            // Items 
-            else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
-                
-            }
-            // Spells 
-            else if (Strings.COMMAND_SPELLS.equalsIgnoreCase(command)) {
-                
             }
         }
     }

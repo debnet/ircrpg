@@ -1158,52 +1158,29 @@ public class Game {
         return result;
     }
     
-    /**
-     * Show the items of a player
-     * @param sender Player's nickname
-     * @return List of items in a string
-     */
-    public String showItems(String sender) {
-        Player player = this.getPlayerByNickname(sender);
+    private String showData(String nickname, String format) {
+        Player player = this.getPlayerByNickname(nickname);
         if (player == null) return null;
-        // Return
-        StringBuilder builder = new StringBuilder();
-        for (Item item : player.getItems()) {
-            builder.append(String.format(Strings.FORMAT_PLAYER_ITEMS, item.getName(), item.getCode()));
-        }
-        return builder.toString();
+        return Strings.format(format, player.toMap());
     }
     
-    /**
-     * Show the spells of a player
-     * @param sender Player's nickname
-     * @return List of spells in a string
-     */
-    public String showSpells(String sender) {
-        Player player = this.getPlayerByNickname(sender);
-        if (player == null) return null;
-        // Return
-        StringBuilder builder = new StringBuilder();
-        for (Spell spell : player.getSpells()) {
-            builder.append(String.format(Strings.FORMAT_PLAYER_SPELLS, spell.getName(), spell.getCode()));
-        }
-        return builder.toString();
+    public String showItems(String nickname) {
+        return showData(nickname, Strings.FORMAT_PLAYER_ITEMS);
     }
     
-    public String showInfos(String sender) {
-        Player player = this.getPlayerByNickname(sender);
-        if (player == null) return null;
-        // Build player's data
-        
-        // Return
-        StringBuilder builder = new StringBuilder();
-        
-        return builder.toString();
+    public String showSpells(String nickname) {
+        return showData(nickname, Strings.FORMAT_PLAYER_SPELLS);
     }
     
-    public String showStats(String sender) {
-        Player player = this.getPlayerByNickname(sender);
-        if (player == null) return null;
+    public String showInfos(String nickname) {
+        return showData(nickname, Strings.FORMAT_PLAYER_INFOS);
+    }
+    
+    public String showStats(String nickname) {
+        return showData(nickname, Strings.FORMAT_PLAYER_STATS);
+    }
+    
+    public String showItemInfos(String item) {
         return "";
     }
 

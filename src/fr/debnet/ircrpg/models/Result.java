@@ -210,7 +210,6 @@ public class Result extends MappedEntity implements IEntity {
 
     public void setPlayer(Player player) {
         this.player = player;
-        this.set("player", this.player);
     }
 
     public Double getPlayerHealthChanges() {
@@ -275,7 +274,6 @@ public class Result extends MappedEntity implements IEntity {
 
     public void setTarget(Player target) {
         this.target = target;
-        this.set("target", this.target);
     }
 
     public Double getTargetHealthChanges() {

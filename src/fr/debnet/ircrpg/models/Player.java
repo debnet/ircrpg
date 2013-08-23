@@ -531,12 +531,12 @@ public class Player extends MappedEntity implements IEntity {
 
     public void setTimeTraining(Long timeTraining) {
         this.timeTraining = timeTraining;
-        this.set("timeTraining", this.timeTraining);
+        this.set("timeTraining", new Time(this.timeTraining));
     }
     
     public void addTimeTraining(Long timeTraining) {
         this.timeTraining += timeTraining;
-        this.set("timeTraining", this.timeTraining);
+        this.set("timeTraining", new Time(this.timeTraining));
     }
     
     public Integer getMoneySpent() {
