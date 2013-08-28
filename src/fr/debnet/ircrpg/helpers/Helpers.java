@@ -266,6 +266,11 @@ public class Helpers {
         return true;
     }
     
+    /**
+     * Generate message from a result
+     * @param result Result
+     * @return Formatted message
+     */
     public static String getMessage(Result result) {
         Map<String, Object> map = result.toMap();
         StringBuilder build = new StringBuilder(); 

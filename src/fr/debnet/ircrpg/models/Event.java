@@ -4,10 +4,12 @@ import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
@@ -17,23 +19,27 @@ import javax.persistence.Version;
 @Entity(name = "Event")
 public class Event extends MappedEntity implements IEntity {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Version
     private Integer version;
     
     public Event() {
+        this.initialize();
+    }
+    
+    private void initialize() {
         this.setId(0l);
         this.setVersion(0);
     }
     
     @Override
+    @Transient
     public Model getModel() {
         return Model.EVENT;
     }
     
     @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -45,6 +51,7 @@ public class Event extends MappedEntity implements IEntity {
     }
 
     @Override
+    @Version
     public Integer getVersion() {
         return version;
     }

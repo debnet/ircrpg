@@ -8,6 +8,7 @@ import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,36 +29,19 @@ import org.hibernate.annotations.Index;
 @Entity(name = "Result")
 public class Result extends MappedEntity implements IEntity {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Version
     private Integer version;
-    
-    @Index(name = "result_date")
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Calendar date;
-    
-    @Transient
     private Boolean success;
-    
-    @Index(name = "result_action")
-    @Enumerated(value=EnumType.STRING)
     private Action action;
-    
-    // List instead of EnumSet because it needs to be sorted
-    @CollectionOfElements
-    @Enumerated(value=EnumType.STRING)
     private List<Return> returns;
     
-    @OneToOne
     private Player player;
     private Double playerHealthChanges;
     private Double playerManaChanges;
     private Double playerGoldChanges;
     private Double playerExperienceChanges;
     
-    @OneToOne
     private Player target;
     private Double targetHealthChanges;
     private Double targetManaChanges;
@@ -68,6 +52,10 @@ public class Result extends MappedEntity implements IEntity {
     private String details;
     
     public Result() {
+        this.initialize();
+    }
+    
+    private void initialize() {
         this.setId(0l);
         this.setVersion(0);
         this.setDate(Calendar.getInstance());
@@ -92,17 +80,17 @@ public class Result extends MappedEntity implements IEntity {
         this();
         this.setAction(action);
     }
-    
+
     public Result(Action action, Player player) {
         this(action);
         this.setPlayer(player);
     }
-    
+
     public Result(Action action, Player player, Player target) {
         this(action, player);
         this.setTarget(target);
     }
-        
+
     @Override
     public String toString() {
         StringBuilder build = new StringBuilder();
@@ -128,11 +116,14 @@ public class Result extends MappedEntity implements IEntity {
     /* Getters & setters */
     
     @Override
+    @Transient
     public Model getModel() {
         return Model.RESULT;
     }
-    
+
     @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -144,6 +135,7 @@ public class Result extends MappedEntity implements IEntity {
     }
 
     @Override
+    @Version
     public Integer getVersion() {
         return version;
     }
@@ -154,6 +146,9 @@ public class Result extends MappedEntity implements IEntity {
         this.set("version", this.version);
     }
 
+    @Column
+    @Index(name = "result_date")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     public Calendar getDate() {
         return date;
     }
@@ -163,6 +158,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("date", this.date);
     }
 
+    @Transient
     public Boolean isSuccess() {
         return success;
     }
@@ -171,7 +167,10 @@ public class Result extends MappedEntity implements IEntity {
         this.success = success;
         this.set("success", this.success);
     }
-    
+
+    @Column
+    @Index(name = "result_action")
+    @Enumerated(value=EnumType.STRING)
     public Action getAction() {
         return action;
     }
@@ -181,6 +180,8 @@ public class Result extends MappedEntity implements IEntity {
         this.set("action", this.action);
     }
 
+    @CollectionOfElements
+    @Enumerated(value=EnumType.STRING)
     public List<Return> getReturns() {
         return returns;
     }
@@ -189,14 +190,14 @@ public class Result extends MappedEntity implements IEntity {
         this.returns = returns;
         this.set("returns", this.returns);
     }
-    
+
     public void addReturn(Return r) {
         if (!this.returns.contains(r)) {
             this.returns.add(r);
             this.set("returns", this.returns);
         }
     }
-    
+
     public void removeReturn(Return r) {
         if (this.returns.contains(r)) {
             this.returns.remove(r);
@@ -204,6 +205,7 @@ public class Result extends MappedEntity implements IEntity {
         }
     }
 
+    @OneToOne
     public Player getPlayer() {
         return player;
     }
@@ -212,6 +214,7 @@ public class Result extends MappedEntity implements IEntity {
         this.player = player;
     }
 
+    @Column
     public Double getPlayerHealthChanges() {
         return playerHealthChanges;
     }
@@ -220,12 +223,13 @@ public class Result extends MappedEntity implements IEntity {
         this.playerHealthChanges = playerHealthChanges;
         this.set("playerHealthChanges", this.playerHealthChanges);
     }
-    
+
     public void addPlayerHealthChanges(Double playerHealthChanges) {
         this.playerHealthChanges += playerHealthChanges;
         this.set("playerHealthChanges", this.playerHealthChanges);
     }
 
+    @Column
     public Double getPlayerManaChanges() {
         return playerManaChanges;
     }
@@ -234,12 +238,13 @@ public class Result extends MappedEntity implements IEntity {
         this.playerManaChanges = playerManaChanges;
         this.set("playerManaChanges", this.playerManaChanges);
     }
-    
+
     public void addPlayerManaChanges(Double playerManaChanges) {
         this.playerManaChanges += playerManaChanges;
         this.set("playerManaChanges", this.playerManaChanges);
     }
 
+    @Column
     public Double getPlayerGoldChanges() {
         return playerGoldChanges;
     }
@@ -248,12 +253,13 @@ public class Result extends MappedEntity implements IEntity {
         this.playerGoldChanges = playerGoldChanges;
         this.set("playerGoldChanges", this.playerGoldChanges);
     }
-    
+
     public void addPlayerGoldChanges(Double playerGoldChanges) {
         this.playerGoldChanges += playerGoldChanges;
         this.set("playerGoldChanges", this.playerGoldChanges);
     }
 
+    @Column
     public Double getPlayerExperienceChanges() {
         return playerExperienceChanges;
     }
@@ -262,12 +268,13 @@ public class Result extends MappedEntity implements IEntity {
         this.playerExperienceChanges = playerExperienceChanges;
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
-    
+
     public void addPlayerExperienceChanges(Double playerExperienceChanges) {
         this.playerExperienceChanges += playerExperienceChanges;
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
+    @OneToOne
     public Player getTarget() {
         return target;
     }
@@ -276,6 +283,7 @@ public class Result extends MappedEntity implements IEntity {
         this.target = target;
     }
 
+    @Column
     public Double getTargetHealthChanges() {
         return targetHealthChanges;
     }
@@ -284,12 +292,13 @@ public class Result extends MappedEntity implements IEntity {
         this.targetHealthChanges = targetHealthChanges;
         this.set("targetHealthChanges", this.targetHealthChanges);
     }
-    
+
     public void addTargetHealthChanges(Double enemyHealthChanges) {
         this.targetHealthChanges += enemyHealthChanges;
         this.set("targetHealthChanges", this.targetHealthChanges);
     }
 
+    @Column
     public Double getTargetManaChanges() {
         return targetManaChanges;
     }
@@ -298,12 +307,13 @@ public class Result extends MappedEntity implements IEntity {
         this.targetManaChanges = targetManaChanges;
         this.set("targetManaChanges", this.targetManaChanges);
     }
-    
+
     public void addTargetManaChanges(Double enemyManaChanges) {
         this.targetManaChanges += enemyManaChanges;
         this.set("targetManaChanges", this.targetManaChanges);
     }
 
+    @Column
     public Double getTargetGoldChanges() {
         return targetGoldChanges;
     }
@@ -312,12 +322,13 @@ public class Result extends MappedEntity implements IEntity {
         this.targetGoldChanges = targetGoldChanges;
         this.set("targetGoldChanges", this.targetGoldChanges);
     }
-    
+
     public void addTargetGoldChanges(Double enemyGoldChanges) {
         this.targetGoldChanges += enemyGoldChanges;
         this.set("targetGoldChanges", this.targetGoldChanges);
     }
 
+    @Column
     public Double getTargetExperienceChanges() {
         return targetExperienceChanges;
     }
@@ -326,12 +337,13 @@ public class Result extends MappedEntity implements IEntity {
         this.targetExperienceChanges = targetExperienceChanges;
         this.set("targetExperienceChanges", this.targetExperienceChanges);
     }
-    
+
     public void addTargetExperienceChanges(Double enemyExperienceChanges) {
         this.targetExperienceChanges += enemyExperienceChanges;
         this.set("targetExperienceChanges", this.targetExperienceChanges);
     }
 
+    @Column
     public double getValue() {
         return value;
     }
@@ -340,7 +352,8 @@ public class Result extends MappedEntity implements IEntity {
         this.value = value;
         this.set("value", this.value);
     }
-    
+
+    @Column
     public String getDetails() {
         return details;
     }

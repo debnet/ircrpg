@@ -45,10 +45,23 @@ public class DAO {
         return sessionFactory;
     }
 
+    public static <T extends IEntity> T getObject(Class<T> _class, Long id) {
+        Object object = null;
+        Session session = sessionFactory.openSession();
+        try {
+            object = session.get(_class, id);
+        } catch (HibernateException e) {
+            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
+        } finally {
+            session.close();
+        }
+        return (T)object;
+    }
+    
     public static <T extends IEntity> T getObject(String sql, Object... args) {
         return DAO.getObject(sql, false, args);
     }
-
+    
     public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
         IEntity object = null;
         Session session = sessionFactory.openSession();

@@ -38,6 +38,7 @@ import java.util.Map;
  */
 public class Game {
 
+    private Admin admin;
     private Random random;
     
     private Map<String, Player> playersByNickname;
@@ -48,9 +49,10 @@ public class Game {
     private List<IQueue> queues;
 
     /**
-     * Constructor : initialize the game by fetching in memory all data from database
+     * Constructor
      */
     public Game() {
+        this.admin = new Admin(this);
         this.random = new Random();
         this.playersByNickname = new HashMap<String, Player>();
         this.playersByUsername = new HashMap<String, Player>();
@@ -58,29 +60,62 @@ public class Game {
         this.spellsByCode = new HashMap<String, Spell>();
         this.queues = new ArrayList<IQueue>();
 
+        // Load all entities
         if (Config.PERSISTANCE) {
-            List<Player> players = DAO.<Player>getObjectList("from " + Model.PLAYER);
-            List<Item> items = DAO.<Item>getObjectList("from " + Model.ITEM);
-            List<Spell> spells = DAO.<Spell>getObjectList("from " + Model.SPELL);
-
-            // Get all players
-            for (Player player : players) {
-                this.playersByNickname.put(player.getNickname(), player);
-                this.playersByUsername.put(player.getUsername(), player);
-            }
-            // Get all items
-            for (Item item : items) {
-                this.itemsByCode.put(item.getCode(), item);
-            }
-            // Get all spells
-            for (Spell spell : spells) {
-                this.spellsByCode.put(spell.getCode(), spell);
-            }
+            this.reloadPlayers();
+            this.reloadItems();
+            this.reloadSpells();
         }
         
         // Run queues
         this.queues.add(UpdateQueue.getInstance(this));
         this.queues.add(EventQueue.getInstance(this));
+    }
+    
+    /**
+     * Get the admin functions
+     * @return Admin instance
+     */
+    public Admin getAdmin() {
+        return this.admin;
+    }
+    
+    /**
+     * Reload all players
+     */
+    protected final void reloadPlayers() {
+        List<Player> players = DAO.<Player>getObjectList("from " + Model.PLAYER);
+        // Get all players
+        this.playersByNickname.clear();
+        this.playersByUsername.clear();
+        for (Player player : players) {
+            this.playersByNickname.put(player.getNickname(), player);
+            this.playersByUsername.put(player.getUsername(), player);
+        }
+    }
+    
+    /**
+     * Reload all items
+     */
+    protected final void reloadItems() {
+        List<Item> items = DAO.<Item>getObjectList("from " + Model.ITEM);
+        // Get all items
+        this.itemsByCode.clear();
+        for (Item item : items) {
+            this.itemsByCode.put(item.getCode(), item);
+        }
+    }
+    
+    /**
+     * Reload all spells
+     */
+    protected final void reloadSpells() {
+        List<Spell> spells = DAO.<Spell>getObjectList("from " + Model.SPELL);
+        // Get all spells
+        this.spellsByCode.clear();
+        for (Spell spell : spells) {
+            this.spellsByCode.put(spell.getCode(), spell);
+        }
     }
     
     /**
@@ -1158,30 +1193,69 @@ public class Game {
         return result;
     }
     
-    private String showData(String nickname, String format) {
+    /**
+     * Show information about item or spell
+     * @param code Item or spell code
+     * @return Formated string
+     */
+    public String look(String code) {
+        if (this.itemsByCode.containsKey(code)) {
+            Item item = this.itemsByCode.get(code);
+            return Strings.format(Strings.FORMAT_ITEM_INFOS, item.toMap());
+        }
+        if (this.spellsByCode.containsKey(code)) {
+            Spell spell = this.spellsByCode.get(code);
+            return Strings.format(Strings.FORMAT_SPELL_INFOS, spell.toMap());
+        }
+        return null;
+    }
+    
+    /**
+     * Common function for retrieving information about player
+     * @param nickname Player's nickname
+     * @param format Format string
+     * @return Formatted string
+     */
+    private String showPlayerData(String nickname, String format) {
         Player player = this.getPlayerByNickname(nickname);
         if (player == null) return null;
         return Strings.format(format, player.toMap());
     }
     
+    /**
+     * Show player's all items
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
     public String showItems(String nickname) {
-        return showData(nickname, Strings.FORMAT_PLAYER_ITEMS);
+        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_ITEMS);
     }
     
+    /**
+     * Show player's all spells
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
     public String showSpells(String nickname) {
-        return showData(nickname, Strings.FORMAT_PLAYER_SPELLS);
+        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_SPELLS);
     }
     
+    /**
+     * Show player's informations
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
     public String showInfos(String nickname) {
-        return showData(nickname, Strings.FORMAT_PLAYER_INFOS);
+        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_INFOS);
     }
     
+    /**
+     * Show player's statistics
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
     public String showStats(String nickname) {
-        return showData(nickname, Strings.FORMAT_PLAYER_STATS);
-    }
-    
-    public String showItemInfos(String item) {
-        return "";
+        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_STATS);
     }
 
     /**

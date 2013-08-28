@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Marc
  */
 public interface IEntity extends Serializable {
-
+    
     public Long getId();
 
     public void setId(Long id);

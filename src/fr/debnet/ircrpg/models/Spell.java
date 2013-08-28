@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
@@ -20,14 +21,9 @@ import javax.persistence.Version;
 @Entity(name = "Spell")
 public class Spell extends MappedEntity implements IEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Version
     private Integer version;
-    @Column(unique = true)
     private String code;
-    @Column(unique = true)
     private String name;
     private String description;
     private Boolean isAdmin;
@@ -36,11 +32,14 @@ public class Spell extends MappedEntity implements IEntity {
     private Boolean isSelf;
     private Double healthDamage;
     private Double manaCost;
-    @Enumerated(EnumType.STRING)
     private Status status;
     private Long statusDuration;
 
     public Spell() {
+        this.initialize();
+    }
+    
+    private void initialize() {
         this.setId(0l);
         this.setVersion(0);
         this.setCode(null);
@@ -48,7 +47,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.setDescription(null);
         this.setIsAdmin(false);
         this.setGoldCost(0);
-        this.setMinLevel(0);
+        this.setMinLevel(1);
         this.setIsSelf(false);
         this.setHealthDamage(0d);
         this.setManaCost(0d);
@@ -57,11 +56,14 @@ public class Spell extends MappedEntity implements IEntity {
     }
     
     @Override
+    @Transient
     public Model getModel() {
         return Model.SPELL;
     }
     
     @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -73,6 +75,7 @@ public class Spell extends MappedEntity implements IEntity {
     }
 
     @Override
+    @Version
     public Integer getVersion() {
         return version;
     }
@@ -83,6 +86,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("version", this.version);
     }
 
+    @Column(unique = true)
     public String getCode() {
         return code;
     }
@@ -92,6 +96,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("code", this.code);
     }
 
+    @Column(unique = true)
     public String getName() {
         return name;
     }
@@ -101,6 +106,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("name", this.name);
     }
 
+    @Column
     public String getDescription() {
         return description;
     }
@@ -110,6 +116,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("description", this.description);
     }
 
+    @Column
     public Boolean getIsAdmin() {
         return isAdmin;
     }
@@ -118,7 +125,8 @@ public class Spell extends MappedEntity implements IEntity {
         this.isAdmin = isAdmin;
         this.set("isAdmin", this.isAdmin);
     }
-    
+
+    @Column
     public Integer getGoldCost() {
         return goldCost;
     }
@@ -128,6 +136,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("goldCost", this.goldCost);
     }
 
+    @Column
     public Integer getMinLevel() {
         return minLevel;
     }
@@ -137,6 +146,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("minLevel", this.minLevel);
     }
 
+    @Column
     public Boolean getIsSelf() {
         return isSelf;
     }
@@ -146,6 +156,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("isSelf", this.isSelf);
     }
 
+    @Column
     public Double getHealthDamage() {
         return healthDamage;
     }
@@ -155,6 +166,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("healthDamage", this.healthDamage);
     }
 
+    @Column
     public Double getManaCost() {
         return manaCost;
     }
@@ -164,6 +176,8 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("manaCost", this.manaCost);
     }
 
+    @Column
+    @Enumerated(EnumType.STRING)
     public Status getStatus() {
         return status;
     }
@@ -173,6 +187,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("status", this.status);
     }
 
+    @Column
     public Long getStatusDuration() {
         return statusDuration;
     }

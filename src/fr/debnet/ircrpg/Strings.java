@@ -31,6 +31,10 @@ public class Strings {
     public static String FORMAT_PLAYER_ITEMS;
     @Property(name = "format.player_spells")
     public static String FORMAT_PLAYER_SPELLS;
+    @Property(name = "format.item_infos")
+    public static String FORMAT_ITEM_INFOS;
+    @Property(name = "format.spell_infos")
+    public static String FORMAT_SPELL_INFOS;
     
     /* Equipment */
     @Property(name = "equipment.weapon")
@@ -453,9 +457,15 @@ public class Strings {
         return Strings.format(message, Strings.COLORS);
     }
     
-    public static String join(Collection s, String delimiter) {
+    /**
+     * Join many strings with a delimiter
+     * @param strings Collection of strings
+     * @param delimiter Delimiter
+     * @return Formatted string
+     */
+    public static String join(Collection<String> strings, String delimiter) {
         StringBuilder builder = new StringBuilder();
-        Iterator iter = s.iterator();
+        Iterator iter = strings.iterator();
         while (iter.hasNext()) {
             builder.append(iter.next());
             if (iter.hasNext()) {
@@ -465,6 +475,12 @@ public class Strings {
         return builder.toString();
     }
     
+    /**
+     * Format a template string with a dictionary of values
+     * @param template Template string
+     * @param values Dictionary of values
+     * @return Formatted string
+     */
     public static String format(String template, Map<String, Object> values) {
         StringBuffer buffer = new StringBuffer();
         Matcher matcher = FORMAT_PATTERN.matcher(template);
@@ -473,12 +489,14 @@ public class Strings {
             if (values.containsKey(key)) {
                 String format = matcher.group(2);
                 boolean hasFormat = !"".equals(format);
+                // Hack: removing sign on numeric values
                 boolean isAbsolute = hasFormat && format.contains("=");
                 if (isAbsolute) format = format.replace("=", "");
                 
                 Object value = values.get(key);
                 if (value != null) {
                     String result = hasFormat ? String.format(format, value) : value.toString();
+                    // Hack: removing sign on numeric values
                     if (isAbsolute) result = result.replace("-", "");
                     matcher.appendReplacement(buffer, result);
                 }
