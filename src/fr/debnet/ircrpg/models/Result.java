@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -205,7 +206,7 @@ public class Result extends MappedEntity implements IEntity {
         }
     }
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     public Player getPlayer() {
         return player;
     }
@@ -274,7 +275,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     public Player getTarget() {
         return target;
     }

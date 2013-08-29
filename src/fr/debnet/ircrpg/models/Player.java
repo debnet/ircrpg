@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -437,7 +438,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("remedyPotions", this.remedyPotions);
     }
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     public List<Item> getItems() {
         return items;
     }
@@ -457,7 +458,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("items", this.items);
     }
     
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     public List<Spell> getSpells() {
         return spells;
     }

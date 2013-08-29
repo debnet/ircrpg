@@ -1,6 +1,7 @@
 package fr.debnet.ircrpg.interfaces;
 
 import fr.debnet.ircrpg.game.Game;
+import fr.debnet.ircrpg.models.Player;
 
 /**
  *
@@ -10,7 +11,7 @@ public interface IQueue {
     
     boolean register(INotifiable notifiable);
     
-    void update();
+    void update(Player player);
     
     void interrupt();
     

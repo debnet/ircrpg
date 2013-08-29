@@ -73,51 +73,43 @@ public class UpdateQueue extends Thread implements IQueue {
     }
 
     @Override
-    public void update() {
-        if (this.player != null && !this.player.getOnline()) {
-            this.player = null;
-            this.date = null;
+    public void update(Player player) {
+        if (!player.getOnline()) return;
+        // Check if the player's current activity will end
+        if (player.getActivity() != Activity.NONE) {
+            Calendar nextDate = Calendar.getInstance();
+            nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration().intValue());
+            switch (player.getActivity()) {
+                case WAITING:
+                    nextDate.add(Calendar.MINUTE, Config.ACTIVITY_PENALTY);
+                    break;
+                case RESTING:
+                    nextDate.add(Calendar.MINUTE, Config.RESTING_TIME_MAX);
+                    break;
+                case TRAINING:
+                    nextDate.add(Calendar.MINUTE, Config.TRAINING_TIME_MAX);
+                    break;
+                case WORKING:
+                    nextDate.add(Calendar.MINUTE, Config.WORKING_TIME_MAX);
+                    break;
+            }
+            if (this.date == null || nextDate.before(this.date)) {
+                this.player = player;
+                this.date = nextDate;
+            }
         }
-        for (Player player : this.game.getAllPlayers()) {
-            if (!player.getOnline()) {
-                break;
+        // Check if the player's current status will be cured by itself
+        if (player.getStatus() != Status.NORMAL) {
+            Calendar nextDate = Calendar.getInstance();
+            nextDate.add(Calendar.MILLISECOND, player.getStatusDuration().intValue());
+            if (this.date == null || nextDate.before(this.date)) {
+                this.player = player;
+                this.date = nextDate;
             }
-            // Check if the player's current activity will end
-            if (player.getActivity() != Activity.NONE) {
-                Calendar nextDate = Calendar.getInstance();
-                nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration().intValue());
-                switch (player.getActivity()) {
-                    case WAITING:
-                        nextDate.add(Calendar.MINUTE, Config.ACTIVITY_PENALTY);
-                        break;
-                    case RESTING:
-                        nextDate.add(Calendar.MINUTE, Config.RESTING_TIME_MAX);
-                        break;
-                    case TRAINING:
-                        nextDate.add(Calendar.MINUTE, Config.TRAINING_TIME_MAX);
-                        break;
-                    case WORKING:
-                        nextDate.add(Calendar.MINUTE, Config.WORKING_TIME_MAX);
-                        break;
-                }
-                if (this.date == null || nextDate.before(this.date)) {
-                    this.player = player;
-                    this.date = nextDate;
-                }
-            }
-            // Check if the player's current status will be cured by itself
-            if (player.getStatus() != Status.NORMAL) {
-                Calendar nextDate = Calendar.getInstance();
-                nextDate.add(Calendar.MILLISECOND, player.getStatusDuration().intValue());
-                if (this.date == null || nextDate.before(this.date)) {
-                    this.player = player;
-                    this.date = nextDate;
-                }
-            }
-            // Check if the player will earn a level from training
-            if (player.getActivity() == Activity.TRAINING) {
-                // TODO: 
-            }
+        }
+        // Check if the player will earn a level from training
+        if (player.getActivity() == Activity.TRAINING) {
+            // TODO: 
         }
     }
     

@@ -20,7 +20,6 @@ import javax.persistence.Version;
  */
 @Entity(name = "Item")
 public class Item extends MappedEntity implements IEntity {
-
     
     private Long id;
     private Integer version;

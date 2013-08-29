@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -22,8 +23,6 @@ import org.hibernate.Transaction;
  */
 public class DAO {
 
-    private static final SessionFactory sessionFactory;
-    
     static {
         try {
             //sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
@@ -41,21 +40,24 @@ public class DAO {
         }
     }
     
+    private static final SessionFactory sessionFactory;
+    
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
     public static <T extends IEntity> T getObject(Class<T> _class, Long id) {
-        Object object = null;
+        T object = null;
         Session session = sessionFactory.openSession();
         try {
-            object = session.get(_class, id);
+            object = (T)session.get(_class, id);
+            Hibernate.initialize(object);
         } catch (HibernateException e) {
             Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
         } finally {
             session.close();
         }
-        return (T)object;
+        return object;
     }
     
     public static <T extends IEntity> T getObject(String sql, Object... args) {
@@ -63,7 +65,7 @@ public class DAO {
     }
     
     public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
-        IEntity object = null;
+        T object = null;
         Session session = sessionFactory.openSession();
         try {
             Query query = session.createQuery(sql);
@@ -71,13 +73,14 @@ public class DAO {
                 for (int i = 0; i < args.length; i++)
                     query.setParameter(sql, args[i]);
             if (limit) query.setMaxResults(1);
-            object = (IEntity)query.uniqueResult();
+            object = (T)query.uniqueResult();
+            Hibernate.initialize(object);
         } catch (HibernateException e) {
             Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
         } finally {
             session.close();
         }
-        return (T)object;
+        return object;
     }
 
     public static <T extends IEntity> List<T> getObjectList(String sql, Object... args) {
@@ -85,7 +88,7 @@ public class DAO {
     }
 
     public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
-        List<IEntity> list = new ArrayList<IEntity>();
+        List<T> list = new ArrayList<T>();
         Session session = sessionFactory.openSession();
         try {
             Query query = session.createQuery(sql);
@@ -99,7 +102,7 @@ public class DAO {
         } finally {
             session.close();
         }
-        return (List<T>)list;
+        return list;
     }
 
     public static <T extends IEntity> boolean setObject(T object) {

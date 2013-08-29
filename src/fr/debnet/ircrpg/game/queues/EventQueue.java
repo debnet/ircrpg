@@ -3,8 +3,12 @@ package fr.debnet.ircrpg.game.queues;
 import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.Game;
+import fr.debnet.ircrpg.models.Event;
+import fr.debnet.ircrpg.models.Player;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +17,7 @@ import java.util.logging.Logger;
  * @author Marc
  */
 public class EventQueue extends Thread implements IQueue {
-
+    
     private static IQueue queue;
     
     public static IQueue getInstance(Game game) {
@@ -26,9 +30,12 @@ public class EventQueue extends Thread implements IQueue {
     private boolean run = true;
     private final List<INotifiable> notifiables;
     
+    private Map<Player, List<Event>> events;
+    
     public EventQueue(Game game) {
         this.game = game;
         this.notifiables = new ArrayList<INotifiable>();
+        this.events = new HashMap<Player, List<Event>>();
         this.start();
     }
     
@@ -38,7 +45,7 @@ public class EventQueue extends Thread implements IQueue {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(UpdateQueue.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EventQueue.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -55,8 +62,9 @@ public class EventQueue extends Thread implements IQueue {
     }
 
     @Override
-    public void update() {
-        
+    public void update(Player player) {
+        if (!player.getOnline()) return;
+        // TODO: 
     }
     
     @Override
