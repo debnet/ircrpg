@@ -53,17 +53,14 @@ public class EventQueue extends Thread implements IQueue {
     @Override
     public boolean register(INotifiable notifiable) {
         if (!this.notifiables.contains(notifiable)) {
-            synchronized(this.notifiables) {
-                this.notifiables.add(notifiable);
-                return true;
-            }
+            this.notifiables.add(notifiable);
+            return true;
         }
         return false;
     }
 
     @Override
-    public void update(Player player) {
-        if (!player.getOnline()) return;
+    public synchronized void update(Player player) {
         // TODO: 
     }
     

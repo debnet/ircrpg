@@ -27,4 +27,8 @@ public enum Potion {
     public String getText() {
         return this.text;
     }
+    
+    public String toString() {
+        return this.text;
+    }
 }

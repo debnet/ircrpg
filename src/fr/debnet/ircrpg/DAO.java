@@ -46,6 +46,13 @@ public class DAO {
         return sessionFactory;
     }
 
+    /**
+     * Get entity from database
+     * @param <T> Type entity
+     * @param _class Entity class
+     * @param id Primary key value
+     * @return Entity object
+     */
     public static <T extends IEntity> T getObject(Class<T> _class, Long id) {
         T object = null;
         Session session = sessionFactory.openSession();
@@ -53,17 +60,32 @@ public class DAO {
             object = (T)session.get(_class, id);
             Hibernate.initialize(object);
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
+            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
         } finally {
             session.close();
         }
         return object;
     }
     
+    /**
+     * Get entity from database
+     * @param <T> Type entity
+     * @param sql HSQL Query
+     * @param args Arguments
+     * @return Entity object
+     */
     public static <T extends IEntity> T getObject(String sql, Object... args) {
         return DAO.getObject(sql, false, args);
     }
     
+    /**
+     * Get entity from database
+     * @param <T> Type entity
+     * @param sql HSQL Query
+     * @param limit Limit result ?
+     * @param args Arguments
+     * @return Entity object
+     */
     public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
         T object = null;
         Session session = sessionFactory.openSession();
@@ -76,17 +98,32 @@ public class DAO {
             object = (T)query.uniqueResult();
             Hibernate.initialize(object);
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
+            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
         } finally {
             session.close();
         }
         return object;
     }
 
+    /**
+     * Get entity list from database
+     * @param <T> Entity type
+     * @param sql HSQL Query
+     * @param args Arguments
+     * @return Entity list
+     */
     public static <T extends IEntity> List<T> getObjectList(String sql, Object... args) {
         return DAO.getObjectList(sql, 0, args);
     }
 
+    /**
+     * Get entity list from database
+     * @param <T> Entity type
+     * @param sql HSQL Query
+     * @param limit Number of returned elements
+     * @param args Arguments
+     * @return 
+     */
     public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
         List<T> list = new ArrayList<T>();
         Session session = sessionFactory.openSession();
@@ -98,63 +135,87 @@ public class DAO {
             if (limit > 0) query.setMaxResults(limit);
             list = query.list();
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
+            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
         } finally {
             session.close();
         }
         return list;
     }
 
+    /**
+     * Update entity in database
+     * @param <T> Entity type
+     * @param object Entity object
+     * @return True if successfully updated, false else
+     */
     public static <T extends IEntity> boolean setObject(T object) {
         boolean b = false;
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        transaction.begin();
-        try {
-            session.update(object);
-            transaction.commit();
-            b = true;
-        } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
-        } finally {
-            if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+        synchronized (object) {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            transaction.begin();
+            try {
+                session.update(object);
+                transaction.commit();
+                b = true;
+            } catch (HibernateException e) {
+                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            } finally {
+                if (!transaction.wasCommitted()) transaction.rollback();
+                session.close();
+            }
         }
         return b;
     }
 
+    /**
+     * Insert entity in database
+     * @param <T> Entity type
+     * @param object Entity object
+     * @return Primary key value
+     */
     public static <T extends IEntity> Long addObject(T object) {
         Long id = null;
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        transaction.begin();
-        try {
-            id = (Long) session.save(object);
-            object.setId(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
-        } finally {
-            if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+        synchronized (object) {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            transaction.begin();
+            try {
+                id = (Long) session.save(object);
+                object.setId(id);
+                transaction.commit();
+            } catch (HibernateException e) {
+                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            } finally {
+                if (!transaction.wasCommitted()) transaction.rollback();
+                session.close();
+            }
         }
         return id;
     }
 
+    /**
+     * Delete entity from database
+     * @param <T> Entity type
+     * @param object Entity object
+     * @return True if successfully deleted, false else
+     */
     public static <T extends IEntity> boolean delObject(T object) {
         boolean b = false;
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        transaction.begin();
-        try {
-            session.delete(object);
-            transaction.commit();
-            b = true;
-        } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).warning(e.getLocalizedMessage());
-        } finally {
-            if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+        synchronized (object) {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            transaction.begin();
+            try {
+                session.delete(object);
+                transaction.commit();
+                b = true;
+            } catch (HibernateException e) {
+                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            } finally {
+                if (!transaction.wasCommitted()) transaction.rollback();
+                session.close();
+            }
         }
         return b;
     }

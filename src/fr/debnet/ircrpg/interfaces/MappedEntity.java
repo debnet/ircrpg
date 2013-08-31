@@ -25,7 +25,7 @@ public abstract class MappedEntity {
         return new HashMap<String, Object>(this.map);
     }
     
-    protected void set(String key, Object value) {
+    protected synchronized void set(String key, Object value) {
         if (this.enableMapping) {
             if (this.map.containsKey(key)) this.map.remove(key);
             this.map.put(key, value);

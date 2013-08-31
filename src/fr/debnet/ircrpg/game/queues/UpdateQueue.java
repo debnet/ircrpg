@@ -10,7 +10,9 @@ import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,24 +32,24 @@ public class UpdateQueue extends Thread implements IQueue {
     
     private Game game;
     private boolean run = true;
-    private final List<INotifiable> notifiables;
+    private List<INotifiable> notifiables;
     
+    private Map<Player, Calendar> players;
     private Player player;
     private Calendar date;
     
     public UpdateQueue(Game game) {
         this.game = game;
         this.notifiables = new ArrayList<INotifiable>();
+        this.players = new HashMap<Player, Calendar>();
         this.start();
     }
     
     @Override
     public boolean register(INotifiable notifiable) {
         if (!this.notifiables.contains(notifiable)) {
-            synchronized(this.notifiables) {
-                this.notifiables.add(notifiable);
-                return true;
-            }
+            this.notifiables.add(notifiable);
+            return true;
         }
         return false;
     }
@@ -55,26 +57,52 @@ public class UpdateQueue extends Thread implements IQueue {
     @Override
     public void run() {
         while (run) {
-            if (this.player != null && this.date != null) {
-                Calendar now = Calendar.getInstance();
-                if (now.after(this.date)) {
-                    Result result = this.game.update(this.player);
-                    for (INotifiable notifiable : this.notifiables) {
-                        notifiable.notify(result);
+            try {
+                if (this.player != null && this.date != null) {
+                    Calendar now = Calendar.getInstance();
+                    if (now.after(this.date)) {
+                        // Update player
+                        Result result = this.game.update(this.player, true);
+                        // Notify observers
+                        for (INotifiable notifiable : this.notifiables) {
+                            notifiable.notify(result);
+                        }
+                        // Get the next player to update
+                        this.next();
                     }
                 }
-            }
-            try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(UpdateQueue.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+    
+    private synchronized void next() {
+        Player player = null;
+        Calendar date = Config.MAX_DATE;
+        for (Map.Entry<Player, Calendar> entry : this.players.entrySet()) {
+            if (entry.getValue().before(date)) {
+                player = entry.getKey();
+                date = entry.getValue();
+            }
+        }
+        this.player = player;
+        this.date = date;
+    }
 
     @Override
-    public void update(Player player) {
-        if (!player.getOnline()) return;
+    public synchronized void update(Player player) {
+        // Check if the player is online
+        if (!player.getOnline()) {
+            if (player == this.player) {
+                this.players.remove(player);
+                this.next();
+            }
+            return;
+        }
+        
+        Calendar date = Config.MAX_DATE;
         // Check if the player's current activity will end
         if (player.getActivity() != Activity.NONE) {
             Calendar nextDate = Calendar.getInstance();
@@ -93,24 +121,26 @@ public class UpdateQueue extends Thread implements IQueue {
                     nextDate.add(Calendar.MINUTE, Config.WORKING_TIME_MAX);
                     break;
             }
-            if (this.date == null || nextDate.before(this.date)) {
-                this.player = player;
-                this.date = nextDate;
-            }
+            if (nextDate.before(date)) date = nextDate;
         }
         // Check if the player's current status will be cured by itself
         if (player.getStatus() != Status.NORMAL) {
             Calendar nextDate = Calendar.getInstance();
             nextDate.add(Calendar.MILLISECOND, player.getStatusDuration().intValue());
-            if (this.date == null || nextDate.before(this.date)) {
-                this.player = player;
-                this.date = nextDate;
-            }
+            if (nextDate.before(date)) date = nextDate;
         }
         // Check if the player will earn a level from training
         if (player.getActivity() == Activity.TRAINING) {
             // TODO: 
         }
+        // If the current player is next to update
+        if (this.date == null || date.before(this.date)) {
+            this.player = player;
+            this.date = date;
+        }
+        // Add or update player
+        this.players.remove(player);
+        this.players.put(player, date);
     }
     
     @Override

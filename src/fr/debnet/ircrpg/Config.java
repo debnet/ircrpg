@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -120,9 +122,15 @@ public class Config {
     public static final long HOUR = 3600000;
     public static final long MINUTE = 60000;
     public static final long SECOND = 1000;
+    // Max date
+    public static final Calendar MAX_DATE;
     
     static {
         Config.loadConfig("config.properties");
+        
+        Calendar date = Calendar.getInstance();
+        date.setTime(new Date(Long.MAX_VALUE));
+        MAX_DATE = date;
     }
     
     /**

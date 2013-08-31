@@ -386,11 +386,13 @@ public class Game {
         // Save object
         player.addTimeIngame(diff);
         player.setLastUpdate(current);
-        if (Config.PERSISTANCE && save) {
-            if (!DAO.<Player>setObject(player)) {
+        if (save) {
+            if (Config.PERSISTANCE && !DAO.<Player>setObject(player)) {
                 result.addReturn(Return.PERSISTANCE_ERROR);
                 return result;
             }
+            // Update queues on save
+            this.updateQueues(player);
         }
         // Return
         result.setSuccess(true);
@@ -1362,10 +1364,11 @@ public class Game {
                 }
                 this.playersByUsername.put(username, player);
                 this.playersByNickname.put(nickname, player);
+                result.setPlayer(player);
+                result.addReturn(Return.REGISTER_SUCCEED);
+                result.setSuccess(true);
             } else result.addReturn(Return.NICKNAME_IN_USE);
         } else result.addReturn(Return.USERNAME_ALREADY_TAKEN);
-        result.addReturn(Return.REGISTER_SUCCEED);
-        result.setSuccess(true);
         return result;
     }
     

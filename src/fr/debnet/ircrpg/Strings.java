@@ -447,7 +447,8 @@ public class Strings {
     };
     
     // Pattern for formatting "<fieldName(,format)>"
-    public static final Pattern FORMAT_PATTERN = Pattern.compile("<(\\w+\\.?\\w*);?(\\S*)>");
+    public static final Pattern FORMAT_PATTERN = 
+            Pattern.compile("<(\\w+\\.?\\w*);?(%?[a-z0-9\\=\\.\\+]*)>");
     
     static {
         Config.loadProperties("strings.properties", Strings.class);
@@ -489,14 +490,12 @@ public class Strings {
             if (values.containsKey(key)) {
                 String format = matcher.group(2);
                 boolean hasFormat = !"".equals(format);
-                // Hack: removing sign on numeric values
                 boolean isAbsolute = hasFormat && format.contains("=");
                 if (isAbsolute) format = format.replace("=", "");
                 
                 Object value = values.get(key);
                 if (value != null) {
                     String result = hasFormat ? String.format(format, value) : value.toString();
-                    // Hack: removing sign on numeric values
                     if (isAbsolute) result = result.replace("-", "");
                     matcher.appendReplacement(buffer, result);
                 }

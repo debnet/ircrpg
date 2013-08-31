@@ -31,6 +31,7 @@ public class Robot extends IRCBot implements INotifiable {
     
     public void connect() {
         try {
+            this.startIdentServer();
             this.setName(Config.IRC_NICKNAME);
             this.setEncoding(Config.IRC_CHARSET);
             super.connect(Config.IRC_SERVER, Config.IRC_PORT, Config.IRC_PASSWORD);
@@ -214,30 +215,32 @@ public class Robot extends IRCBot implements INotifiable {
             else if (Strings.COMMAND_INFOS.equalsIgnoreCase(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showInfos(nickname);
-                if (string != null) this.sendFormattedMessage(string, nickname);
+                if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Stats
             else if (Strings.COMMAND_STATS.equalsIgnoreCase(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showStats(nickname);
-                if (string != null) this.sendFormattedMessage(string, nickname);
+                if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Items 
             else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showItems(nickname);
-                if (string != null) this.sendFormattedMessage(string, nickname);
+                if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Spells 
             else if (Strings.COMMAND_SPELLS.equalsIgnoreCase(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showSpells(nickname);
-                if (string != null) this.sendFormattedMessage(string, nickname);
+                if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Look
             else if (Strings.COMMAND_LOOK.equalsIgnoreCase(command)) {
                 if (words.length > 1) {
-                    // TODO:
+                    String code = words[2];
+                    String string = this.game.look(code);
+                    if (string != null) this.sendFormattedMessage(sender, string);
                 }
             }
         }
