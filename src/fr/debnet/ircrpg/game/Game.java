@@ -20,6 +20,7 @@ import fr.debnet.ircrpg.helpers.CheckPotion;
 import fr.debnet.ircrpg.helpers.CheckSpell;
 import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.mock.Random;
+import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Item;
 import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Game engine
  * @author Marc
  */
 public class Game {
@@ -44,6 +45,7 @@ public class Game {
     private Map<String, Player> playersByUsername;
     private Map<String, Item> itemsByCode;
     private Map<String, Spell> spellsByCode;
+    private List<Event> events;
     
     private List<IQueue> queues;
 
@@ -53,17 +55,20 @@ public class Game {
     public Game() {
         this.admin = new Admin(this);
         this.random = new Random();
+        this.queues = new ArrayList<IQueue>();
+        
         this.playersByNickname = new HashMap<String, Player>();
         this.playersByUsername = new HashMap<String, Player>();
         this.itemsByCode = new HashMap<String, Item>();
         this.spellsByCode = new HashMap<String, Spell>();
-        this.queues = new ArrayList<IQueue>();
+        this.events = new ArrayList<Event>();
 
         // Load all entities
         if (Config.PERSISTANCE) {
             this.reloadPlayers();
             this.reloadItems();
             this.reloadSpells();
+            this.reloadEvents();
         }
         
         // Run queues
@@ -84,7 +89,6 @@ public class Game {
      */
     protected final void reloadPlayers() {
         List<Player> players = DAO.<Player>getObjectList("from " + Model.PLAYER);
-        // Get all players
         this.playersByNickname.clear();
         this.playersByUsername.clear();
         for (Player player : players) {
@@ -98,7 +102,6 @@ public class Game {
      */
     protected final void reloadItems() {
         List<Item> items = DAO.<Item>getObjectList("from " + Model.ITEM);
-        // Get all items
         this.itemsByCode.clear();
         for (Item item : items) {
             this.itemsByCode.put(item.getCode(), item);
@@ -110,11 +113,17 @@ public class Game {
      */
     protected final void reloadSpells() {
         List<Spell> spells = DAO.<Spell>getObjectList("from " + Model.SPELL);
-        // Get all spells
         this.spellsByCode.clear();
         for (Spell spell : spells) {
             this.spellsByCode.put(spell.getCode(), spell);
         }
+    }
+    
+    /**
+     * Reload all events
+     */
+    protected final void reloadEvents() {
+        this.events = DAO.<Event>getObjectList("from " + Model.EVENT);
     }
     
     /**
@@ -186,6 +195,61 @@ public class Game {
     }
     
     /**
+     * Get events matching player's current context
+     * @param player Player
+     * @return List of events
+     */
+    public List<Event> getEventsForPlayer(Player player) {
+        List<Event> events = new ArrayList<Event>();
+        // Get player's maximum health and mana
+        Modifiers modifiers = new Modifiers(player);
+        double maxHealth = player.getMaxHealth() + modifiers.getHealth();
+        double maxMana = player.getMaxMana() + modifiers.getMana();
+        double healthPercentage = 100 * player.getCurrentHealth() / maxHealth;
+        double manaPercentage = 100 * player.getCurrentMana() / maxMana;
+        
+        for (Event event : this.events) {
+            boolean isBelow = event.getValueBelow();
+            boolean isPercentage = event.getValuePercentage();
+            // Check activity
+            boolean activity = event.getActivityCondition() == Activity.NONE || 
+                    event.getActivityCondition() == player.getActivity();
+            if (!activity) continue;
+            // Check status
+            boolean status = event.getStatusCondition() == Status.NONE || 
+                    event.getStatusCondition() == player.getStatus();
+            if (!status) continue;
+            // Check level
+            boolean level = event.getLevelCondition() == 0 || (isBelow ? 
+                    event.getLevelCondition() <= player.getLevel() :
+                    event.getLevelCondition() >= player.getLevel() );
+            if (!level) continue;
+            // Check gold
+            boolean gold = event.getGoldCondition() == 0 || (isBelow ? 
+                    event.getGoldCondition() <= player.getGold() :
+                    event.getGoldCondition() >= player.getGold() );
+            if (!gold) continue;
+            // Check health
+            boolean health = event.getHealthCondition() == 0 || (isPercentage ? 
+                (isBelow ? event.getHealthCondition() <= healthPercentage : 
+                    event.getHealthCondition() >= healthPercentage) : 
+                (isBelow ? event.getHealthCondition() <= player.getCurrentHealth() :
+                    event.getHealthCondition() >= player.getCurrentHealth() ));
+            if (!health) continue;
+            // Check mana
+            boolean mana = event.getManaCondition() == 0 || (isPercentage ? 
+                (isBelow ? event.getManaCondition() <= manaPercentage : 
+                    event.getManaCondition() >= manaPercentage) : 
+                (isBelow ? event.getManaCondition() <= player.getCurrentMana() :
+                    event.getManaCondition() >= player.getCurrentMana() ));
+            if (!mana) continue;
+            // Add executeEvent to list (all checks passed)
+            events.add(event);
+        }
+        return events;
+    }
+    
+    /**
      * Update player data
      * @param sender Player's nickname
      * @return Result
@@ -193,40 +257,33 @@ public class Game {
     public Result updatePlayerByNickname(String sender) {
         Player player = this.getPlayerByNickname(sender);
         if (player != null) {
-            return this.update(player, false);
+            return this.update(player, false, false);
         }
         return null;
     }
     
     /**
-     * Update player data
-     * @see #update(fr.debnet.ircrpg.models.Player, boolean, boolean) 
+     * Update a player and push returns in given result if success
+     * @param result Given result instance
      * @param player Player instance
-     * @return Result
+     * @param save Save the player in database ?
+     * @param target Is the player targetted in the action ?
+     * @return Result Update result onluy
      */
-    public Result update(Player player) {
-        return this.update(player, false);
-    }
-    
-    /**
-     * Update player data
-     * @see #update(fr.debnet.ircrpg.models.Player, boolean, boolean) 
-     * @param player Player instance
-     * @param save Save the player's information in database
-     * @return Result
-     */
-    public Result update(Player player, boolean save) {
-        return this.update(player, save, false);
+    protected Result updateAndReturn(Result result, Player player, boolean save, boolean target) {
+        Result update = this.update(player, save, target);
+        if (update.isSuccess()) result.addReturnList(update.getReturns());
+        return update;
     }
     
     /**
      * Update player data (activity, status and experience)
      * @param player Player instance
-     * @param save Save the player's information in database
+     * @param save Save the player in database ?
      * @param target Is the player targetted in the action ?
      * @return Result
      */
-    protected Result update(Player player, boolean save, boolean target) {
+    public Result update(Player player, boolean save, boolean target) {
         Result result = new Result(Action.UPDATE, player);
         // Get time difference
         java.util.Calendar lastUpdate = player.getLastUpdate();
@@ -401,6 +458,46 @@ public class Game {
         }
         return result;
     }
+    
+    /**
+     * Execute an event on a player
+     * @param player Player
+     * @param event Event
+     * @return Result
+     */
+    public Result executeEvent(Player player, Event event) {
+        Result result = new Result(Action.EVENT, player);
+        // Calculate variance
+        double variance = (this.random.nextDouble() + 0.5d) * event.getVariance();
+        variance = variance == 0d ? 1d : variance;
+        // Health
+        double health = event.getHealthModifier() * variance;
+        player.addHealth(health);
+        result.setPlayerHealthChanges(health);
+        // Mana
+        double mana = event.getManaModifier() * variance;
+        player.addMana(mana);
+        result.setPlayerManaChanges(mana);
+        // Experience
+        double xp = event.getExperienceModifier() * variance;
+        player.addExperience(xp);
+        result.setPlayerExperienceChanges(xp);
+        // Gold
+        double gold = event.getGoldModifier() * variance;
+        player.addGold(gold);
+        result.setPlayerGoldChanges(gold);
+        // Event specific
+        result.setDetails(event.getId().toString());
+        result.setCustomMessage(event.getDescription());
+        // Update and save player
+        this.updateAndReturn(result, player, true, false);
+        // Return
+        result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
+        return result;
+    }
 
     /**
      * Fight between two players (with spell or not)
@@ -422,8 +519,8 @@ public class Game {
             if (defender == null) return result;
         } else defender = attacker;
         // Update players
-        this.update(attacker, false);
-        if (!self) this.update(defender, false, true);
+        this.updateAndReturn(result, attacker, false, false);
+        if (!self) this.updateAndReturn(result, defender, false, true);
         // Check attacker
         if (!Helpers.checkPlayer(result, attacker, 
             CheckPlayer.from(
@@ -639,8 +736,8 @@ public class Game {
             result.addPlayerManaChanges(-spell.getManaCost());
         }
         // Update and save players
-        result.addReturnList(this.update(attacker, true).getReturns());
-        if (!self) result.addReturnList(this.update(defender, true, true).getReturns());
+        this.updateAndReturn(result, attacker, true, false);
+        if (!self) this.updateAndReturn(result, defender, true, true);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -668,8 +765,8 @@ public class Game {
         Player defender = this.getPlayer(result, target, true);
         if (defender == null) return result;
         // Update players
-        this.update(attacker, false);
-        this.update(defender, false, true);
+        this.updateAndReturn(result, attacker, false, false);
+        this.updateAndReturn(result, defender, false, true);
         // Items modifiers
         Modifiers attackerModifiers = new Modifiers(attacker);
         Modifiers defenderModifiers = new Modifiers(defender);
@@ -737,8 +834,8 @@ public class Game {
             attacker.addMoneyStolen(gold);
         }
         // Update and save players
-        result.addReturnList(this.update(attacker, true).getReturns());
-        result.addReturnList(this.update(defender, true, true).getReturns());
+        this.updateAndReturn(result, attacker, true, false);
+        this.updateAndReturn(result, defender, true, true);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -759,7 +856,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check player
         if (!Helpers.checkPlayer(result, player, 
             CheckPlayer.from(
@@ -823,7 +920,7 @@ public class Game {
             }
         }
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         if (Config.PERSISTANCE) {
@@ -844,7 +941,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check player
         if (!Helpers.checkPlayer(result, player, 
             CheckPlayer.from(
@@ -866,7 +963,7 @@ public class Game {
         player.setActivity(activity);
         player.setActivityDuration(0l);
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         return result;
@@ -883,7 +980,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Player modifiers
         Modifiers modifiers = new Modifiers(player);
         // Earned
@@ -924,7 +1021,7 @@ public class Game {
         player.setActivity(Activity.WAITING);
         player.setActivityDuration(0l);
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setValue(earned);
         result.setSuccess(true);
@@ -943,7 +1040,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check player
         if (!Helpers.checkPlayer(result, player, 
             CheckPlayer.from(
@@ -987,7 +1084,7 @@ public class Game {
             }
         }
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         return result;
@@ -1005,11 +1102,11 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check if item is potion
         Potion potion = Potion.NONE;
         for (Potion p : Potion.values()) {
-            if (p.getText().equalsIgnoreCase(code)) {
+            if (p.toString().equalsIgnoreCase(code)) {
                 potion = p;
                 break;
             }
@@ -1103,10 +1200,10 @@ public class Game {
                 }
             }
             result.addReturn(Return.POTION_SUCCESSFULLY_BOUGHT);
-            result.setDetails(potion.getText());
+            result.setDetails(potion.toString());
         }
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         return result;
@@ -1124,7 +1221,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check item
         Item item = this.getItemByCode(code);
         if (!Helpers.checkItem(result, player, item, 
@@ -1146,7 +1243,7 @@ public class Game {
         result.addReturn(Return.ITEM_SUCCESSFULLY_SOLD);
         result.setDetails(item.getName());
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         return result;
@@ -1164,7 +1261,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Update player
-        this.update(player, false);
+        this.updateAndReturn(result, player, false, false);
         // Check spell
         Spell spell = this.getSpellByCode(code);
         if (!Helpers.checkSpell(result, player, spell, 
@@ -1193,7 +1290,7 @@ public class Game {
         // Update statistics
         player.addMoneySpent(spell.getGoldCost());
         // Update and save player
-        result.addReturnList(this.update(player, true).getReturns());
+        this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
         return result;
@@ -1226,7 +1323,7 @@ public class Game {
         Player player = this.getPlayerByNickname(nickname);
         if (player == null) return null;
         // Update player
-        this.update(player, false);
+        this.update(player, false, false);
         // Return data
         return Strings.format(format, player.toMap());
     }
@@ -1237,7 +1334,18 @@ public class Game {
      * @return Formatted string
      */
     public String showItems(String nickname) {
-        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_ITEMS);
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null) return null;
+        // Update player
+        this.update(player, false, false);
+        // Build list of items
+        List<String> list = new ArrayList<String>();
+        for (Item item : player.getItems()) {
+            list.add(Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap()));
+        }
+        // Return data
+        String string = String.format(Strings.FORMAT_PLAYER_ITEMS, Strings.join(list, ","));
+        return Strings.format(string, player.toMap());
     }
     
     /**
@@ -1246,7 +1354,18 @@ public class Game {
      * @return Formatted string
      */
     public String showSpells(String nickname) {
-        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_SPELLS);
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null) return null;
+        // Update player
+        this.update(player, false, false);
+        // Build list of spells
+        List<String> list = new ArrayList<String>();
+        for (Spell spell : player.getSpells()) {
+            list.add(Strings.format(Strings.FORMAT_SPELL_NAME, spell.toMap()));
+        }
+        // Return data
+        String string = String.format(Strings.FORMAT_PLAYER_SPELLS, Strings.join(list, ","));
+        return Strings.format(string, player.toMap());
     }
     
     /**
@@ -1255,7 +1374,12 @@ public class Game {
      * @return Formatted string
      */
     public String showInfos(String nickname) {
-        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_INFOS);
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null) return null;
+        // Update player
+        this.update(player, false, false);
+        // Return data
+        return Strings.format(Strings.FORMAT_PLAYER_INFOS, player.toMap());
     }
     
     /**
@@ -1264,7 +1388,12 @@ public class Game {
      * @return Formatted string
      */
     public String showStats(String nickname) {
-        return this.showPlayerData(nickname, Strings.FORMAT_PLAYER_STATS);
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null) return null;
+        // Update player
+        this.update(player, false, false);
+        // Return data
+        return Strings.format(Strings.FORMAT_PLAYER_STATS, player.toMap());
     }
 
     /**
@@ -1287,7 +1416,7 @@ public class Game {
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
-                if (this.update(player, true).isSuccess()) {
+                if (this.update(player, true, false).isSuccess()) {
                     result.addReturn(Return.LOGIN_SUCCEED);
                     result.setSuccess(true);
                 } else result.addReturn(Return.PERSISTANCE_ERROR);
@@ -1310,7 +1439,7 @@ public class Game {
         if (player != null) {
             if (hostname.equals(player.getHostname())) {
                 player.setOnline(true);
-                if (this.update(player, true).isSuccess()) {
+                if (this.update(player, true, false).isSuccess()) {
                     result.addReturn(Return.LOGIN_SUCCEED);
                     result.setSuccess(true);
                 }
@@ -1330,7 +1459,7 @@ public class Game {
         Player player = this.getPlayerByNickname(nickname);
         if (player != null) {
             player.setOnline(false);
-            if (this.update(player, true).isSuccess()) {
+            if (this.update(player, true, false).isSuccess()) {
                 result.addReturn(Return.LOGOUT_SUCCEED);
                 result.setSuccess(true);
             } else result.addReturn(Return.PERSISTANCE_ERROR);

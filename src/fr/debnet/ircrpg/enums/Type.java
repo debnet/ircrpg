@@ -5,26 +5,25 @@ package fr.debnet.ircrpg.enums;
  * @author Marc
  */
 public enum Type {
-    OBJECT  (null),
-    STRING  ("String"),
-    BOOLEAN ("boolean"),
-    INTEGER ("int"),
-    DECIMAL ("double");
+    OBJECT      (null, null),
+    STRING      ("char", "String"),
+    BOOLEAN     ("boolean", "Boolean"),
+    INTEGER     ("int", "Integer"),
+    DECIMAL     ("double", "Double");
     
-    private final String value;
+    private final String primitive;
+    private final String object;
 
-    private Type(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
+    private Type(String primitive, String object) {
+        this.primitive = primitive;
+        this.object = object;
     }
     
-    public static Type fromString(String value) {
-        for (Type t : Type.values()) {
-            if (value.equalsIgnoreCase(t.value)) {
-                return t;
+    public static Type from(Class<?> clazz) {
+        String value = clazz.getSimpleName();
+        for (Type type : Type.values()) {
+            if (value.equals(type.primitive) || value.equals(type.object)) {
+                return type;
             }
         }
         return Type.OBJECT;

@@ -5,7 +5,6 @@ import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,7 +16,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
- *
+ * Event
  * @author Marc
  */
 @Entity(name = "Event")
@@ -29,11 +28,17 @@ public class Event extends MappedEntity implements IEntity {
     private Activity activityCondition;
     private Status statusCondition;
     private Integer levelCondition;
-    private Integer healthModifier;
-    private Integer manaModifier;
-    private Integer experienceModifier;
-    private Integer goldModifier;
-    private Integer chance;
+    private Integer goldCondition;
+    private Integer healthCondition;
+    private Integer manaCondition;
+    private Boolean valueBelow;
+    private Boolean valuePercentage;
+    private Double healthModifier;
+    private Double manaModifier;
+    private Double experienceModifier;
+    private Double goldModifier;
+    private Double chance;
+    private Double variance;
     
     public Event() {
         this.initialize();
@@ -42,6 +47,21 @@ public class Event extends MappedEntity implements IEntity {
     private void initialize() {
         this.setId(0l);
         this.setVersion(0);
+        this.setDescription(null);
+        this.setActivityCondition(Activity.NONE);
+        this.setStatusCondition(Status.NONE);
+        this.setLevelCondition(0);
+        this.setGoldCondition(0);
+        this.setHealthCondition(0);
+        this.setManaCondition(0);
+        this.setValueBelow(true);
+        this.setValuePercentage(true);
+        this.setHealthModifier(0d);
+        this.setManaModifier(0d);
+        this.setExperienceModifier(0d);
+        this.setGoldModifier(0d);
+        this.setChance(0d);
+        this.setVariance(0d);
     }
     
     @Override
@@ -74,7 +94,7 @@ public class Event extends MappedEntity implements IEntity {
         this.version = version;
         this.set("version", this.version);
     }
-
+    
     @Column
     public String getDescription() {
         return description;
@@ -114,79 +134,117 @@ public class Event extends MappedEntity implements IEntity {
 
     public void setLevelCondition(Integer levelCondition) {
         this.levelCondition = levelCondition;
-        this.set("description", this.description);
+        this.set("levelCondition", this.levelCondition);
+    }
+    
+    @Column
+    public Integer getGoldCondition() {
+        return goldCondition;
+    }
+
+    public void setGoldCondition(Integer goldCondition) {
+        this.goldCondition = goldCondition;
+        this.set("goldCondition", this.goldCondition);
     }
 
     @Column
-    public Integer getHealthModifier() {
+    public Integer getHealthCondition() {
+        return healthCondition;
+    }
+
+    public void setHealthCondition(Integer healthCondition) {
+        this.healthCondition = healthCondition;
+        this.set("healthCondition", this.healthCondition);
+    }
+
+    @Column
+    public Integer getManaCondition() {
+        return manaCondition;
+    }
+
+    public void setManaCondition(Integer manaCondition) {
+        this.manaCondition = manaCondition;
+        this.set("manaCondition", this.manaCondition);
+    }
+
+    @Column
+    public Boolean getValueBelow() {
+        return valueBelow;
+    }
+
+    public void setValueBelow(Boolean valueBelow) {
+        this.valueBelow = valueBelow;
+        this.set("valueBelow", this.valueBelow);
+    }
+
+    @Column
+    public Boolean getValuePercentage() {
+        return valuePercentage;
+    }
+
+    public void setValuePercentage(Boolean valuePercentage) {
+        this.valuePercentage = valuePercentage;
+        this.set("valuePercentage", this.valuePercentage);
+    }
+    
+    @Column
+    public Double getHealthModifier() {
         return healthModifier;
     }
 
-    public void setHealthModifier(Integer healthModifier) {
+    public void setHealthModifier(Double healthModifier) {
         this.healthModifier = healthModifier;
         this.set("healthModifier", this.healthModifier);
     }
 
     @Column
-    public Integer getManaModifier() {
+    public Double getManaModifier() {
         return manaModifier;
     }
 
-    public void setManaModifier(Integer manaModifier) {
+    public void setManaModifier(Double manaModifier) {
         this.manaModifier = manaModifier;
         this.set("manaModifier", this.manaModifier);
     }
 
     @Column
-    public Integer getExperienceModifier() {
+    public Double getExperienceModifier() {
         return experienceModifier;
     }
 
-    public void setExperienceModifier(Integer experienceModifier) {
+    public void setExperienceModifier(Double experienceModifier) {
         this.experienceModifier = experienceModifier;
         this.set("experienceModifier", this.experienceModifier);
     }
 
     @Column
-    public Integer getGoldModifier() {
+    public Double getGoldModifier() {
         return goldModifier;
     }
 
-    public void setGoldModifier(Integer goldModifier) {
+    public void setGoldModifier(Double goldModifier) {
         this.goldModifier = goldModifier;
         this.set("goldModifier", this.goldModifier);
     }
 
     @Column
-    public Integer getChance() {
+    public Double getChance() {
         return chance;
     }
 
-    public void setChance(Integer chance) {
+    public void setChance(Double chance) {
         this.chance = chance;
         this.set("chance", this.chance);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        return hash;
+    @Column
+    public Double getVariance() {
+        return variance;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Event other = (Event) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+    public void setVariance(Double variance) {
+        this.variance = variance;
+        this.set("variance", this.variance);
     }
     
     @Override

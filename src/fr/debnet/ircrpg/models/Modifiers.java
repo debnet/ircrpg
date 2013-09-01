@@ -1,7 +1,7 @@
 package fr.debnet.ircrpg.models;
 
 /**
- *
+ * Modifiers
  * @author Marc
  */
 public class Modifiers {

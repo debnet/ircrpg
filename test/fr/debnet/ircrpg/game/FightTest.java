@@ -26,6 +26,9 @@ public class FightTest {
     private Game game;
     
     public FightTest() {
+        // Override configuration
+        Config.loadConfig("config.tests.properties");
+        // New game
         this.game = new Game();
     }
     
@@ -41,8 +44,6 @@ public class FightTest {
     
     @Before
     public void setUp() {
-        // Override configuration
-        Config.loadConfig("config.tests.properties");
         // Create player
         Result r = this.game.register("p1", null, "p1", null);
         assertTrue("Creating player", r.isSuccess());

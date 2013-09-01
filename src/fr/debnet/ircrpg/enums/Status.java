@@ -7,11 +7,11 @@ import fr.debnet.ircrpg.Strings;
  * @author Marc
  */
 public enum Status {
-    NONE        (0, null),
-    NORMAL      (1, Strings.STATUS_NORMAL),
-    POISONED    (2, Strings.STATUS_POISONED),
-    PARALYZED   (3, Strings.STATUS_PARALYZED),
-    DEAD        (4, Strings.STATUS_DEAD);
+    NONE        (0x0, null),
+    NORMAL      (0x1, Strings.STATUS_NORMAL),
+    POISONED    (0x2, Strings.STATUS_POISONED),
+    PARALYZED   (0x3, Strings.STATUS_PARALYZED),
+    DEAD        (0x4, Strings.STATUS_DEAD);
     
     private final int value;
     private final String text;
@@ -20,15 +20,8 @@ public enum Status {
         this.value = value;
         this.text = text;
     }
-
-    public int getValue() {
-        return this.value;
-    }
-
-    public String getText() {
-        return this.text;
-    }
     
+    @Override
     public String toString() {
         return this.text;
     }

@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.Strings;
 
 /**
- *
+ * Time
  * @author Marc
  */
 public class Time {

@@ -16,7 +16,7 @@ import fr.debnet.ircrpg.models.Result;
 import java.util.logging.Logger;
 
 /**
- *
+ * IRC robot implementation
  * @author Marc
  */
 public class Robot extends IRCBot implements INotifiable {
@@ -176,7 +176,7 @@ public class Robot extends IRCBot implements INotifiable {
                     }
                     Potion potion = Potion.NONE;
                     for (Potion p : Potion.values()) {
-                        if (p.getText().equalsIgnoreCase(item)) {
+                        if (p.toString().equalsIgnoreCase(item)) {
                             potion = p;
                             break;
                         }
@@ -202,7 +202,7 @@ public class Robot extends IRCBot implements INotifiable {
                 if (words.length == 2) {
                     Stat stat = Stat.NONE;
                     for (Stat s : Stat.values()) {
-                        if (s.getText().equalsIgnoreCase(words[1])) {
+                        if (s.toString().equalsIgnoreCase(words[1])) {
                             stat = s;
                             break;
                         }
@@ -330,6 +330,7 @@ public class Robot extends IRCBot implements INotifiable {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onTopic(String channel, String topic) {
         
     }
@@ -465,11 +466,13 @@ public class Robot extends IRCBot implements INotifiable {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onDccSendRequest(String sourceNick, String sourceLogin, String sourceHostname, String filename, long address, int port, int size) {
         
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onDccChatRequest(String sourceNick, String sourceLogin, String sourceHostname, long address, int port) {
         
     }

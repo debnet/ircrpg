@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Static strings class
  * @author Marc
  */
 public class Strings {
@@ -31,6 +31,10 @@ public class Strings {
     public static String FORMAT_PLAYER_ITEMS;
     @Property(name = "format.player_spells")
     public static String FORMAT_PLAYER_SPELLS;
+    @Property(name = "format.item_name")
+    public static String FORMAT_ITEM_NAME;
+    @Property(name = "format.spell_name")
+    public static String FORMAT_SPELL_NAME;
     @Property(name = "format.item_infos")
     public static String FORMAT_ITEM_INFOS;
     @Property(name = "format.spell_infos")

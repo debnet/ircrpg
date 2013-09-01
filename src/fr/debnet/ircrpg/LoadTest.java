@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Main class for load tests
  * @author marc
  */
 public class LoadTest extends Thread {
@@ -19,6 +19,10 @@ public class LoadTest extends Thread {
     private static List<String> players = new ArrayList<String>();
     private static Random random = new Random();
     
+    /**
+     * Main method
+     * @param args Arguments 
+     */
     public static void main(String[] args) {
         Config.loadConfig("config.tests.properties");
         game = new Game();
@@ -40,6 +44,10 @@ public class LoadTest extends Thread {
     
     private String player;
     
+    /**
+     * Constructor
+     * @param player Player 
+     */
     public LoadTest(String player) {
         this.player = player;
         this.start();

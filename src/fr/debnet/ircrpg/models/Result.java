@@ -24,7 +24,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Index;
 
 /**
- *
+ * Result
  * @author Marc
  */
 @Entity(name = "Result")
@@ -51,6 +51,7 @@ public class Result extends MappedEntity implements IEntity {
     
     private double value;
     private String details;
+    private String customMessage;
     
     public Result() {
         this.initialize();
@@ -75,6 +76,7 @@ public class Result extends MappedEntity implements IEntity {
         this.setTargetExperienceChanges(0d);
         this.setValue(0d);
         this.setDetails(null);
+        this.setCustomMessage(null);
     }
     
     public Result(Action action) {
@@ -362,6 +364,16 @@ public class Result extends MappedEntity implements IEntity {
     public void setDetails(String details) {
         this.details = details;
         this.set("details", this.details);
+    }
+
+    @Transient
+    public String getCustomMessage() {
+        return customMessage;
+    }
+
+    public void setCustomMessage(String customMessage) {
+        this.customMessage = customMessage;
+        this.set("customMessage", this.customMessage);
     }
 
     /* Specific methods */

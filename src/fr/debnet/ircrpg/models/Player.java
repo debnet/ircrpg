@@ -25,7 +25,7 @@ import javax.persistence.Version;
 import org.hibernate.annotations.Index;
 
 /**
- *
+ * Player
  * @author Marc
  */
 @Entity(name = "Player")
@@ -57,6 +57,7 @@ public class Player extends MappedEntity implements IEntity {
     private Long activityDuration;
     private Long statusDuration;
     private Calendar lastUpdate;
+    private Calendar lastEvent;
     private List<Item> items;
     private List<Spell> spells;
     
@@ -103,6 +104,7 @@ public class Player extends MappedEntity implements IEntity {
         this.setActivityDuration(0l);
         this.setStatusDuration(0l);
         this.setLastUpdate(Calendar.getInstance());
+        this.setLastEvent(Calendar.getInstance());
         this.setItems(new ArrayList<Item>());
         this.setSpells(new ArrayList<Spell>());
         
@@ -391,6 +393,17 @@ public class Player extends MappedEntity implements IEntity {
     public void setLastUpdate(Calendar lastUpdate) {
         this.lastUpdate = lastUpdate;
         this.set("lastUpdate", this.lastUpdate);
+    }
+
+    @Column
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    public Calendar getLastEvent() {
+        return lastEvent;
+    }
+
+    public void setLastEvent(Calendar lastEvent) {
+        this.lastEvent = lastEvent;
+        this.set("lastEvent", this.lastEvent);
     }
 
     @Column
@@ -710,6 +723,11 @@ public class Player extends MappedEntity implements IEntity {
         this.set("currentMana", this.currentMana);
     }
 
+    public void addExperience(int experience) {
+        this.experience += experience;
+        this.set("experience", this.experience);
+    }
+    
     public void addGold(int gold) {
         this.gold += gold;
         this.set("gold", this.gold);

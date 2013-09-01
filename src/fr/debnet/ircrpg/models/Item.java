@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
- *
+ * Item
  * @author Marc
  */
 @Entity(name = "Item")

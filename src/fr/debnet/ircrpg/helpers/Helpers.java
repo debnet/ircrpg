@@ -94,7 +94,7 @@ public class Helpers {
                     for (Item equipment : player.getItems()) {
                         if (equipment.getType() == item.getType()) {
                             result.addReturn(Return.TYPE_ALREADY_EQUIPPED);
-                            result.setDetails(item.getType().getText());
+                            result.setDetails(item.getType().toString());
                             return false;
                         }
                     }
@@ -192,7 +192,7 @@ public class Helpers {
                 return false;
             }
             case HEALTH: {
-                result.setDetails(potion.getText());
+                result.setDetails(potion.toString());
                 // Check the number of health potions
                 if (checks.contains(CheckPotion.HAS_ENOUGH) && 
                         player.getHealthPotions() < 1) {
@@ -216,7 +216,7 @@ public class Helpers {
                 break;
             }
             case MANA: {
-                result.setDetails(potion.getText());
+                result.setDetails(potion.toString());
                 // Check the number of mana potions
                 if (checks.contains(CheckPotion.HAS_ENOUGH) && 
                         player.getManaPotions() < 1) {
@@ -240,7 +240,7 @@ public class Helpers {
                 break;
             }
             case REMEDY: {
-                result.setDetails(potion.getText());
+                result.setDetails(potion.toString());
                 // Check the number of remedy
                 if (checks.contains(CheckPotion.HAS_ENOUGH) && 
                         player.getRemedyPotions() < 1) {
@@ -274,8 +274,12 @@ public class Helpers {
     public static String getMessage(Result result) {
         Map<String, Object> map = result.toMap();
         StringBuilder build = new StringBuilder(); 
+        if (result.getCustomMessage() != null) {
+            build.append(Strings.format(result.getCustomMessage(), map).trim());
+            build.append(" ");
+        }
         for (Return r : result.getReturns()) {
-            build.append(Strings.format(r.getText(), map).trim());
+            build.append(Strings.format(r.toString(), map).trim());
             build.append(" ");
         }
         return build.toString().trim();

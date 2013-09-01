@@ -7,10 +7,10 @@ import fr.debnet.ircrpg.Strings;
  * @author Marc
  */
 public enum Potion {
-    NONE        (0, null),
-    HEALTH      (1, Strings.POTION_HEALTH),
-    MANA        (2, Strings.POTION_MANA),
-    REMEDY      (3, Strings.POTION_REMEDY);
+    NONE        (0x0, null),
+    HEALTH      (0x1, Strings.POTION_HEALTH),
+    MANA        (0x2, Strings.POTION_MANA),
+    REMEDY      (0x3, Strings.POTION_REMEDY);
     
     private final int value;
     private final String text;
@@ -19,15 +19,8 @@ public enum Potion {
         this.value = value;
         this.text = text;
     }
-
-    public int getValue() {
-        return this.value;
-    }
     
-    public String getText() {
-        return this.text;
-    }
-    
+    @Override
     public String toString() {
         return this.text;
     }

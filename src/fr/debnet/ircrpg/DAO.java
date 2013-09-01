@@ -16,9 +16,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 /**
- * Hibernate Utility class with a convenient method to get Session Factory
- * object.
- *
+ * Hibernate Utility class with a convenient method to get Session Factory object.
  * @author Marc
  */
 public class DAO {
@@ -53,6 +51,7 @@ public class DAO {
      * @param id Primary key value
      * @return Entity object
      */
+    @SuppressWarnings("unchecked")
     public static <T extends IEntity> T getObject(Class<T> _class, Long id) {
         T object = null;
         Session session = sessionFactory.openSession();
@@ -86,6 +85,7 @@ public class DAO {
      * @param args Arguments
      * @return Entity object
      */
+    @SuppressWarnings("unchecked")
     public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
         T object = null;
         Session session = sessionFactory.openSession();
@@ -124,6 +124,7 @@ public class DAO {
      * @param args Arguments
      * @return 
      */
+    @SuppressWarnings("unchecked")
     public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
         List<T> list = new ArrayList<T>();
         Session session = sessionFactory.openSession();

@@ -7,11 +7,11 @@ import fr.debnet.ircrpg.Strings;
  * @author Marc
  */
 public enum Stat {
-    NONE        (0, null),
-    HEALTH      (1, Strings.STAT_HEALTH),
-    MANA        (2, Strings.STAT_MANA),
-    ATTACK      (3, Strings.STAT_ATTACK),
-    DEFENSE     (4, Strings.STAT_DEFENSE);
+    NONE        (0x0, null),
+    HEALTH      (0x1, Strings.STAT_HEALTH),
+    MANA        (0x2, Strings.STAT_MANA),
+    ATTACK      (0x3, Strings.STAT_ATTACK),
+    DEFENSE     (0x4, Strings.STAT_DEFENSE);
         
     private final int value;
     private final String text;
@@ -20,15 +20,8 @@ public enum Stat {
         this.value = value;
         this.text = text;
     }
-
-    public int getValue() {
-        return this.value;
-    }
     
-    public String getText() {
-        return this.text;
-    }
-    
+    @Override
     public String toString() {
         return this.text;
     }

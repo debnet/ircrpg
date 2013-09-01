@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- *
+ * Static configuration class
  * @author Marc
  */
 public class Config {
@@ -114,6 +114,10 @@ public class Config {
     public static double THEFT_CHANCE;
     @Property(name = "game.theft.gold") 
     public static double THEFT_GOLD;
+    @Property(name = "game.event.sleep")
+    public static int EVENT_SLEEP;
+    @Property(name = "game.event.time")
+    public static int EVENT_TIME;
     
     /* Hibernate config */
     public static Map<String, String> HIBERNATE_CONFIG;
@@ -227,7 +231,7 @@ public class Config {
                 Property property = field.getAnnotation(Property.class);
                 if (property != null) {
                     String name = property.name();
-                    Type type = Type.fromString(field.getType().getSimpleName());
+                    Type type = Type.from(field.getType());
                     switch (type) {
                         case STRING:
                             field.set(null, properties.getProperty(name));

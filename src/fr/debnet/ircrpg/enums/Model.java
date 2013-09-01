@@ -10,20 +10,16 @@ import fr.debnet.ircrpg.models.Spell;
  * @author Marc
  */
 public enum Model {
-    PLAYER(Player.class),
-    ITEM(Item.class),
-    SPELL(Spell.class),
-    EVENT(Event.class),
-    RESULT(Event.class);
+    PLAYER      (Player.class),
+    ITEM        (Item.class),
+    SPELL       (Spell.class),
+    EVENT       (Event.class),
+    RESULT      (Event.class);
 
     private final Class value;
 
     private Model(Class value) {
         this.value = value;
-    }
-
-    public Class getValue() {
-        return this.value;
     }
 
     @Override

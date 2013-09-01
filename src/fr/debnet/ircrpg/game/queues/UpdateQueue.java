@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Update player thread
  * @author Marc
  */
 public class UpdateQueue extends Thread implements IQueue {
@@ -62,7 +62,7 @@ public class UpdateQueue extends Thread implements IQueue {
                     Calendar now = Calendar.getInstance();
                     if (now.after(this.date)) {
                         // Update player
-                        Result result = this.game.update(this.player, true);
+                        Result result = this.game.update(this.player, true, false);
                         // Notify observers
                         for (INotifiable notifiable : this.notifiables) {
                             notifiable.notify(result);

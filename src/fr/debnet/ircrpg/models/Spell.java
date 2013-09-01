@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
- *
+ * Spell
  * @author Marc
  */
 @Entity(name = "Spell")
