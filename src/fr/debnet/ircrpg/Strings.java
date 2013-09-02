@@ -2,9 +2,11 @@ package fr.debnet.ircrpg;
 
 import fr.debnet.ircbot.Colors;
 import fr.debnet.ircrpg.annotations.Property;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class Strings {
     
-    // Format time
+    /* Time */
     @Property(name = "format.time_seconds")
     public static String FORMAT_TIME_SECONDS;
     @Property(name = "format.time_minutes")
@@ -23,6 +25,9 @@ public class Strings {
     @Property(name = "format.time_hours")
     public static String FORMAT_TIME_HOURS;
     
+    /* Formats */
+    @Property(name = "format.none")
+    public static String FORMAT_NONE;
     @Property(name = "format.player_infos")
     public static String FORMAT_PLAYER_INFOS;
     @Property(name = "format.player_stats")
@@ -31,6 +36,10 @@ public class Strings {
     public static String FORMAT_PLAYER_ITEMS;
     @Property(name = "format.player_spells")
     public static String FORMAT_PLAYER_SPELLS;
+    @Property(name = "format.shop_items")
+    public static String FORMAT_SHOP_ITEMS;
+    @Property(name = "format.shop_spells")
+    public static String FORMAT_SHOP_SPELLS;
     @Property(name = "format.item_name")
     public static String FORMAT_ITEM_NAME;
     @Property(name = "format.spell_name")
@@ -158,6 +167,24 @@ public class Strings {
     @Property(name = "command.spells")
     public static String COMMAND_SPELLS;
     
+    /* Admin commands */
+    @Property(name = "command.new")
+    public static String COMMAND_NEW;
+    @Property(name = "command.edit")
+    public static String COMMAND_EDIT;
+    @Property(name = "command.set")
+    public static String COMMAND_SET;
+    @Property(name = "command.get")
+    public static String COMMAND_GET;
+    @Property(name = "command.save")
+    public static String COMMAND_SAVE;
+    @Property(name = "command.delete")
+    public static String COMMAND_DELETE;
+    @Property(name = "command.map")
+    public static String COMMAND_MAP;
+    @Property(name = "command.config")
+    public static String COMMAND_CONFIG;
+    
     /* Command helps */
     @Property(name = "help.help")
     public static String HELP_HELP;
@@ -210,6 +237,10 @@ public class Strings {
     public static String RETURN_UNKNOWN_ERROR;
     @Property(name = "return.unknown_command")
     public static String RETURN_UNKNOWN_COMMAND;
+    @Property(name = "return.admin_command_succeed")
+    public static String RETURN_ADMIN_COMMAND_SUCCEED;
+    @Property(name = "return.admin_command_failed")
+    public static String RETURN_ADMIN_COMMAND_FAILED;
     // General returns (player)
     @Property(name = "return.unknown_player")
     public static String RETURN_UNKNOWN_PLAYER;
@@ -411,50 +442,50 @@ public class Strings {
     
     /* Constants */
     // Colors
-    public static final String NORMAL = "<n>";
-    public static final String BOLD = "<b>";
-    public static final String ITALIC = "<i>";
-    public static final String UNDERLINED = "<u>";
-    public static final String BLACK = "<black>";
-    public static final String BLUE = "<blue>";
-    public static final String BROWN = "<brown>";
-    public static final String CYAN = "<cyan>";
-    public static final String DARK_BLUE = "<dblue>";
-    public static final String DARK_GRAY = "<dgray>";
-    public static final String DARK_GREEN = "<dgreen>";
-    public static final String GREEN = "<green>";
-    public static final String LIGHT_GRAY = "<lgray>";
-    public static final String MAGENTA = "<magenta>";
-    public static final String OLIVE = "<olive>";
-    public static final String PURPLE = "<purple>";
-    public static final String RED = "<red>";
-    public static final String TEAL = "<teal>";
-    public static final String WHITE = "<white>";
-    public static final String YELLOW = "<yellow>";
+    private static final String _NORMAL = "<n>";
+    private static final String _BOLD = "<b>";
+    private static final String _ITALIC = "<i>";
+    private static final String _UNDERLINED = "<u>";
+    private static final String _BLACK = "<black>";
+    private static final String _BLUE = "<blue>";
+    private static final String _BROWN = "<brown>";
+    private static final String _CYAN = "<cyan>";
+    private static final String _DARK_BLUE = "<dblue>";
+    private static final String _DARK_GRAY = "<dgray>";
+    private static final String _DARK_GREEN = "<dgreen>";
+    private static final String _GREEN = "<green>";
+    private static final String _LIGHT_GRAY = "<lgray>";
+    private static final String _MAGENTA = "<magenta>";
+    private static final String _OLIVE = "<olive>";
+    private static final String _PURPLE = "<purple>";
+    private static final String _RED = "<red>";
+    private static final String _TEAL = "<teal>";
+    private static final String _WHITE = "<white>";
+    private static final String _YELLOW = "<yellow>";
     
     // Map of colors
     private final static Map<String, Object> COLORS = new HashMap<String, Object>() {
         {
-            this.put(Strings.NORMAL, Colors.NORMAL);
-            this.put(Strings.BOLD, Colors.BOLD);
-            this.put(Strings.ITALIC, Colors.REVERSE);
-            this.put(Strings.UNDERLINED, Colors.UNDERLINE);
-            this.put(Strings.BLACK, Colors.BLACK);
-            this.put(Strings.BLUE, Colors.BLUE);
-            this.put(Strings.BROWN, Colors.BROWN);
-            this.put(Strings.CYAN, Colors.CYAN);
-            this.put(Strings.DARK_BLUE, Colors.DARK_BLUE);
-            this.put(Strings.DARK_GRAY, Colors.DARK_GRAY);
-            this.put(Strings.DARK_GREEN, Colors.DARK_GREEN);
-            this.put(Strings.GREEN, Colors.GREEN);
-            this.put(Strings.LIGHT_GRAY, Colors.LIGHT_GRAY);
-            this.put(Strings.MAGENTA, Colors.MAGENTA);
-            this.put(Strings.OLIVE, Colors.OLIVE);
-            this.put(Strings.PURPLE, Colors.PURPLE);
-            this.put(Strings.RED, Colors.RED);
-            this.put(Strings.TEAL, Colors.TEAL);
-            this.put(Strings.WHITE, Colors.WHITE);
-            this.put(Strings.YELLOW, Colors.YELLOW);
+            this.put(Strings._NORMAL, Colors.NORMAL);
+            this.put(Strings._BOLD, Colors.BOLD);
+            this.put(Strings._ITALIC, Colors.REVERSE);
+            this.put(Strings._UNDERLINED, Colors.UNDERLINE);
+            this.put(Strings._BLACK, Colors.BLACK);
+            this.put(Strings._BLUE, Colors.BLUE);
+            this.put(Strings._BROWN, Colors.BROWN);
+            this.put(Strings._CYAN, Colors.CYAN);
+            this.put(Strings._DARK_BLUE, Colors.DARK_BLUE);
+            this.put(Strings._DARK_GRAY, Colors.DARK_GRAY);
+            this.put(Strings._DARK_GREEN, Colors.DARK_GREEN);
+            this.put(Strings._GREEN, Colors.GREEN);
+            this.put(Strings._LIGHT_GRAY, Colors.LIGHT_GRAY);
+            this.put(Strings._MAGENTA, Colors.MAGENTA);
+            this.put(Strings._OLIVE, Colors.OLIVE);
+            this.put(Strings._PURPLE, Colors.PURPLE);
+            this.put(Strings._RED, Colors.RED);
+            this.put(Strings._TEAL, Colors.TEAL);
+            this.put(Strings._WHITE, Colors.WHITE);
+            this.put(Strings._YELLOW, Colors.YELLOW);
         }
     };
     
@@ -486,6 +517,20 @@ public class Strings {
             }
         }
         return builder.toString();
+    }
+    
+    /**
+     * Cut a string in parts of the same given size
+     * @param string Input string
+     * @param size Size of each part
+     * @return List of strings
+     */
+    public static List<String> slice(String string, int size) {
+        List<String> parts = new ArrayList<String>();
+        int length = string.length();
+        for (int i = 0; i < length; i += size)
+            parts.add(string.substring(i, Math.min(length, i + size)));
+        return parts;
     }
     
     /**

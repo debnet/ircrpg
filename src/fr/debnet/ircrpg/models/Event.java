@@ -24,6 +24,7 @@ public class Event extends MappedEntity implements IEntity {
     
     private Long id;
     private Integer version;
+    private String code;
     private String description;
     private Activity activityCondition;
     private Status statusCondition;
@@ -93,6 +94,16 @@ public class Event extends MappedEntity implements IEntity {
     public void setVersion(Integer version) {
         this.version = version;
         this.set("version", this.version);
+    }
+
+    @Column(unique = true, nullable = false)
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+        this.set("code", this.code);
     }
     
     @Column

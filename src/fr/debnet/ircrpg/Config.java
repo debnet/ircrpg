@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -34,6 +36,8 @@ public class Config {
     public static String IRC_CHARSET;
     @Property(name = "irc.password") 
     public static String IRC_PASSWORD;
+    @Property(name = "irc.maxlength")
+    public static int IRC_MAX_LENGTH;
     
     /* Game config */
     @Property(name = "game.debug") 
@@ -176,8 +180,7 @@ public class Config {
                         return String.valueOf(field.getDouble(null));
                     } else if (type.isAssignableFrom(Boolean.TYPE)) {
                         return String.valueOf(field.getBoolean(null));
-                    }
-                    return null;
+                    } else return field.get(null).toString();
                 }
             }
         } catch (Exception ex) {
@@ -215,6 +218,25 @@ public class Config {
             Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
         }
         return false;
+    }
+    
+    /**
+     * List all config keys
+     * @return List of config keys
+     */
+    public static List<String> getFields() {
+        List<String> fields = new ArrayList<String>();
+        try {
+            Field[] declaredFields = Config.class.getDeclaredFields();
+            for (Field field : declaredFields) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    fields.add(field.getName().toLowerCase());
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+        }
+        return fields;
     }
     
     /**

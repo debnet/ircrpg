@@ -45,7 +45,7 @@ public class Game {
     private Map<String, Player> playersByUsername;
     private Map<String, Item> itemsByCode;
     private Map<String, Spell> spellsByCode;
-    private List<Event> events;
+    private Map<String, Event> eventsByCode;
     
     private List<IQueue> queues;
 
@@ -61,7 +61,7 @@ public class Game {
         this.playersByUsername = new HashMap<String, Player>();
         this.itemsByCode = new HashMap<String, Item>();
         this.spellsByCode = new HashMap<String, Spell>();
-        this.events = new ArrayList<Event>();
+        this.eventsByCode = new HashMap<String, Event>();
 
         // Run queues
         this.queues.add(UpdateQueue.getInstance(this));
@@ -125,7 +125,11 @@ public class Game {
      * Reload all events
      */
     protected final void reloadEvents() {
-        this.events = DAO.<Event>getObjectList("from " + Model.EVENT);
+        List<Event> events = DAO.<Event>getObjectList("from " + Model.EVENT);
+        this.eventsByCode.clear();
+        for (Event event : events) {
+            this.eventsByCode.put(event.getCode(), event);
+        }
     }
     
     /**
@@ -197,6 +201,18 @@ public class Game {
     }
     
     /**
+     * Get event by its code
+     * @param event Event code (unique)
+     * @return Event instance of null if not found
+     */
+    public Event getEventByCode(String event) {
+        if (this.eventsByCode.containsKey(event)) {
+            return this.eventsByCode.get(event);
+        }
+        return null;
+    }
+    
+    /**
      * Get events matching player's current context
      * @param player Player
      * @return List of events
@@ -210,7 +226,9 @@ public class Game {
         double healthPercentage = 100 * player.getCurrentHealth() / maxHealth;
         double manaPercentage = 100 * player.getCurrentMana() / maxMana;
         
-        for (Event event : this.events) {
+        for (Map.Entry<String, Event> entry : this.eventsByCode.entrySet()) {
+            Event event = entry.getValue();
+            // Parameters
             boolean isBelow = event.getValueBelow();
             boolean isPercentage = event.getValuePercentage();
             // Check activity
@@ -1340,12 +1358,13 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Build list of items
-        List<String> list = new ArrayList<String>();
+        List<String> items = new ArrayList<String>();
         for (Item item : player.getItems()) {
-            list.add(Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap()));
+            items.add(Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap()));
         }
         // Return data
-        String string = String.format(Strings.FORMAT_PLAYER_ITEMS, Strings.join(list, ","));
+        if (items.isEmpty()) items.add(Strings.FORMAT_NONE);
+        String string = String.format(Strings.FORMAT_PLAYER_ITEMS, Strings.join(items, ","));
         return Strings.format(string, player.toMap());
     }
     
@@ -1360,12 +1379,13 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Build list of spells
-        List<String> list = new ArrayList<String>();
+        List<String> spells = new ArrayList<String>();
         for (Spell spell : player.getSpells()) {
-            list.add(Strings.format(Strings.FORMAT_SPELL_NAME, spell.toMap()));
+            spells.add(Strings.format(Strings.FORMAT_SPELL_NAME, spell.toMap()));
         }
         // Return data
-        String string = String.format(Strings.FORMAT_PLAYER_SPELLS, Strings.join(list, ","));
+        if (spells.isEmpty()) spells.add(Strings.FORMAT_NONE);
+        String string = String.format(Strings.FORMAT_PLAYER_SPELLS, Strings.join(spells, ","));
         return Strings.format(string, player.toMap());
     }
     
@@ -1396,6 +1416,68 @@ public class Game {
         // Return data
         return Strings.format(Strings.FORMAT_PLAYER_STATS, player.toMap());
     }
+    
+    /**
+     * Show items the player can afford
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
+    public String showItemsToBuy(String nickname) {
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null || !player.getOnline()) return null;
+        // Update player
+        this.update(player, false, false);
+        // Get items which can be bought
+        List<String> items = new ArrayList<String>();
+        for (Map.Entry<String, Item> entry : this.itemsByCode.entrySet()) {
+            Item item = entry.getValue();
+            // Check item conditions
+            boolean admin = !item.getIsAdmin() || (item.getIsAdmin() && player.getAdmin());
+            boolean level = item.getMinLevel() <= player.getLevel();
+            boolean money = item.getGoldCost() <= player.getGold();
+            boolean stock = item.getStock() > 0;
+            // Add item to list
+            if (admin && level && money && stock) {
+                String string = Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap());
+                items.add(string);
+            }
+        }
+        // Return data
+        if (items.isEmpty()) items.add(Strings.FORMAT_NONE);
+        String string = String.format(Strings.FORMAT_SHOP_ITEMS, Strings.join(items, ","));
+        return Strings.format(string, player.toMap());
+    }
+    
+    /**
+     * Show spells the player can learn
+     * @param nickname Player's nickname
+     * @return Formatted string
+     */
+    public String showSpellsToLearn(String nickname) {
+        Player player = this.getPlayerByNickname(nickname);
+        if (player == null || !player.getOnline()) return null;
+        // Update player
+        this.update(player, false, false);
+        // Get items which can be bought
+        List<String> spells = new ArrayList<String>();
+        for (Map.Entry<String, Spell> entry : this.spellsByCode.entrySet()) {
+            Spell spell = entry.getValue();
+            // Check item conditions
+            boolean admin = !spell.getIsAdmin() || (spell.getIsAdmin() && player.getAdmin());
+            boolean level = spell.getMinLevel() <= player.getLevel();
+            boolean money = spell.getGoldCost() <= player.getGold();
+            boolean magic = spell.getManaCost() <= player.getMaxMana();
+            // Add item to list
+            if (admin && level && money && magic) {
+                String string = Strings.format(Strings.FORMAT_ITEM_NAME, spell.toMap());
+                spells.add(string);
+            }
+        }
+        // Return data
+        if (spells.isEmpty()) spells.add(Strings.FORMAT_NONE);
+        String string = String.format(Strings.FORMAT_SHOP_SPELLS, Strings.join(spells, ","));
+        return Strings.format(string, player.toMap());
+    }
 
     /**
      * Log in a player
@@ -1410,17 +1492,20 @@ public class Game {
         result.setDetails(username);
         Player player = this.getPlayerByUsername(username);
         if (player != null) {
-            if (player.getPassword().equals(password)) {
-                this.playersByNickname.remove(player.getNickname());
-                this.playersByNickname.remove(nickname);
-                this.playersByNickname.put(nickname, player);
-                player.setNickname(nickname);
-                player.setHostname(hostname);
-                player.setOnline(true);
-                player.setLastUpdate(Calendar.getInstance());
-                result.addReturn(Return.LOGIN_SUCCEED);
-                result.setSuccess(true);
-            } else result.addReturn(Return.WRONG_PASSWORD);
+            if (!player.getOnline()) {
+                if (player.getPassword().equals(password)) {
+                    this.playersByNickname.remove(player.getNickname());
+                    this.playersByNickname.remove(nickname);
+                    this.playersByNickname.put(nickname, player);
+                    player.setNickname(nickname);
+                    player.setHostname(hostname);
+                    player.setOnline(true);
+                    player.setLastUpdate(Calendar.getInstance());
+                    result.setPlayer(player);
+                    result.addReturn(Return.LOGIN_SUCCEED);
+                    result.setSuccess(true);
+                } else result.addReturn(Return.WRONG_PASSWORD);
+            } else result.addReturn(Return.ALREADY_ONLINE);
         } else result.addReturn(Return.USERNAME_NOT_FOUND);
         return result;
     }
@@ -1436,10 +1521,11 @@ public class Game {
         Result result = new Result(Action.LOGIN);
         result.setDetails(nickname);
         Player player = this.getPlayerByNickname(nickname);
-        if (player != null) {
+        if (player != null && !player.getOnline()) {
             if (hostname.equals(player.getHostname())) {
                 player.setOnline(true);
                 player.setLastUpdate(Calendar.getInstance());
+                result.setPlayer(player);
                 result.addReturn(Return.LOGIN_SUCCEED);
                 result.setSuccess(true);
             }
@@ -1459,10 +1545,28 @@ public class Game {
         if (player != null) {
             player.setOnline(false);
             player.setLastUpdate(Calendar.getInstance());
+            result.setPlayer(player);
             result.addReturn(Return.LOGOUT_SUCCEED);
             result.setSuccess(true);
         } else result.addReturn(Return.NOT_ONLINE);
         return result;
+    }
+    
+    /**
+     * Change the player's nickname
+     * @param oldNickname Old nickname
+     * @param newNickname New nickname
+     * @return True if success, false else
+     */
+    public boolean changeNickname(String oldNickname, String newNickname) {
+        Player player = this.getPlayerByNickname(oldNickname);
+        if (player != null) {
+            player.setNickname(newNickname);
+            this.playersByNickname.remove(oldNickname);
+            this.playersByNickname.put(newNickname, player);
+            return true;
+        }
+        return false;
     }
     
     /**

@@ -208,7 +208,7 @@ public class Result extends MappedEntity implements IEntity {
         }
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     public Player getPlayer() {
         return player;
     }
@@ -277,7 +277,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     public Player getTarget() {
         return target;
     }

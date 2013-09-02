@@ -47,7 +47,8 @@ public class Robot extends IRCBot implements INotifiable {
             for (String channel : this.getChannels()) {
                 message = String.format(message, args);
                 message = Strings.formatMessage(message);
-                super.sendMessage(channel, message);
+                for (String string : Strings.slice(message, Config.IRC_MAX_LENGTH))
+                    super.sendMessage(channel, string);
             }
         }
     }
@@ -56,7 +57,8 @@ public class Robot extends IRCBot implements INotifiable {
         if (this.isConnected()) {
             message = String.format(message, args);
             message = Strings.formatMessage(message);
-            super.sendMessage(target, message);
+            for (String string : Strings.slice(message, Config.IRC_MAX_LENGTH))
+                super.sendMessage(target, string);
         }
     }
 
@@ -64,10 +66,7 @@ public class Robot extends IRCBot implements INotifiable {
         String[] words = message.split(" ");
         if (words.length > 0) {
             String command = words[0].toLowerCase();
-            if (!command.startsWith("!")) {
-                this.sendFormattedMessage(sender, Strings.RETURN_UNKNOWN_COMMAND);
-                return;
-            }
+            if (!command.startsWith("!")) return;
             // Register
             if (Strings.COMMAND_REGISTER.equals(command)) {
                 if (words.length == 3) {
@@ -147,31 +146,37 @@ public class Robot extends IRCBot implements INotifiable {
             else if (Strings.COMMAND_BUY.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
-                    for (int i = 1; i < words.length - 1; i++) {
+                    for (int i = 1; i < words.length; i++) {
                         item += " " + words[i];
                         item = item.trim();
                     }
                     Result result = this.game.buy(sender, item);
                     this.displayResult(result, sender);
-                } else this.sendFormattedMessage(sender, help.get(command));
+                } else {
+                    String string = this.game.showItemsToBuy(sender);
+                    if (string != null) this.sendFormattedMessage(sender, string);
+                }
             }
             // Sell
             else if (Strings.COMMAND_SELL.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
-                    for (int i = 1; i < words.length - 1; i++) {
+                    for (int i = 1; i < words.length; i++) {
                         item += " " + words[i];
                         item = item.trim();
                     }
                     Result result = this.game.buy(sender, item);
                     this.displayResult(result, sender);
-                } else this.sendFormattedMessage(sender, help.get(command));
+                } else {
+                    String string = this.game.showItems(sender);
+                    if (string != null) this.sendFormattedMessage(sender, string);
+                }
             }
             // Drink
             else if (Strings.COMMAND_DRINK.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
-                    for (int i = 1; i < words.length - 1; i++) {
+                    for (int i = 1; i < words.length; i++) {
                         item += " " + words[i];
                         item = item.trim();
                     }
@@ -183,13 +188,16 @@ public class Robot extends IRCBot implements INotifiable {
             else if (Strings.COMMAND_LEARN.equals(command)) {
                 if (words.length > 1) {
                     String spell = "";
-                    for (int i = 1; i < words.length - 1; i++) {
+                    for (int i = 1; i < words.length; i++) {
                         spell += " " + words[i];
                         spell = spell.trim();
                     }
                     Result result = this.game.learn(sender, spell);
                     this.displayResult(result, sender);
-                } else this.sendFormattedMessage(sender, help.get(command));
+                } else {
+                    String string = this.game.showSpellsToLearn(sender);
+                    if (string != null) this.sendFormattedMessage(sender, string);
+                }
             }
             // Level up
             else if (Strings.COMMAND_LEVELUP.equals(command)) {
@@ -236,15 +244,90 @@ public class Robot extends IRCBot implements INotifiable {
                     this.sendFormattedMessage(sender, help.get(words[1]));
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
+            /* Admin */
+            // New
+            else if (Strings.COMMAND_NEW.equals(command)) {
+                if (words.length == 2) {
+                    String type = words[1];
+                    if (this.game.getAdmin().newObject(sender, type))
+                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                }
+            }
+            // Edit
+            else if (Strings.COMMAND_EDIT.equals(command)) {
+                if (words.length == 3) {
+                    String type = words[1];
+                    String code = words[2];
+                    if (this.game.getAdmin().editObject(sender, type, code))
+                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                }
+            }
+            // Set
+            else if (Strings.COMMAND_SET.equals(command)) {
+                if (words.length == 3) {
+                    String property = words[1];
+                    String value = words[2];
+                    if (this.game.getAdmin().setObject(sender, property, value))
+                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                }
+            }
+            // Get
+            else if (Strings.COMMAND_GET.equals(command)) {
+                if (words.length == 2) {
+                    String property = words[1];
+                    String value = this.game.getAdmin().getObject(sender, property);
+                    String string = String.format("%s = %s", property, value);
+                    if (value != null) this.sendFormattedMessage(sender, string);
+                }
+            }
+            // Save
+            else if (Strings.COMMAND_SAVE.equals(command)) {
+                if (this.game.getAdmin().saveObject(sender))
+                    this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+            }
+            // Delete
+            else if (Strings.COMMAND_DELETE.equals(command)) {
+                if (words.length == 3) {
+                    String type = words[1];
+                    String code = words[2];
+                    if (this.game.getAdmin().deleteObject(sender, type, code))
+                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                }
+            }
+            // Map
+            else if (Strings.COMMAND_MAP.equals(command)) {
+                String value = this.game.getAdmin().dumpObject(sender);
+                if (value != null) this.sendFormattedMessage(sender, value);
+            }
+            // Config
+            else if (Strings.COMMAND_CONFIG.equals(command)) {
+                if (words.length == 2) {
+                    String key = words[1];
+                    String value = this.game.getAdmin().getConfig(sender, key);
+                    String string = String.format("%s = %s", key, value);
+                    if (value != null) this.sendFormattedMessage(sender, string);
+                } else if (words.length == 3) {
+                    String key = words[1];
+                    String value = words[2];
+                    if (this.game.getAdmin().setConfig(sender, key, value))
+                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                } else this.sendFormattedMessage(sender, this.game.getAdmin().listConfig(sender));
+            }
+            // Help
+            else this.sendFormattedMessage(sender, Strings.RETURN_UNKNOWN_COMMAND);
         }
     }
     
     private void displayResult(Result result, String sender) {
-        if (result.isSuccess()) {
+        if (result.isSuccess())
             this.sendFormattedMessage(Helpers.getMessage(result));
-        } else {
-            this.sendFormattedMessage(sender, Helpers.getMessage(result));
-        }
+        else this.sendFormattedMessage(sender, Helpers.getMessage(result));
     }
     
     @Override
@@ -297,18 +380,18 @@ public class Robot extends IRCBot implements INotifiable {
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
         Result result = this.game.tryRelogin(sender, hostname);
-        if (result.isSuccess()) this.displayResult(result, sender);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
         Result result = this.game.logout(sender);
-        this.displayResult(result, sender);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
     @Override
     protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
-        
+        this.game.changeNickname(oldNick, newNick);
     }
 
     @Override
@@ -319,7 +402,7 @@ public class Robot extends IRCBot implements INotifiable {
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         Result result = this.game.logout(sourceNick);
-        this.displayResult(result, sourceNick);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
     @Override

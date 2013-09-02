@@ -6,15 +6,14 @@ import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * Player
@@ -58,8 +59,8 @@ public class Player extends MappedEntity implements IEntity {
     private Long statusDuration;
     private Calendar lastUpdate;
     private Calendar lastEvent;
-    private List<Item> items;
-    private List<Spell> spells;
+    private Set<Item> items;
+    private Set<Spell> spells;
     
     // Statistics
     private Long timeIngame;
@@ -105,8 +106,8 @@ public class Player extends MappedEntity implements IEntity {
         this.setStatusDuration(0l);
         this.setLastUpdate(Calendar.getInstance());
         this.setLastEvent(Calendar.getInstance());
-        this.setItems(new ArrayList<Item>());
-        this.setSpells(new ArrayList<Spell>());
+        this.setItems(new HashSet<Item>());
+        this.setSpells(new HashSet<Spell>());
         
         this.setTimeIngame(0l);
         this.setTimeWorking(0l);
@@ -151,7 +152,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("version", this.version);
     }
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     public String getUsername() {
         return username;
     }
@@ -451,12 +452,13 @@ public class Player extends MappedEntity implements IEntity {
         this.set("remedyPotions", this.remedyPotions);
     }
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    public List<Item> getItems() {
+    @OneToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public Set<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(Set<Item> items) {
         this.items = items;
         this.set("items", this.items);
     }
@@ -471,12 +473,13 @@ public class Player extends MappedEntity implements IEntity {
         this.set("items", this.items);
     }
     
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    public List<Spell> getSpells() {
+    @OneToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public Set<Spell> getSpells() {
         return spells;
     }
 
-    public void setSpells(List<Spell> spells) {
+    public void setSpells(Set<Spell> spells) {
         this.spells = spells;
         this.set("spells", this.spells);
     }

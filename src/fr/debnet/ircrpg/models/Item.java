@@ -110,7 +110,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("version", this.version);
     }
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     public String getCode() {
         return code;
     }

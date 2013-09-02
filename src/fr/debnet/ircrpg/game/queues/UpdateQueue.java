@@ -39,6 +39,7 @@ public class UpdateQueue extends Thread implements IQueue {
     private Calendar date;
     
     public UpdateQueue(Game game) {
+        this.setName(this.getClass().getSimpleName());
         this.game = game;
         this.notifiables = new ArrayList<INotifiable>();
         this.players = new HashMap<Player, Calendar>();

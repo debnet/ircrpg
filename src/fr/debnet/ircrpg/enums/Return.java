@@ -12,6 +12,8 @@ public enum Return {
     PERSISTANCE_ERROR           (0x01, Strings.RETURN_PERSISTANCE_ERROR),
     UNKNOWN_ERROR               (0x02, Strings.RETURN_UNKNOWN_ERROR),
     UNKNOWN_COMMAND             (0x03, Strings.RETURN_UNKNOWN_COMMAND),
+    ADMIN_COMMAND_SUCCEED       (0x04, Strings.RETURN_ADMIN_COMMAND_SUCCEED),
+    ADMIN_COMMAND_FAILED        (0x05, Strings.RETURN_ADMIN_COMMAND_FAILED),
     // General returns (player)
     UNKNOWN_PLAYER              (0x10, Strings.RETURN_UNKNOWN_PLAYER),
     PLAYER_OFFLINE              (0x11, Strings.RETURN_OFFLINE_PLAYER),

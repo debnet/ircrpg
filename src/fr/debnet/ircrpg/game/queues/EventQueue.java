@@ -38,6 +38,7 @@ public class EventQueue extends Thread implements IQueue {
     private Map<Player, List<Event>> events;
     
     public EventQueue(Game game) {
+        this.setName(this.getClass().getSimpleName());
         this.game = game;
         this.random = new Random();
         this.notifiables = new ArrayList<INotifiable>();

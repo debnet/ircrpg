@@ -24,14 +24,12 @@ public class DAO {
     static {
         try {
             //sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-            
             Properties properties = new Properties();
             properties.load(new FileInputStream("config.properties"));
             
             AnnotationConfiguration config = new AnnotationConfiguration().configure();
             for (Map.Entry<String, String> entry : Config.HIBERNATE_CONFIG.entrySet()) 
                 config.setProperty(entry.getKey(), entry.getValue());
-
             sessionFactory = config.buildSessionFactory();
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
@@ -57,7 +55,6 @@ public class DAO {
         Session session = sessionFactory.openSession();
         try {
             object = (T)session.get(_class, id);
-            Hibernate.initialize(object);
         } catch (HibernateException e) {
             Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
         } finally {
@@ -96,7 +93,6 @@ public class DAO {
                     query.setParameter(sql, args[i]);
             if (limit) query.setMaxResults(1);
             object = (T)query.uniqueResult();
-            Hibernate.initialize(object);
         } catch (HibernateException e) {
             Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
         } finally {
