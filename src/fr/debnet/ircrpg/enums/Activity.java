@@ -21,6 +21,16 @@ public enum Activity {
         this.text = text;
     }
     
+    public static Activity from(String name) {
+        for (Activity activity : Activity.values()) {
+            if (activity.text == null) continue;
+            if (activity.text.equalsIgnoreCase(name)) {
+                return activity;
+            }
+        }
+        return Activity.NONE;
+    }
+    
     @Override
     public String toString() {
         return this.text;

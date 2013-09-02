@@ -7,12 +7,12 @@ import fr.debnet.ircbot.User;
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Activity;
-import fr.debnet.ircrpg.enums.Potion;
-import fr.debnet.ircrpg.enums.Stat;
 import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.models.Result;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -63,38 +63,39 @@ public class Robot extends IRCBot implements INotifiable {
     private void processMessage(String sender, String hostname, String message) {
         String[] words = message.split(" ");
         if (words.length > 0) {
-            String command = words[0];
+            String command = words[0].toLowerCase();
             if (!command.startsWith("!")) {
+                this.sendFormattedMessage(sender, Strings.RETURN_UNKNOWN_COMMAND);
                 return;
             }
             // Register
-            if (Strings.COMMAND_REGISTER.equalsIgnoreCase(command)) {
+            if (Strings.COMMAND_REGISTER.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
                     Result result = this.game.register(username, password, sender, hostname);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Login
-            else if (Strings.COMMAND_LOGIN.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_LOGIN.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
                     Result result = this.game.login(username, password, sender, hostname);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Attack
-            else if (Strings.COMMAND_ATTACK.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_ATTACK.equals(command)) {
                 if (words.length == 2) {
                     String target = words[1];
                     Result result = this.game.fight(sender, target, null);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Magic
-            else if (Strings.COMMAND_MAGIC.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_MAGIC.equals(command)) {
                 if (words.length > 2) {
                     String target = words[1];
                     String magic = "";
@@ -104,46 +105,46 @@ public class Robot extends IRCBot implements INotifiable {
                     }
                     Result result = this.game.fight(sender, target, magic);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Steal
-            else if (Strings.COMMAND_STEAL.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_STEAL.equals(command)) {
                 if (words.length == 2) {
                     String target = words[1];
                     Result result = this.game.steal(sender, target);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Work
-            else if (Strings.COMMAND_WORK.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_WORK.equals(command)) {
                 if (words.length == 1) {
-                    Result result = this.game.startActivity(sender, Activity.WORKING);
+                    Result result = this.game.startActivity(sender, Activity.WORKING.toString());
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Rest
-            else if (Strings.COMMAND_REST.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_REST.equals(command)) {
                 if (words.length == 1) {
-                    Result result = this.game.startActivity(sender, Activity.RESTING);
+                    Result result = this.game.startActivity(sender, Activity.RESTING.toString());
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Train
-            else if (Strings.COMMAND_TRAIN.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_TRAIN.equals(command)) {
                 if (words.length == 1) {
-                    Result result = this.game.startActivity(sender, Activity.TRAINING);
+                    Result result = this.game.startActivity(sender, Activity.TRAINING.toString());
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Return
-            else if (Strings.COMMAND_RETURN.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_RETURN.equals(command)) {
                 if (words.length == 1) {
                     Result result = this.game.endActivity(sender);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Buy
-            else if (Strings.COMMAND_BUY.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_BUY.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
                     for (int i = 1; i < words.length - 1; i++) {
@@ -152,10 +153,10 @@ public class Robot extends IRCBot implements INotifiable {
                     }
                     Result result = this.game.buy(sender, item);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Sell
-            else if (Strings.COMMAND_SELL.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_SELL.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
                     for (int i = 1; i < words.length - 1; i++) {
@@ -164,29 +165,22 @@ public class Robot extends IRCBot implements INotifiable {
                     }
                     Result result = this.game.buy(sender, item);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Drink
-            else if (Strings.COMMAND_DRINK.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_DRINK.equals(command)) {
                 if (words.length > 1) {
                     String item = "";
                     for (int i = 1; i < words.length - 1; i++) {
                         item += " " + words[i];
                         item = item.trim();
                     }
-                    Potion potion = Potion.NONE;
-                    for (Potion p : Potion.values()) {
-                        if (p.toString().equalsIgnoreCase(item)) {
-                            potion = p;
-                            break;
-                        }
-                    }
-                    Result result = this.game.drink(sender, potion);
+                    Result result = this.game.drink(sender, item);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Learn
-            else if (Strings.COMMAND_LEARN.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_LEARN.equals(command)) {
                 if (words.length > 1) {
                     String spell = "";
                     for (int i = 1; i < words.length - 1; i++) {
@@ -195,53 +189,52 @@ public class Robot extends IRCBot implements INotifiable {
                     }
                     Result result = this.game.learn(sender, spell);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Level up
-            else if (Strings.COMMAND_LEVELUP.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_LEVELUP.equals(command)) {
                 if (words.length == 2) {
-                    Stat stat = Stat.NONE;
-                    for (Stat s : Stat.values()) {
-                        if (s.toString().equalsIgnoreCase(words[1])) {
-                            stat = s;
-                            break;
-                        }
-                    }
-                    Result result = this.game.upgrade(sender, stat);
+                    Result result = this.game.upgrade(sender, words[1]);
                     this.displayResult(result, sender);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Infos
-            else if (Strings.COMMAND_INFOS.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_INFOS.equals(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showInfos(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Stats
-            else if (Strings.COMMAND_STATS.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_STATS.equals(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showStats(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Items 
-            else if (Strings.COMMAND_ITEMS.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_ITEMS.equals(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showItems(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Spells 
-            else if (Strings.COMMAND_SPELLS.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_SPELLS.equals(command)) {
                 String nickname = words.length == 2 ? words[2] : sender;
                 String string = this.game.showSpells(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Look
-            else if (Strings.COMMAND_LOOK.equalsIgnoreCase(command)) {
+            else if (Strings.COMMAND_LOOK.equals(command)) {
                 if (words.length > 1) {
                     String code = words[2];
                     String string = this.game.look(code);
                     if (string != null) this.sendFormattedMessage(sender, string);
-                }
+                } else this.sendFormattedMessage(sender, help.get(command));
+            }
+            // Help
+            else if (Strings.COMMAND_HELP.equals(command)) {
+                if (words.length > 1 && help.containsKey(words[1])) {
+                    this.sendFormattedMessage(sender, help.get(words[1]));
+                } else this.sendFormattedMessage(sender, help.get(command));
             }
         }
     }
@@ -268,7 +261,7 @@ public class Robot extends IRCBot implements INotifiable {
 
     @Override
     protected void onDisconnect() {
-        
+        this.game.disconnect();
     }
 
     @Override
@@ -490,5 +483,33 @@ public class Robot extends IRCBot implements INotifiable {
     @Override
     protected void onIncomingChatRequest(DccChat chat) {
         
+    }
+    
+    /* Help */
+    
+    private static Map<String, String> help;
+    
+    static {
+        help = new HashMap<String, String>();
+        help.put(Strings.COMMAND_HELP, Strings.HELP_HELP);
+        help.put(Strings.COMMAND_LOGIN, Strings.HELP_LOGIN);
+        help.put(Strings.COMMAND_REGISTER, Strings.HELP_REGISTER);
+        help.put(Strings.COMMAND_INFOS, Strings.HELP_INFOS);
+        help.put(Strings.COMMAND_ATTACK, Strings.HELP_ATTACK);
+        help.put(Strings.COMMAND_MAGIC, Strings.HELP_MAGIC);
+        help.put(Strings.COMMAND_STEAL, Strings.HELP_STEAL);
+        help.put(Strings.COMMAND_WORK, Strings.HELP_WORK);
+        help.put(Strings.COMMAND_REST, Strings.HELP_REST);
+        help.put(Strings.COMMAND_TRAIN, Strings.HELP_TRAIN);
+        help.put(Strings.COMMAND_RETURN, Strings.HELP_RETURN);
+        help.put(Strings.COMMAND_BUY, Strings.HELP_BUY);
+        help.put(Strings.COMMAND_SELL, Strings.HELP_SELL);
+        help.put(Strings.COMMAND_DRINK, Strings.HELP_DRINK);
+        help.put(Strings.COMMAND_LEARN, Strings.HELP_LEARN);
+        help.put(Strings.COMMAND_LEVELUP, Strings.HELP_LEVELUP);
+        help.put(Strings.COMMAND_LOOK, Strings.HELP_LOOK);
+        help.put(Strings.COMMAND_STATS, Strings.HELP_STATS);
+        help.put(Strings.COMMAND_ITEMS, Strings.HELP_ITEMS);
+        help.put(Strings.COMMAND_SPELLS, Strings.HELP_SPELLS);
     }
 }

@@ -273,15 +273,13 @@ public class Helpers {
      */
     public static String getMessage(Result result) {
         Map<String, Object> map = result.toMap();
-        StringBuilder build = new StringBuilder(); 
-        if (result.getCustomMessage() != null) {
-            build.append(Strings.format(result.getCustomMessage(), map).trim());
-            build.append(" ");
-        }
-        for (Return r : result.getReturns()) {
-            build.append(Strings.format(r.toString(), map).trim());
-            build.append(" ");
-        }
-        return build.toString().trim();
+        if (result.getCustomMessage() == null) {
+            StringBuilder build = new StringBuilder();
+            for (Return r : result.getReturns()) {
+                build.append(Strings.format(r.toString(), map).trim());
+                build.append(" ");
+            }
+            return build.toString().trim();
+        } else return Strings.format(result.getCustomMessage(), map).trim();
     }
 }

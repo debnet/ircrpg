@@ -93,14 +93,14 @@ public class Strings {
     public static String POTION_REMEDY;
     
     /* Stats */
-    @Property(name = "stat.health")
-    public static String STAT_HEALTH;
-    @Property(name = "stat.mana")
-    public static String STAT_MANA;
-    @Property(name = "stat.attack")
-    public static String STAT_ATTACK;
-    @Property(name = "stat.defense")
-    public static String STAT_DEFENSE;
+    @Property(name = "skill.health")
+    public static String SKILL_HEALTH;
+    @Property(name = "skill.mana")
+    public static String SKILL_MANA;
+    @Property(name = "skill.attack")
+    public static String SKILL_ATTACK;
+    @Property(name = "skill.defense")
+    public static String SKILL_DEFENSE;
     
     /* General */
     @Property(name = "register.succeed")
@@ -195,6 +195,10 @@ public class Strings {
     public static String HELP_LEVELUP;
     @Property(name = "help.stats")
     public static String HELP_STATS;
+    @Property(name = "help.items")
+    public static String HELP_ITEMS;
+    @Property(name = "help.spells")
+    public static String HELP_SPELLS;
     
     /* Returns */
     // General returns
@@ -204,6 +208,8 @@ public class Strings {
     public static String RETURN_PERSISTANCE_ERROR;
     @Property(name = "return.unknown_error")
     public static String RETURN_UNKNOWN_ERROR;
+    @Property(name = "return.unknown_command")
+    public static String RETURN_UNKNOWN_COMMAND;
     // General returns (player)
     @Property(name = "return.unknown_player")
     public static String RETURN_UNKNOWN_PLAYER;
@@ -331,6 +337,8 @@ public class Strings {
     @Property(name = "return.not_trained_enough")
     public static String RETURN_NOT_TRAINED_ENOUGH;
     // Level up returns
+    @Property(name = "return.unknown_skill")
+    public static String RETURN_UNKNOWN_SKILL;
     @Property(name = "return.not_enough_skill_points")
     public static String RETURN_NOT_ENOUGH_SKILL_POINTS;
     @Property(name = "return.health_increased")

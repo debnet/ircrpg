@@ -11,6 +11,7 @@ public enum Return {
     OK                          (0x00, Strings.RETURN_OK),
     PERSISTANCE_ERROR           (0x01, Strings.RETURN_PERSISTANCE_ERROR),
     UNKNOWN_ERROR               (0x02, Strings.RETURN_UNKNOWN_ERROR),
+    UNKNOWN_COMMAND             (0x03, Strings.RETURN_UNKNOWN_COMMAND),
     // General returns (player)
     UNKNOWN_PLAYER              (0x10, Strings.RETURN_UNKNOWN_PLAYER),
     PLAYER_OFFLINE              (0x11, Strings.RETURN_OFFLINE_PLAYER),
@@ -80,11 +81,12 @@ public enum Return {
     NOT_RESTED_ENOUGH           (0x63, Strings.RETURN_NOT_RESTED_ENOUGH),
     NOT_TRAINED_ENOUGH          (0x64, Strings.RETURN_NOT_TRAINED_ENOUGH),
     // Level up returns
-    NOT_ENOUGH_SKILL_POINTS     (0x70, Strings.RETURN_NOT_ENOUGH_SKILL_POINTS),
-    HEALTH_INCREASED            (0x71, Strings.RETURN_HEALTH_INCREASED),
-    MANA_INCREASED              (0x72, Strings.RETURN_MANA_INCREASED),
-    ATTACK_INCREASED            (0x73, Strings.RETURN_ATTACK_INCREASED),
-    DEFENSE_INCREASED           (0x74, Strings.RETURN_DEFENSE_INCREASED),
+    UNKNOWN_SKILL               (0x70, Strings.RETURN_UNKNOWN_SKILL),
+    NOT_ENOUGH_SKILL_POINTS     (0x71, Strings.RETURN_NOT_ENOUGH_SKILL_POINTS),
+    HEALTH_INCREASED            (0x72, Strings.RETURN_HEALTH_INCREASED),
+    MANA_INCREASED              (0x73, Strings.RETURN_MANA_INCREASED),
+    ATTACK_INCREASED            (0x74, Strings.RETURN_ATTACK_INCREASED),
+    DEFENSE_INCREASED           (0x75, Strings.RETURN_DEFENSE_INCREASED),
     // Buy/sell returns
     UNKNOWN_ITEM                (0x80, Strings.RETURN_UNKNOWN_ITEM),
     ITEM_ALREADY_BOUGHT         (0x81, Strings.RETURN_ITEM_ALREADY_BOUGHT),

@@ -27,6 +27,16 @@ public enum Equipment {
         this.text = text;
     }
     
+    public static Equipment from(String name) {
+        for (Equipment equipment : Equipment.values()) {
+            if (equipment.text == null) continue;
+            if (equipment.text.equalsIgnoreCase(name)) {
+                return equipment;
+            }
+        }
+        return Equipment.NONE;
+    }
+    
     @Override
     public String toString() {
         return this.text;

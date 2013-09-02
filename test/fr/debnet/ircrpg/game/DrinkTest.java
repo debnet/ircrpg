@@ -60,7 +60,7 @@ public class DrinkTest {
         // Description
         System.out.println("- drink error (not enough potions):");
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.HEALTH);
+        Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -68,7 +68,7 @@ public class DrinkTest {
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_HEALTH_POTIONS));
         // Drink health potion
-        r = this.game.drink("p1", Potion.MANA);
+        r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -76,7 +76,7 @@ public class DrinkTest {
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_MANA_POTIONS));
         // Drink health potion
-        r = this.game.drink("p1", Potion.REMEDY);
+        r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -93,7 +93,7 @@ public class DrinkTest {
         this.player.addHealthPotions(1);
         this.player.addHealth(-10d);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.HEALTH);
+        Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -112,7 +112,7 @@ public class DrinkTest {
         this.player.addManaPotions(1);
         this.player.addMana(-10d);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.MANA);
+        Result r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -132,7 +132,7 @@ public class DrinkTest {
         this.player.setStatus(Status.PARALYZED);
         this.player.setStatusDuration(Long.MAX_VALUE);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.REMEDY);
+        Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -152,7 +152,7 @@ public class DrinkTest {
         this.player.setStatus(Status.POISONED);
         this.player.setStatusDuration(Long.MAX_VALUE);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.REMEDY);
+        Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -170,7 +170,7 @@ public class DrinkTest {
         // Modify player
         this.player.addHealthPotions(1);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.HEALTH);
+        Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -188,7 +188,7 @@ public class DrinkTest {
         // Modify player
         this.player.addManaPotions(1);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.MANA);
+        Result r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));
@@ -206,7 +206,7 @@ public class DrinkTest {
         // Modify player
         this.player.addRemedyPotions(1);
         // Drink health potion
-        Result r = this.game.drink("p1", Potion.REMEDY);
+        Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
         System.out.println(Helpers.getMessage(r));

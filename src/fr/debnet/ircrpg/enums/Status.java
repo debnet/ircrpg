@@ -21,6 +21,16 @@ public enum Status {
         this.text = text;
     }
     
+    public static Status from(String name) {
+        for (Status status : Status.values()) {
+            if (status.text == null) continue;
+            if (status.text.equalsIgnoreCase(name)) {
+                return status;
+            }
+        }
+        return Status.NONE;
+    }
+    
     @Override
     public String toString() {
         return this.text;

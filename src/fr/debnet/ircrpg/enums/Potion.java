@@ -20,6 +20,16 @@ public enum Potion {
         this.text = text;
     }
     
+    public static Potion from(String name) {
+        for (Potion potion : Potion.values()) {
+            if (potion.text == null) continue;
+            if (potion.text.equalsIgnoreCase(name)) {
+                return potion;
+            }
+        }
+        return Potion.NONE;
+    }
+    
     @Override
     public String toString() {
         return this.text;

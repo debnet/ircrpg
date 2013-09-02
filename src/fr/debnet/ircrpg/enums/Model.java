@@ -10,6 +10,7 @@ import fr.debnet.ircrpg.models.Spell;
  * @author Marc
  */
 public enum Model {
+    NONE        (null),
     PLAYER      (Player.class),
     ITEM        (Item.class),
     SPELL       (Spell.class),
@@ -20,6 +21,16 @@ public enum Model {
 
     private Model(Class value) {
         this.value = value;
+    }
+    
+    public static Model from(String name) {
+        for (Model model : Model.values()) {
+            if (model.value == null) continue;
+            if (model.value.getSimpleName().equalsIgnoreCase(name)) {
+                return model;
+            }
+        }
+        return Model.NONE;
     }
 
     @Override

@@ -8,7 +8,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Return;
-import fr.debnet.ircrpg.enums.Stat;
+import fr.debnet.ircrpg.enums.Skill;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.game.queues.EventQueue;
 import fr.debnet.ircrpg.interfaces.IQueue;
@@ -63,17 +63,17 @@ public class Game {
         this.spellsByCode = new HashMap<String, Spell>();
         this.events = new ArrayList<Event>();
 
-        // Load all entities
-        if (Config.PERSISTANCE) {
-            this.reloadPlayers();
-            this.reloadItems();
-            this.reloadSpells();
-            this.reloadEvents();
-        }
-        
         // Run queues
         this.queues.add(UpdateQueue.getInstance(this));
         this.queues.add(EventQueue.getInstance(this));
+        
+        // Load all entities
+        if (Config.PERSISTANCE) {
+            this.reloadItems();     // Items
+            this.reloadSpells();    // Spells
+            this.reloadEvents();    // Events
+            this.reloadPlayers();   // Players (must be at the end)
+        }
     }
     
     /**
@@ -94,6 +94,8 @@ public class Game {
         for (Player player : players) {
             this.playersByNickname.put(player.getNickname(), player);
             this.playersByUsername.put(player.getUsername(), player);
+            // Update each queue with all players
+            this.updateQueues(player);
         }
     }
     
@@ -847,14 +849,23 @@ public class Game {
     /**
      * Drink a potion
      * @param sender Player's nickname
-     * @param potion Potion type
+     * @param potionname Potion name
      * @return Result
      */
-    public Result drink(String sender, Potion potion) {
+    public Result drink(String sender, String potionname) {
         Result result = new Result(Action.DRINK);
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
+        // Get potion
+        Potion potion = Potion.from(potionname);
+        // Check potion
+        if (!Helpers.checkPotion(result, player, potion, 
+            CheckPotion.from(
+                CheckPotion.CAN_CURE,
+                CheckPotion.HAS_ENOUGH
+            )
+        )) return result;
         // Update player
         this.updateAndReturn(result, player, false, false);
         // Check player
@@ -866,13 +877,6 @@ public class Game {
         )) return result;
         // Player modifiers
         Modifiers modifiers = new Modifiers(player);
-        // Check potion
-        if (!Helpers.checkPotion(result, player, potion, 
-            CheckPotion.from(
-                CheckPotion.CAN_CURE,
-                CheckPotion.HAS_ENOUGH
-            )
-        )) return result;
         // Potion type        
         switch (potion) {
             case HEALTH: {
@@ -932,14 +936,16 @@ public class Game {
     /**
      * Start an activity
      * @param sender Player's nickname
-     * @param activity Activity
+     * @param activityname Activity name
      * @return Result
      */
-    public Result startActivity(String sender, Activity activity) {
+    public Result startActivity(String sender, String activityname) {
         Result result = new Result(Action.START_ACTIVITY);
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
+        // Get activity
+        Activity activity = Activity.from(activityname);
         // Update player
         this.updateAndReturn(result, player, false, false);
         // Check player
@@ -1031,14 +1037,21 @@ public class Game {
     /**
      * Upgrade a player
      * @param sender Player's nickname
-     * @param stat Stat to raise
+     * @param skillname Skill name to raise
      * @return Result
      */
-    public Result upgrade(String sender, Stat stat) {
+    public Result upgrade(String sender, String skillname) {
         Result result = new Result(Action.UPGRADE);
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
+        // Get the statistic
+        Skill skill = Skill.from(skillname);
+        // Check skill
+        if (skill == Skill.NONE) {
+            result.addReturn(Return.UNKNOWN_SKILL);
+            return result;
+        }
         // Update player
         this.updateAndReturn(result, player, false, false);
         // Check player
@@ -1055,7 +1068,7 @@ public class Game {
             return result;
         }
         // Rising stats
-        switch (stat) {
+        switch (skill) {
             case HEALTH: {
                 player.addMaxHealth(Config.SKILL_HEALTH);
                 player.addHealth(Config.SKILL_HEALTH);
@@ -1101,16 +1114,8 @@ public class Game {
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
-        // Update player
-        this.updateAndReturn(result, player, false, false);
         // Check if item is potion
-        Potion potion = Potion.NONE;
-        for (Potion p : Potion.values()) {
-            if (p.toString().equalsIgnoreCase(code)) {
-                potion = p;
-                break;
-            }
-        }
+        Potion potion = Potion.from(code);
         // Check item
         Item item = null;
         if (potion == Potion.NONE) {
@@ -1220,8 +1225,6 @@ public class Game {
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
-        // Update player
-        this.updateAndReturn(result, player, false, false);
         // Check item
         Item item = this.getItemByCode(code);
         if (!Helpers.checkItem(result, player, item, 
@@ -1260,8 +1263,6 @@ public class Game {
         // Get the player
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
-        // Update player
-        this.updateAndReturn(result, player, false, false);
         // Check spell
         Spell spell = this.getSpellByCode(code);
         if (!Helpers.checkSpell(result, player, spell, 
@@ -1335,7 +1336,7 @@ public class Game {
      */
     public String showItems(String nickname) {
         Player player = this.getPlayerByNickname(nickname);
-        if (player == null) return null;
+        if (player == null || !player.getOnline()) return null;
         // Update player
         this.update(player, false, false);
         // Build list of items
@@ -1355,7 +1356,7 @@ public class Game {
      */
     public String showSpells(String nickname) {
         Player player = this.getPlayerByNickname(nickname);
-        if (player == null) return null;
+        if (player == null || !player.getOnline()) return null;
         // Update player
         this.update(player, false, false);
         // Build list of spells
@@ -1375,7 +1376,7 @@ public class Game {
      */
     public String showInfos(String nickname) {
         Player player = this.getPlayerByNickname(nickname);
-        if (player == null) return null;
+        if (player == null || !player.getOnline()) return null;
         // Update player
         this.update(player, false, false);
         // Return data
@@ -1389,7 +1390,7 @@ public class Game {
      */
     public String showStats(String nickname) {
         Player player = this.getPlayerByNickname(nickname);
-        if (player == null) return null;
+        if (player == null || !player.getOnline()) return null;
         // Update player
         this.update(player, false, false);
         // Return data
@@ -1416,10 +1417,9 @@ public class Game {
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
-                if (this.update(player, true, false).isSuccess()) {
-                    result.addReturn(Return.LOGIN_SUCCEED);
-                    result.setSuccess(true);
-                } else result.addReturn(Return.PERSISTANCE_ERROR);
+                player.setLastUpdate(Calendar.getInstance());
+                result.addReturn(Return.LOGIN_SUCCEED);
+                result.setSuccess(true);
             } else result.addReturn(Return.WRONG_PASSWORD);
         } else result.addReturn(Return.USERNAME_NOT_FOUND);
         return result;
@@ -1439,10 +1439,9 @@ public class Game {
         if (player != null) {
             if (hostname.equals(player.getHostname())) {
                 player.setOnline(true);
-                if (this.update(player, true, false).isSuccess()) {
-                    result.addReturn(Return.LOGIN_SUCCEED);
-                    result.setSuccess(true);
-                }
+                player.setLastUpdate(Calendar.getInstance());
+                result.addReturn(Return.LOGIN_SUCCEED);
+                result.setSuccess(true);
             }
         }
         return result;
@@ -1459,12 +1458,22 @@ public class Game {
         Player player = this.getPlayerByNickname(nickname);
         if (player != null) {
             player.setOnline(false);
-            if (this.update(player, true, false).isSuccess()) {
-                result.addReturn(Return.LOGOUT_SUCCEED);
-                result.setSuccess(true);
-            } else result.addReturn(Return.PERSISTANCE_ERROR);
+            player.setLastUpdate(Calendar.getInstance());
+            result.addReturn(Return.LOGOUT_SUCCEED);
+            result.setSuccess(true);
         } else result.addReturn(Return.NOT_ONLINE);
         return result;
+    }
+    
+    /**
+     * Disconnect all players
+     */
+    public void disconnect() {
+        for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
+            Player player = entry.getValue();
+            player.setOnline(false);
+            this.update(player, true, false);
+        }
     }
 
     /**
