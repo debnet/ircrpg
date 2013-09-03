@@ -18,7 +18,7 @@ import javax.persistence.Version;
  * Spell
  * @author Marc
  */
-@Entity(name = "Spell")
+@Entity
 public class Spell extends MappedEntity implements IEntity {
 
     private Long id;

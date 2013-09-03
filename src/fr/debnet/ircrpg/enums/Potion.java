@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Potion {
+public enum Potion implements IEnum {
+    
     NONE        (0x0, null),
     HEALTH      (0x1, Strings.POTION_HEALTH),
     MANA        (0x2, Strings.POTION_MANA),
@@ -32,6 +34,16 @@ public enum Potion {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+        
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

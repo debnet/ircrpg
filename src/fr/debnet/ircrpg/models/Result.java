@@ -27,7 +27,7 @@ import org.hibernate.annotations.Index;
  * Result
  * @author Marc
  */
-@Entity(name = "Result")
+@Entity
 public class Result extends MappedEntity implements IEntity {
     
     private Long id;

@@ -19,7 +19,7 @@ import javax.persistence.Version;
  * Event
  * @author Marc
  */
-@Entity(name = "Event")
+@Entity
 public class Event extends MappedEntity implements IEntity {
     
     private Long id;

@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Activity {
+public enum Activity implements IEnum {
+    
     NONE        (0x0, Strings.ACTIVITY_NONE),
     WAITING     (0x1, Strings.ACTIVITY_WAITING),
     WORKING     (0x2, Strings.ACTIVITY_WORKING),
@@ -33,6 +35,16 @@ public enum Activity {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+    
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

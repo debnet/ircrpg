@@ -29,7 +29,7 @@ import org.hibernate.annotations.LazyCollectionOption;
  * Player
  * @author Marc
  */
-@Entity(name = "Player")
+@Entity
 public class Player extends MappedEntity implements IEntity {
     
     private Long id;

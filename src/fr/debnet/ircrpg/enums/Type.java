@@ -1,29 +1,39 @@
 package fr.debnet.ircrpg.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author Marc
  */
 public enum Type {
-    OBJECT      (null, null),
-    STRING      ("char", "String"),
+    OBJECT      (),
+    STRING      ("String"),
+    CHAR        ("char"),
     BOOLEAN     ("boolean", "Boolean"),
     INTEGER     ("int", "Integer"),
-    DECIMAL     ("double", "Double");
+    DOUBLE      ("double", "Double"),
+    FLOAT       ("float", "Float"),
+    LONG        ("long", "Long"),
+    ENUM        ("IEnum");
     
-    private final String primitive;
-    private final String object;
+    private final List<String> types;
 
-    private Type(String primitive, String object) {
-        this.primitive = primitive;
-        this.object = object;
+    private Type(String... types) {
+        this.types = Arrays.asList(types);
     }
     
     public static Type from(Class<?> clazz) {
         String value = clazz.getSimpleName();
         for (Type type : Type.values()) {
-            if (value.equals(type.primitive) || value.equals(type.object)) {
+            if (type.types.contains(value)) {
                 return type;
+            }
+            for (Class<?> i : clazz.getInterfaces()) {
+                if (type.types.contains(i.getSimpleName())) {
+                    return type;
+                }
             }
         }
         return Type.OBJECT;

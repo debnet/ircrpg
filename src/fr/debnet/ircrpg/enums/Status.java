@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Status {
+public enum Status implements IEnum {
+    
     NONE        (0x0, null),
     NORMAL      (0x1, Strings.STATUS_NORMAL),
     POISONED    (0x2, Strings.STATUS_POISONED),
@@ -33,6 +35,16 @@ public enum Status {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+    
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

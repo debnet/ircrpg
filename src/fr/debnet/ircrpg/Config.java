@@ -6,11 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -151,7 +149,7 @@ public class Config {
             Properties properties = new Properties();
             properties.load(new FileInputStream(filename));
             
-            Config.HIBERNATE_CONFIG = new HashMap<String, String>();
+            Config.HIBERNATE_CONFIG = new HashMap<>();
             for (String key : properties.stringPropertyNames()) {
                 if (key.startsWith("hibernate.")) {
                     Config.HIBERNATE_CONFIG.put(key, properties.getProperty(key));
@@ -183,7 +181,7 @@ public class Config {
                     } else return field.get(null).toString();
                 }
             }
-        } catch (Exception ex) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
         }
         return null;
@@ -214,7 +212,7 @@ public class Config {
                     return true;
                 }
             }
-        } catch (Exception ex) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
         }
         return false;
@@ -224,19 +222,19 @@ public class Config {
      * List all config keys
      * @return List of config keys
      */
-    public static List<String> getFields() {
-        List<String> fields = new ArrayList<String>();
+    public static Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
         try {
             Field[] declaredFields = Config.class.getDeclaredFields();
             for (Field field : declaredFields) {
                 if (Modifier.isStatic(field.getModifiers())) {
-                    fields.add(field.getName().toLowerCase());
+                    map.put(field.getName(), field.get(null));
                 }
             }
         } catch (Exception ex) {
             Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
         }
-        return fields;
+        return map;
     }
     
     /**
@@ -253,24 +251,31 @@ public class Config {
                 Property property = field.getAnnotation(Property.class);
                 if (property != null) {
                     String name = property.name();
+                    String value = properties.getProperty(name);
                     Type type = Type.from(field.getType());
                     switch (type) {
                         case STRING:
-                            field.set(null, properties.getProperty(name));
+                            field.set(null, value);
                             break;
                         case BOOLEAN:
-                            field.setBoolean(null, Boolean.parseBoolean(properties.getProperty(name)));
+                            field.setBoolean(null, Boolean.parseBoolean(value));
                             break;
                         case INTEGER:
-                            field.setInt(null, Integer.parseInt(properties.getProperty(name)));
+                            field.setInt(null, Integer.parseInt(value));
                             break;
-                        case DECIMAL:
-                            field.setDouble(null, Double.parseDouble(properties.getProperty(name)));
+                        case DOUBLE:
+                            field.setDouble(null, Double.parseDouble(value));
+                            break;
+                        case FLOAT:
+                            field.setFloat(null, Float.parseFloat(value));
+                            break;
+                        case LONG:
+                            field.setLong(null, Long.parseLong(value));
                             break;
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
             System.exit(-1);
         }

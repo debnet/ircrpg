@@ -1,5 +1,6 @@
 package fr.debnet.ircrpg.enums;
 
+import fr.debnet.ircrpg.interfaces.IEnum;
 import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Item;
@@ -10,6 +11,7 @@ import fr.debnet.ircrpg.models.Spell;
  * @author Marc
  */
 public enum Model {
+    
     NONE        (null),
     PLAYER      (Player.class),
     ITEM        (Item.class),

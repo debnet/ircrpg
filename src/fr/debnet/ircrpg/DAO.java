@@ -2,12 +2,12 @@ package fr.debnet.ircrpg;
 
 import fr.debnet.ircrpg.interfaces.IEntity;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -31,7 +31,7 @@ public class DAO {
             for (Map.Entry<String, String> entry : Config.HIBERNATE_CONFIG.entrySet()) 
                 config.setProperty(entry.getKey(), entry.getValue());
             sessionFactory = config.buildSessionFactory();
-        } catch (Exception ex) {
+        } catch (IOException | HibernateException ex) {
             throw new ExceptionInInitializerError(ex);
         }
     }
@@ -122,7 +122,7 @@ public class DAO {
      */
     @SuppressWarnings("unchecked")
     public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         Session session = sessionFactory.openSession();
         try {
             Query query = session.createQuery(sql);

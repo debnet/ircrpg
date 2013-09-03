@@ -41,8 +41,8 @@ public class EventQueue extends Thread implements IQueue {
         this.setName(this.getClass().getSimpleName());
         this.game = game;
         this.random = new Random();
-        this.notifiables = new ArrayList<INotifiable>();
-        this.events = new HashMap<Player, List<Event>>();
+        this.notifiables = new ArrayList<>();
+        this.events = new HashMap<>();
         this.start();
     }
     
@@ -53,7 +53,7 @@ public class EventQueue extends Thread implements IQueue {
                 // Current date
                 Calendar now = Calendar.getInstance();
                 // Get list of players which have at least an executeEvent
-                List<Player> players = new ArrayList<Player>(this.events.keySet());
+                List<Player> players = new ArrayList<>(this.events.keySet());
                 
                 if (!players.isEmpty()) {
                     // Get a random player from the list

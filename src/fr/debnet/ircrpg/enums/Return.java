@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Return {
+public enum Return implements IEnum {
+    
     // General returns
     OK                          (0x00, Strings.RETURN_OK),
     PERSISTANCE_ERROR           (0x01, Strings.RETURN_PERSISTANCE_ERROR),
@@ -82,6 +84,9 @@ public enum Return {
     NOT_WORKED_ENOUGH           (0x62, Strings.RETURN_NOT_WORKED_ENOUGH),
     NOT_RESTED_ENOUGH           (0x63, Strings.RETURN_NOT_RESTED_ENOUGH),
     NOT_TRAINED_ENOUGH          (0x64, Strings.RETURN_NOT_TRAINED_ENOUGH),
+    START_WORKING               (0x65, Strings.RETURN_START_WORKING),
+    START_RESTING               (0x66, Strings.RETURN_START_RESTING),
+    START_TRAINING              (0x67, Strings.RETURN_START_TRAINING),
     // Level up returns
     UNKNOWN_SKILL               (0x70, Strings.RETURN_UNKNOWN_SKILL),
     NOT_ENOUGH_SKILL_POINTS     (0x71, Strings.RETURN_NOT_ENOUGH_SKILL_POINTS),
@@ -131,6 +136,16 @@ public enum Return {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+    
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

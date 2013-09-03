@@ -15,7 +15,7 @@ public class Random {
     
     public Random() {
         this.random = new java.util.Random(Calendar.getInstance().getTimeInMillis());
-        this.defaultValues = new ArrayDeque<Double>();
+        this.defaultValues = new ArrayDeque<>();
     }
     
     public void addDefaultValue(double value) {

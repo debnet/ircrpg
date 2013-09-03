@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Equipment {
+public enum Equipment implements IEnum {
+    
     NONE        (0x0, null),
     WEAPON      (0x1, Strings.EQUIPMENT_WEAPON),
     SHIELD      (0x2, Strings.EQUIPMENT_SHIELD),
@@ -39,6 +41,16 @@ public enum Equipment {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

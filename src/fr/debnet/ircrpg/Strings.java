@@ -111,20 +111,6 @@ public class Strings {
     @Property(name = "skill.defense")
     public static String SKILL_DEFENSE;
     
-    /* General */
-    @Property(name = "register.succeed")
-    public static String REGISTER_SUCCEED;
-    @Property(name = "register.failed")
-    public static String REGISTER_FAILED;
-    @Property(name = "login.succeed")
-    public static String LOGIN_SUCCEED;
-    @Property(name = "login.failed")
-    public static String LOGIN_FAILED;
-    @Property(name = "logout.succeed")
-    public static String LOGOUT_SUCCEED;
-    @Property(name = "logout.failed")
-    public static String LOGOUT_FAILED;
-    
     /* Commands */
     @Property(name = "command.help")
     public static String COMMAND_HELP;
@@ -184,6 +170,8 @@ public class Strings {
     public static String COMMAND_MAP;
     @Property(name = "command.config")
     public static String COMMAND_CONFIG;
+    @Property(name = "command.reload")
+    public static String COMMAND_RELOAD;
     
     /* Command helps */
     @Property(name = "help.help")
@@ -367,6 +355,12 @@ public class Strings {
     public static String RETURN_NOT_RESTED_ENOUGH;
     @Property(name = "return.not_trained_enough")
     public static String RETURN_NOT_TRAINED_ENOUGH;
+    @Property(name = "return.start_working")
+    public static String RETURN_START_WORKING;
+    @Property(name = "return.start_resting")
+    public static String RETURN_START_RESTING;
+    @Property(name = "return.start_training")
+    public static String RETURN_START_TRAINING;
     // Level up returns
     @Property(name = "return.unknown_skill")
     public static String RETURN_UNKNOWN_SKILL;
@@ -442,26 +436,26 @@ public class Strings {
     
     /* Constants */
     // Colors
-    private static final String _NORMAL = "<n>";
-    private static final String _BOLD = "<b>";
-    private static final String _ITALIC = "<i>";
-    private static final String _UNDERLINED = "<u>";
-    private static final String _BLACK = "<black>";
-    private static final String _BLUE = "<blue>";
-    private static final String _BROWN = "<brown>";
-    private static final String _CYAN = "<cyan>";
-    private static final String _DARK_BLUE = "<dblue>";
-    private static final String _DARK_GRAY = "<dgray>";
-    private static final String _DARK_GREEN = "<dgreen>";
-    private static final String _GREEN = "<green>";
-    private static final String _LIGHT_GRAY = "<lgray>";
-    private static final String _MAGENTA = "<magenta>";
-    private static final String _OLIVE = "<olive>";
-    private static final String _PURPLE = "<purple>";
-    private static final String _RED = "<red>";
-    private static final String _TEAL = "<teal>";
-    private static final String _WHITE = "<white>";
-    private static final String _YELLOW = "<yellow>";
+    private static final String _NORMAL = "n";
+    private static final String _BOLD = "b";
+    private static final String _ITALIC = "i";
+    private static final String _UNDERLINED = "u";
+    private static final String _BLACK = "black";
+    private static final String _BLUE = "blue";
+    private static final String _BROWN = "brown";
+    private static final String _CYAN = "cyan";
+    private static final String _DARK_BLUE = "dblue";
+    private static final String _DARK_GRAY = "dgray";
+    private static final String _DARK_GREEN = "dgreen";
+    private static final String _GREEN = "green";
+    private static final String _LIGHT_GRAY = "lgray";
+    private static final String _MAGENTA = "magenta";
+    private static final String _OLIVE = "olive";
+    private static final String _PURPLE = "purple";
+    private static final String _RED = "red";
+    private static final String _TEAL = "teal";
+    private static final String _WHITE = "white";
+    private static final String _YELLOW = "yellow";
     
     // Map of colors
     private final static Map<String, Object> COLORS = new HashMap<String, Object>() {
@@ -497,6 +491,11 @@ public class Strings {
         Config.loadProperties("strings.properties", Strings.class);
     }
     
+    /**
+     * Format a message with colors
+     * @param message Message to format
+     * @return Formatted string
+     */
     public static String formatMessage(String message) {
         return Strings.format(message, Strings.COLORS);
     }
@@ -526,7 +525,7 @@ public class Strings {
      * @return List of strings
      */
     public static List<String> slice(String string, int size) {
-        List<String> parts = new ArrayList<String>();
+        List<String> parts = new ArrayList<>();
         int length = string.length();
         for (int i = 0; i < length; i += size)
             parts.add(string.substring(i, Math.min(length, i + size)));

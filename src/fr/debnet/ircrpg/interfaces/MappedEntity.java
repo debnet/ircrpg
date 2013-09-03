@@ -13,7 +13,7 @@ public abstract class MappedEntity {
     private boolean enableMapping = true;
     
     public MappedEntity() {
-        this.map = new HashMap<String, Object>();
+        this.map = new HashMap<>();
     }
     
     public void setEnableMapping(boolean enable) {
@@ -22,7 +22,7 @@ public abstract class MappedEntity {
     
     public Map<String, Object> toMap() {
         this.updateMapping();
-        return new HashMap<String, Object>(this.map);
+        return new HashMap<>(this.map);
     }
     
     protected synchronized void set(String key, Object value) {

@@ -6,6 +6,7 @@ package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.DAO;
+import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Type;
 import fr.debnet.ircrpg.interfaces.IEntity;
@@ -14,7 +15,9 @@ import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Item;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +39,7 @@ public class Admin {
      */
     public Admin(Game game) {
         this.game = game;
-        this.objects = new HashMap<Player, IEntity>();
+        this.objects = new HashMap<>();
     }
     
     /**
@@ -130,7 +133,8 @@ public class Admin {
             // Get property setter
             PropertyDescriptor descriptor = new PropertyDescriptor(property, object.getClass());
             Method setter = descriptor.getWriteMethod();
-            Type type = Type.from(descriptor.getPropertyType());
+            Class<?> objectType = descriptor.getPropertyType();
+            Type type = Type.from(objectType);
             // Set value
             switch (type) {
                 case STRING:
@@ -142,13 +146,22 @@ public class Admin {
                 case INTEGER:
                     setter.invoke(object, Integer.parseInt(value));
                     break;
-                case DECIMAL:
+                case DOUBLE:
                     setter.invoke(object, Double.parseDouble(value));
+                    break;
+                case FLOAT:
+                    setter.invoke(object, Float.parseFloat(value));
+                    break;
+                case LONG:
+                    setter.invoke(object, Long.parseLong(value));
+                    break;
+                case ENUM:
+                    setter.invoke(object, Enum.valueOf((Class<Enum>) objectType, value));
                     break;
                 default:
                     return false;
             }
-        } catch (Exception ex) {
+        } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -173,10 +186,9 @@ public class Admin {
             // Get property getter
             PropertyDescriptor descriptor = new PropertyDescriptor(property, object.getClass());
             Method getter = descriptor.getReadMethod();
-            Type type = Type.from(descriptor.getPropertyType());
             // Get value
             return getter.invoke(object).toString();
-        } catch (Exception ex) {
+        } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -270,6 +282,43 @@ public class Admin {
         Player player = this.game.getPlayerByNickname(nickname);
         if (player == null || !player.getAdmin()) return null;
         // Get config list
-        return Config.getFields().toString();
+        return Config.toMap().toString();
+    }
+    
+    /**
+     * Reload a entity list or config/string
+     * @param nickname Player's nickname
+     * @param type Type to reload
+     * @return True if success, false else
+     */
+    public boolean reload(String nickname, String type) {
+        Player player = this.game.getPlayerByNickname(nickname);
+        if (player == null || !player.getAdmin()) return false;
+        // Get model type
+        Model model = Model.from(type);
+        // Reload
+        switch (model) {
+            case PLAYER:
+                this.game.reloadPlayers();
+                break;
+            case ITEM:
+                this.game.reloadItems();
+                break;
+            case SPELL:
+                this.game.reloadSpells();
+                break;
+            case EVENT:
+                this.game.reloadEvents();
+                break;
+            default:
+                if ("config".equalsIgnoreCase(type)) {
+                    Config.loadProperties("config.properties", Config.class);
+                } else if ("string".equalsIgnoreCase(type)) {
+                    Config.loadProperties("strings.properties", Strings.class);
+                } else return false;
+                break;
+        }
+        // Return
+        return true;
     }
 }

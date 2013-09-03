@@ -26,6 +26,7 @@ import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import fr.debnet.ircrpg.models.Spell;
+import fr.debnet.ircrpg.models.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -55,13 +56,13 @@ public class Game {
     public Game() {
         this.admin = new Admin(this);
         this.random = new Random();
-        this.queues = new ArrayList<IQueue>();
+        this.queues = new ArrayList<>();
         
-        this.playersByNickname = new HashMap<String, Player>();
-        this.playersByUsername = new HashMap<String, Player>();
-        this.itemsByCode = new HashMap<String, Item>();
-        this.spellsByCode = new HashMap<String, Spell>();
-        this.eventsByCode = new HashMap<String, Event>();
+        this.playersByNickname = new HashMap<>();
+        this.playersByUsername = new HashMap<>();
+        this.itemsByCode = new HashMap<>();
+        this.spellsByCode = new HashMap<>();
+        this.eventsByCode = new HashMap<>();
 
         // Run queues
         this.queues.add(UpdateQueue.getInstance(this));
@@ -218,7 +219,7 @@ public class Game {
      * @return List of events
      */
     public List<Event> getEventsForPlayer(Player player) {
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         // Get player's maximum health and mana
         Modifiers modifiers = new Modifiers(player);
         double maxHealth = player.getMaxHealth() + modifiers.getHealth();
@@ -365,7 +366,7 @@ public class Game {
             }
         }
         // Activity
-        hours = diff / Config.HOUR;
+        hours = diff * 1d / Config.HOUR;
         switch (player.getActivity()) {
             case RESTING: {
                 // Restoring health points
@@ -975,6 +976,8 @@ public class Game {
         )) return result;
         // Check the activity penalty
         if (player.getActivity() == Activity.WAITING) {
+            Time time = new Time((Config.ACTIVITY_PENALTY * Config.MINUTE) - player.getActivityDuration());
+            result.setDetails(time.toString());
             result.addReturn(Return.PLAYER_IS_WAITING);
             return result;
         }
@@ -989,6 +992,17 @@ public class Game {
         // Update and save player
         this.updateAndReturn(result, player, true, false);
         // Return
+        switch (activity) {
+            case RESTING:
+                result.addReturn(Return.START_RESTING);
+                break;
+            case TRAINING:
+                result.addReturn(Return.START_TRAINING);
+                break;
+            case WORKING:
+                result.addReturn(Return.START_WORKING);
+                break;
+        }
         result.setSuccess(true);
         return result;
     }
@@ -1021,6 +1035,7 @@ public class Game {
                     result.addReturn(Return.NOT_RESTED_ENOUGH);
                     return result;
                 }
+                result.addReturn(Return.PLAYER_RESTING_ENDED);
                 earned *= Config.RATE_HEALTH + modifiers.getHealthRate();
                 break;
             }
@@ -1029,6 +1044,7 @@ public class Game {
                     result.addReturn(Return.NOT_WORKED_ENOUGH);
                     return result;
                 }
+                result.addReturn(Return.PLAYER_WORKING_ENDED);
                 earned *= Config.RATE_GOLD + modifiers.getGoldRate();
                 break;
             }
@@ -1037,6 +1053,7 @@ public class Game {
                     result.addReturn(Return.NOT_TRAINED_ENOUGH);
                     return result;
                 }
+                result.addReturn(Return.PLAYER_TRAINING_ENDED);
                 earned *= Config.RATE_EXPERIENCE + modifiers.getExperienceRate();
                 break;
             }
@@ -1333,21 +1350,6 @@ public class Game {
     }
     
     /**
-     * Common function for retrieving information about player
-     * @param nickname Player's nickname
-     * @param format Format string
-     * @return Formatted string
-     */
-    private String showPlayerData(String nickname, String format) {
-        Player player = this.getPlayerByNickname(nickname);
-        if (player == null) return null;
-        // Update player
-        this.update(player, false, false);
-        // Return data
-        return Strings.format(format, player.toMap());
-    }
-    
-    /**
      * Show player's all items
      * @param nickname Player's nickname
      * @return Formatted string
@@ -1358,7 +1360,7 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Build list of items
-        List<String> items = new ArrayList<String>();
+        List<String> items = new ArrayList<>();
         for (Item item : player.getItems()) {
             items.add(Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap()));
         }
@@ -1379,7 +1381,7 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Build list of spells
-        List<String> spells = new ArrayList<String>();
+        List<String> spells = new ArrayList<>();
         for (Spell spell : player.getSpells()) {
             spells.add(Strings.format(Strings.FORMAT_SPELL_NAME, spell.toMap()));
         }
@@ -1428,7 +1430,7 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Get items which can be bought
-        List<String> items = new ArrayList<String>();
+        List<String> items = new ArrayList<>();
         for (Map.Entry<String, Item> entry : this.itemsByCode.entrySet()) {
             Item item = entry.getValue();
             // Check item conditions
@@ -1436,8 +1438,9 @@ public class Game {
             boolean level = item.getMinLevel() <= player.getLevel();
             boolean money = item.getGoldCost() <= player.getGold();
             boolean stock = item.getStock() > 0;
+            boolean owned = !player.getItems().contains(item);
             // Add item to list
-            if (admin && level && money && stock) {
+            if (admin && level && money && stock && owned) {
                 String string = Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap());
                 items.add(string);
             }
@@ -1459,7 +1462,7 @@ public class Game {
         // Update player
         this.update(player, false, false);
         // Get items which can be bought
-        List<String> spells = new ArrayList<String>();
+        List<String> spells = new ArrayList<>();
         for (Map.Entry<String, Spell> entry : this.spellsByCode.entrySet()) {
             Spell spell = entry.getValue();
             // Check item conditions
@@ -1467,8 +1470,9 @@ public class Game {
             boolean level = spell.getMinLevel() <= player.getLevel();
             boolean money = spell.getGoldCost() <= player.getGold();
             boolean magic = spell.getManaCost() <= player.getMaxMana();
+            boolean owned = !player.getSpells().contains(spell);
             // Add item to list
-            if (admin && level && money && magic) {
+            if (admin && level && money && magic && owned) {
                 String string = Strings.format(Strings.FORMAT_ITEM_NAME, spell.toMap());
                 spells.add(string);
             }
@@ -1598,6 +1602,7 @@ public class Game {
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
+                player.setAdmin(this.playersByNickname.size() == 0);
                 if (Config.PERSISTANCE) {
                     if (DAO.<Player>addObject(player) == 0) {
                         result.addReturn(Return.PERSISTANCE_ERROR);

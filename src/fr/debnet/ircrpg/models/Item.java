@@ -18,7 +18,7 @@ import javax.persistence.Version;
  * Item
  * @author Marc
  */
-@Entity(name = "Item")
+@Entity
 public class Item extends MappedEntity implements IEntity {
     
     private Long id;

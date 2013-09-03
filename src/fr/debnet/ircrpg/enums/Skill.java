@@ -1,12 +1,14 @@
 package fr.debnet.ircrpg.enums;
 
 import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
  *
  * @author Marc
  */
-public enum Skill {
+public enum Skill implements IEnum {
+    
     NONE        (0x0, null),
     HEALTH      (0x1, Strings.SKILL_HEALTH),
     MANA        (0x2, Strings.SKILL_MANA),
@@ -33,6 +35,16 @@ public enum Skill {
     
     @Override
     public String toString() {
+        return this.text;
+    }
+    
+    @Override
+    public int getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String getText() {
         return this.text;
     }
 }

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class LoadTest extends Thread {
     
     private static Game game;
-    private static List<String> players = new ArrayList<String>();
+    private static List<String> players = new ArrayList<>();
     private static Random random = new Random();
     
     /**
