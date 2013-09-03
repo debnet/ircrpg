@@ -454,8 +454,9 @@ public class Game {
         }
         // Experience gained
         for (int level = player.getLevel() + 1; level < 100; level++) {
-            int needed = ((level * (level - 1)) / 2) * Config.RATE_LEVEL;
-            if (player.getExperience() >= needed) {
+            int required = ((level * (level - 1)) / 2) * Config.RATE_LEVEL;
+            player.setExperienceRequired(required);
+            if (player.getExperience() >= required) {
                 player.addLevel(1);
                 player.addSkillPoints(Config.RATE_SKILL);
                 result.addReturn(target ? Return.TARGET_LEVEL_UP : Return.PLAYER_LEVEL_UP);
@@ -1482,6 +1483,21 @@ public class Game {
         String string = String.format(Strings.FORMAT_SHOP_SPELLS, Strings.join(spells, ","));
         return Strings.format(string, player.toMap());
     }
+    
+    /**
+     * Show the list of online players
+     * @return Formatted string
+     */
+    public String showPlayers() {
+        List<String> players = new ArrayList<>();
+        for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
+            if (entry.getValue().getOnline()) {
+                players.add(entry.getKey());
+            }
+        }
+        if (players.isEmpty()) players.add(Strings.FORMAT_NONE);
+        return String.format(Strings.FORMAT_LIST_PLAYERS, Strings.join(players, ","));
+    }
 
     /**
      * Log in a player
@@ -1498,13 +1514,17 @@ public class Game {
         if (player != null) {
             if (!player.getOnline()) {
                 if (player.getPassword().equals(password)) {
+                    // Clean player references
                     this.playersByNickname.remove(player.getNickname());
                     this.playersByNickname.remove(nickname);
                     this.playersByNickname.put(nickname, player);
+                    // Update player
                     player.setNickname(nickname);
                     player.setHostname(hostname);
                     player.setOnline(true);
                     player.setLastUpdate(Calendar.getInstance());
+                    this.updateAndReturn(result, player, true, false);
+                    // Return result
                     result.setPlayer(player);
                     result.addReturn(Return.LOGIN_SUCCEED);
                     result.setSuccess(true);
@@ -1527,8 +1547,11 @@ public class Game {
         Player player = this.getPlayerByNickname(nickname);
         if (player != null && !player.getOnline()) {
             if (hostname.equals(player.getHostname())) {
+                // Update player
                 player.setOnline(true);
                 player.setLastUpdate(Calendar.getInstance());
+                this.updateAndReturn(result, player, true, false);
+                // Return result
                 result.setPlayer(player);
                 result.addReturn(Return.LOGIN_SUCCEED);
                 result.setSuccess(true);
@@ -1547,8 +1570,10 @@ public class Game {
         result.setDetails(nickname);
         Player player = this.getPlayerByNickname(nickname);
         if (player != null) {
+            // Update player
             player.setOnline(false);
-            player.setLastUpdate(Calendar.getInstance());
+            this.updateAndReturn(result, player, true, false);
+            // Return result
             result.setPlayer(player);
             result.addReturn(Return.LOGOUT_SUCCEED);
             result.setSuccess(true);

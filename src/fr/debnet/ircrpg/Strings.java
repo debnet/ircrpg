@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
  */
 public class Strings {
     
+    @Property(name = "welcome")
+    public static String WELCOME;
+    
     /* Time */
     @Property(name = "format.time_seconds")
     public static String FORMAT_TIME_SECONDS;
@@ -48,6 +51,8 @@ public class Strings {
     public static String FORMAT_ITEM_INFOS;
     @Property(name = "format.spell_infos")
     public static String FORMAT_SPELL_INFOS;
+    @Property(name = "format.list_players")
+    public static String FORMAT_LIST_PLAYERS;
     
     /* Equipment */
     @Property(name = "equipment.weapon")
@@ -116,6 +121,8 @@ public class Strings {
     public static String COMMAND_HELP;
     @Property(name = "command.login")
     public static String COMMAND_LOGIN;
+    @Property(name = "command.logout")
+    public static String COMMAND_LOGOUT;
     @Property(name = "command.register")
     public static String COMMAND_REGISTER;
     @Property(name = "command.infos")
@@ -152,6 +159,8 @@ public class Strings {
     public static String COMMAND_ITEMS;
     @Property(name = "command.spells")
     public static String COMMAND_SPELLS;
+    @Property(name = "command.players")
+    public static String COMMAND_PLAYERS;
     
     /* Admin commands */
     @Property(name = "command.new")
@@ -178,6 +187,8 @@ public class Strings {
     public static String HELP_HELP;
     @Property(name = "help.login")
     public static String HELP_LOGIN;
+    @Property(name = "help.logout")
+    public static String HELP_LOGOUT;
     @Property(name = "help.register")
     public static String HELP_REGISTER;
     @Property(name = "help.infos")
@@ -214,6 +225,8 @@ public class Strings {
     public static String HELP_ITEMS;
     @Property(name = "help.spells")
     public static String HELP_SPELLS;
+    @Property(name = "help.players")
+    public static String HELP_PLAYERS;
     
     /* Returns */
     // General returns

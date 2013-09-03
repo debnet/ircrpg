@@ -17,7 +17,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -44,6 +44,7 @@ public class Player extends MappedEntity implements IEntity {
     private Status status;
     private Integer level;
     private Double experience;
+    private Integer experienceRequired;
     private Double currentHealth;
     private Integer maxHealth;
     private Double currentMana;
@@ -91,6 +92,7 @@ public class Player extends MappedEntity implements IEntity {
         this.setStatus(Status.NORMAL);
         this.setLevel(1);
         this.setExperience(0d);
+        this.setExperienceRequired(Config.RATE_LEVEL);
         this.setMaxHealth(Config.START_HEALTH);
         this.setCurrentHealth((double) this.getMaxHealth());
         this.setMaxMana(Config.START_MANA);
@@ -264,6 +266,16 @@ public class Player extends MappedEntity implements IEntity {
         this.set("experience", this.experience);
     }
 
+    @Column
+    public Integer getExperienceRequired() {
+        return experienceRequired;
+    }
+
+    public void setExperienceRequired(Integer experienceRequired) {
+        this.experienceRequired = experienceRequired;
+        this.set("experienceRequired", this.experienceRequired);
+    }
+    
     @Column
     public Double getCurrentHealth() {
         return currentHealth;
@@ -452,7 +464,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("remedyPotions", this.remedyPotions);
     }
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     public Set<Item> getItems() {
         return items;
@@ -473,7 +485,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("items", this.items);
     }
     
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     public Set<Spell> getSpells() {
         return spells;

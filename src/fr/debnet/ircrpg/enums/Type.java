@@ -16,7 +16,7 @@ public enum Type {
     DOUBLE      ("double", "Double"),
     FLOAT       ("float", "Float"),
     LONG        ("long", "Long"),
-    ENUM        ("IEnum");
+    ENUM        ();
     
     private final List<String> types;
 
@@ -25,15 +25,11 @@ public enum Type {
     }
     
     public static Type from(Class<?> clazz) {
+        if (clazz.isEnum()) return ENUM;
         String value = clazz.getSimpleName();
         for (Type type : Type.values()) {
             if (type.types.contains(value)) {
                 return type;
-            }
-            for (Class<?> i : clazz.getInterfaces()) {
-                if (type.types.contains(i.getSimpleName())) {
-                    return type;
-                }
             }
         }
         return Type.OBJECT;

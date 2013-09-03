@@ -227,7 +227,9 @@ public class Config {
         try {
             Field[] declaredFields = Config.class.getDeclaredFields();
             for (Field field : declaredFields) {
-                if (Modifier.isStatic(field.getModifiers())) {
+                int modifiers = field.getModifiers();
+                if (Modifier.isFinal(modifiers) || field.getAnnotations().length == 0) continue;
+                if (Modifier.isStatic(modifiers)) {
                     map.put(field.getName(), field.get(null));
                 }
             }

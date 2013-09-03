@@ -86,6 +86,13 @@ public class Robot extends IrcBot implements INotifiable {
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
+            // Logout
+            else if (Strings.COMMAND_LOGOUT.equals(command)) {
+                if (words.length == 1) {
+                    Result result = this.game.logout(sender);
+                    this.displayResult(result, sender);
+                } else this.sendFormattedMessage(sender, help.get(command));
+            }
             // Attack
             else if (Strings.COMMAND_ATTACK.equals(command)) {
                 if (words.length == 2) {
@@ -96,10 +103,10 @@ public class Robot extends IrcBot implements INotifiable {
             }
             // Magic
             else if (Strings.COMMAND_MAGIC.equals(command)) {
-                if (words.length > 2) {
+                if (words.length > 3) {
                     String target = words[1];
                     String magic = "";
-                    for (int i = 1; i < words.length - 2; i++) {
+                    for (int i = 2; i < words.length; i++) {
                         magic += " " + words[i];
                         magic = magic.trim();
                     }
@@ -173,6 +180,18 @@ public class Robot extends IrcBot implements INotifiable {
                     if (string != null) this.sendFormattedMessage(sender, string);
                 }
             }
+            // Look
+            else if (Strings.COMMAND_LOOK.equals(command)) {
+                if (words.length > 1) {
+                    String code = "";
+                    for (int i = 1; i < words.length; i++) {
+                        code += " " + words[i];
+                        code = code.trim();
+                    }
+                    String string = this.game.look(code);
+                    if (string != null) this.sendFormattedMessage(sender, string);
+                } else this.sendFormattedMessage(sender, help.get(command));
+            }
             // Drink
             else if (Strings.COMMAND_DRINK.equals(command)) {
                 if (words.length > 1) {
@@ -231,17 +250,10 @@ public class Robot extends IrcBot implements INotifiable {
                 String string = this.game.showSpells(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
-            // Look
-            else if (Strings.COMMAND_LOOK.equals(command)) {
-                if (words.length > 1) {
-                    String code = "";
-                    for (int i = 1; i < words.length; i++) {
-                        code += " " + words[i];
-                        code = code.trim();
-                    }
-                    String string = this.game.look(code);
-                    if (string != null) this.sendFormattedMessage(sender, string);
-                } else this.sendFormattedMessage(sender, help.get(command));
+            // Players 
+            else if (Strings.COMMAND_PLAYERS.equals(command)) {
+                String string = this.game.showPlayers();
+                if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Help
             else if (Strings.COMMAND_HELP.equals(command)) {
@@ -328,6 +340,7 @@ public class Robot extends IrcBot implements INotifiable {
                     else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
                 } else this.sendFormattedMessage(sender, this.game.getAdmin().listConfig(sender));
             }
+            // Reload
             else if (Strings.COMMAND_RELOAD.equals(command)) {
                 if (words.length == 2) {
                     String type = words[1];
@@ -397,7 +410,9 @@ public class Robot extends IrcBot implements INotifiable {
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
         Result result = this.game.tryRelogin(sender, hostname);
-        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
+        if (result.isSuccess())
+            this.sendFormattedMessage(Helpers.getMessage(result));
+        else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
     }
 
     @Override
@@ -593,6 +608,7 @@ public class Robot extends IrcBot implements INotifiable {
         help = new HashMap<>();
         help.put(Strings.COMMAND_HELP, Strings.HELP_HELP);
         help.put(Strings.COMMAND_LOGIN, Strings.HELP_LOGIN);
+        help.put(Strings.COMMAND_LOGOUT, Strings.HELP_LOGOUT);
         help.put(Strings.COMMAND_REGISTER, Strings.HELP_REGISTER);
         help.put(Strings.COMMAND_INFOS, Strings.HELP_INFOS);
         help.put(Strings.COMMAND_ATTACK, Strings.HELP_ATTACK);
@@ -611,5 +627,6 @@ public class Robot extends IrcBot implements INotifiable {
         help.put(Strings.COMMAND_STATS, Strings.HELP_STATS);
         help.put(Strings.COMMAND_ITEMS, Strings.HELP_ITEMS);
         help.put(Strings.COMMAND_SPELLS, Strings.HELP_SPELLS);
+        help.put(Strings.COMMAND_PLAYERS, Strings.HELP_PLAYERS);
     }
 }
