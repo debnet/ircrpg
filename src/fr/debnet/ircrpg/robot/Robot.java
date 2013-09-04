@@ -75,6 +75,7 @@ public class Robot extends IrcBot implements INotifiable {
                     String password = words[2];
                     Result result = this.game.register(username, password, sender, hostname);
                     this.displayResult(result, sender);
+                    if (result.isSuccess()) this.voice(this.getChannels()[0], sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Login
@@ -84,6 +85,7 @@ public class Robot extends IrcBot implements INotifiable {
                     String password = words[2];
                     Result result = this.game.login(username, password, sender, hostname);
                     this.displayResult(result, sender);
+                    if (result.isSuccess()) this.voice(this.getChannels()[0], sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Logout
@@ -91,6 +93,7 @@ public class Robot extends IrcBot implements INotifiable {
                 if (words.length == 1) {
                     Result result = this.game.logout(sender);
                     this.displayResult(result, sender);
+                    if (result.isSuccess()) this.deVoice(this.getChannels()[0], sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Attack
@@ -410,9 +413,10 @@ public class Robot extends IrcBot implements INotifiable {
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
         Result result = this.game.tryRelogin(sender, hostname);
-        if (result.isSuccess())
+        if (result.isSuccess()) {
             this.sendFormattedMessage(Helpers.getMessage(result));
-        else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
+            this.voice(channel, sender);
+        } else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
     }
 
     @Override

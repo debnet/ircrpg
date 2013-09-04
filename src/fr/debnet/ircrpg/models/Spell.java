@@ -106,7 +106,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("name", this.name);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getDescription() {
         return description;
     }
@@ -116,7 +116,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("description", this.description);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getIsAdmin() {
         return isAdmin;
     }
@@ -126,7 +126,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("isAdmin", this.isAdmin);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getGoldCost() {
         return goldCost;
     }
@@ -136,7 +136,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("goldCost", this.goldCost);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getMinLevel() {
         return minLevel;
     }
@@ -146,7 +146,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("minLevel", this.minLevel);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getIsSelf() {
         return isSelf;
     }
@@ -156,7 +156,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("isSelf", this.isSelf);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getHealthDamage() {
         return healthDamage;
     }
@@ -166,7 +166,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("healthDamage", this.healthDamage);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getManaCost() {
         return manaCost;
     }
@@ -176,7 +176,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("manaCost", this.manaCost);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Status getStatus() {
         return status;
@@ -187,7 +187,7 @@ public class Spell extends MappedEntity implements IEntity {
         this.set("status", this.status);
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getStatusDuration() {
         return statusDuration;
     }

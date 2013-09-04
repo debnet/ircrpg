@@ -164,7 +164,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("username", this.username);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getPassword() {
         return password;
     }
@@ -174,7 +174,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("password", this.password);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getNickname() {
         return nickname;
     }
@@ -184,7 +184,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("nickname", this.nickname);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getHostname() {
         return hostname;
     }
@@ -194,7 +194,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("hostname", this.hostname);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getAdmin() {
         return admin;
     }
@@ -204,7 +204,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("admin", this.admin);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getOnline() {
         return online;
     }
@@ -214,7 +214,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("online", this.online);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Activity getActivity() {
         return activity;
@@ -225,7 +225,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("activity", this.activity);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Status getStatus() {
         return status;
@@ -236,7 +236,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("status", this.status);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getLevel() {
         return level;
     }
@@ -251,7 +251,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("level", this.level);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getExperience() {
         return experience;
     }
@@ -266,7 +266,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("experience", this.experience);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getExperienceRequired() {
         return experienceRequired;
     }
@@ -276,7 +276,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("experienceRequired", this.experienceRequired);
     }
     
-    @Column
+    @Column(nullable = false)
     public Double getCurrentHealth() {
         return currentHealth;
     }
@@ -291,7 +291,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("currentHealth", this.currentHealth);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getMaxHealth() {
         return maxHealth;
     }
@@ -306,7 +306,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("maxHealth", this.maxHealth);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getCurrentMana() {
         return currentMana;
     }
@@ -321,7 +321,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("currentMana", this.currentMana);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getMaxMana() {
         return maxMana;
     }
@@ -336,7 +336,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("maxMana", this.maxMana);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getAttack() {
         return attack;
     }
@@ -351,7 +351,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("attack", this.attack);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getDefense() {
         return defense;
     }
@@ -366,7 +366,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("defense", this.defense);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getGold() {
         return gold;
     }
@@ -381,7 +381,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("gold", this.gold);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getSkillPoints() {
         return skillPoints;
     }
@@ -396,7 +396,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("skillPoints", this.skillPoints);
     }
 
-    @Column
+    @Column(nullable = false)
     @Index(name = "player_lastupdate")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     public Calendar getLastUpdate() {
@@ -408,7 +408,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("lastUpdate", this.lastUpdate);
     }
 
-    @Column
+    @Column(nullable = false)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     public Calendar getLastEvent() {
         return lastEvent;
@@ -419,7 +419,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("lastEvent", this.lastEvent);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getHealthPotions() {
         return healthPotions;
     }
@@ -434,7 +434,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("healthPotions", this.healthPotions);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getManaPotions() {
         return manaPotions;
     }
@@ -449,7 +449,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("manaPotions", this.manaPotions);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getRemedyPotions() {
         return remedyPotions;
     }
@@ -506,7 +506,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("spells", this.spells);
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getActivityDuration() {
         return activityDuration;
     }
@@ -523,7 +523,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("activityTime", new Time(this.activityDuration));
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getStatusDuration() {
         return statusDuration;
     }
@@ -540,7 +540,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("statusTime", new Time(this.statusDuration));
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getTimeIngame() {
         return timeIngame;
     }
@@ -555,7 +555,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("timeIngame", new Time(this.timeIngame));
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getTimeWorking() {
         return timeWorking;
     }
@@ -570,7 +570,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("timeWorking", new Time(this.timeWorking));
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getTimeResting() {
         return timeResting;
     }
@@ -585,7 +585,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("timeResting", new Time(this.timeResting));
     }
 
-    @Column
+    @Column(nullable = false)
     public Long getTimeTraining() {
         return timeTraining;
     }
@@ -600,7 +600,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("timeTraining", new Time(this.timeTraining));
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getMoneySpent() {
         return moneySpent;
     }
@@ -615,7 +615,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("moneySpent", this.moneySpent);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getMoneyStolen() {
         return moneyStolen;
     }
@@ -630,7 +630,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("moneyStolen", this.moneyStolen);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getDamageTaken() {
         return damageTaken;
     }
@@ -645,7 +645,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("damageTaken", this.damageTaken);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getDamageGiven() {
         return damageGiven;
     }
@@ -660,7 +660,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("damageGiven", this.damageGiven);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getDeaths() {
         return deaths;
     }
@@ -675,7 +675,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("deaths", this.deaths);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getKills() {
         return kills;
     }

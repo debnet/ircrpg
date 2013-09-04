@@ -120,7 +120,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("code", this.code);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getName() {
         return name;
     }
@@ -130,7 +130,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("name", this.name);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getDescription() {
         return description;
     }
@@ -140,7 +140,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("description", this.description);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Equipment getType() {
         return type;
@@ -151,7 +151,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("type", this.type);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getIsAdmin() {
         return isAdmin;
     }
@@ -161,7 +161,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("isAdmin", this.isAdmin);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getStock() {
         return stock;
     }
@@ -176,7 +176,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("stock", this.stock);
     }
     
-    @Column
+    @Column(nullable = false)
     public Integer getGoldCost() {
         return goldCost;
     }
@@ -186,7 +186,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("goldCost", this.goldCost);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getMinLevel() {
         return minLevel;
     }
@@ -196,7 +196,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("minLevel", this.minLevel);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getHealthModifier() {
         return healthModifier;
     }
@@ -206,7 +206,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("healthModifier", this.healthModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getManaModifier() {
         return manaModifier;
     }
@@ -216,7 +216,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("manaModifier", this.manaModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getAttackModifier() {
         return attackModifier;
     }
@@ -226,7 +226,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("attackModifier", this.attackModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getDefenseModifier() {
         return defenseModifier;
     }
@@ -236,7 +236,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("defenseModifier", this.defenseModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getAttackAccuracyModifier() {
         return attackAccuracyModifier;
     }
@@ -246,7 +246,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("attackAccuracyModifier", this.attackAccuracyModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getDefenseAccuracyModifier() {
         return defenseAccuracyModifier;
     }
@@ -256,7 +256,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("defenseAccuracyModifier", this.defenseAccuracyModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getMagicAccuracyModifier() {
         return magicAccuracyModifier;
     }
@@ -266,7 +266,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("magicAccuracyModifier", this.magicAccuracyModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getExperienceRateModifier() {
         return experienceRateModifier;
     }
@@ -276,7 +276,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("experienceRateModifier", this.experienceRateModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getGoldRateModifier() {
         return goldRateModifier;
     }
@@ -286,7 +286,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("goldRateModifier", this.goldRateModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getHealthRateModifier() {
         return healthRateModifier;
     }
@@ -296,7 +296,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("healthRateModifier", this.healthRateModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getHealthPotionRegenModifier() {
         return healthPotionRegenModifier;
     }
@@ -306,7 +306,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("healthPotionRegenModifier", this.healthPotionRegenModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getManaPotionRegenModifier() {
         return manaPotionRegenModifier;
     }
@@ -316,7 +316,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("manaPotionRegenModifier", this.manaPotionRegenModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPoisonEffectModifier() {
         return poisonEffectModifier;
     }
@@ -326,7 +326,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("poisonEffectModifier", this.poisonEffectModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getStealingChanceModifier() {
         return stealingChanceModifier;
     }
@@ -336,7 +336,7 @@ public class Item extends MappedEntity implements IEntity {
         this.set("stealingChanceModifier", this.stealingChanceModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getStealingGoldModifier() {
         return stealingGoldModifier;
     }

@@ -206,8 +206,8 @@ public class Admin {
         IEntity object = this.objects.get(player);
         if (object == null) return false;
         // Save object
-        if (object.getId() == 0)
-            return DAO.addObject(object) != 0l;
+        if (object.getId() == 0l)
+            return DAO.addObject(object) != null;
         else return DAO.setObject(object);
     }
     

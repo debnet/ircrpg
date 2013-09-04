@@ -106,7 +106,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("code", this.code);
     }
     
-    @Column
+    @Column(nullable = false)
     public String getDescription() {
         return description;
     }
@@ -116,7 +116,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("description", this.description);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Activity getActivityCondition() {
         return activityCondition;
@@ -127,7 +127,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("activityCondition", this.activityCondition);
     }
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public Status getStatusCondition() {
         return statusCondition;
@@ -138,7 +138,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("statusCondition", this.statusCondition);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getLevelCondition() {
         return levelCondition;
     }
@@ -148,7 +148,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("levelCondition", this.levelCondition);
     }
     
-    @Column
+    @Column(nullable = false)
     public Integer getGoldCondition() {
         return goldCondition;
     }
@@ -158,7 +158,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("goldCondition", this.goldCondition);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getHealthCondition() {
         return healthCondition;
     }
@@ -168,7 +168,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("healthCondition", this.healthCondition);
     }
 
-    @Column
+    @Column(nullable = false)
     public Integer getManaCondition() {
         return manaCondition;
     }
@@ -178,7 +178,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("manaCondition", this.manaCondition);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getValueBelow() {
         return valueBelow;
     }
@@ -188,7 +188,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("valueBelow", this.valueBelow);
     }
 
-    @Column
+    @Column(nullable = false)
     public Boolean getValuePercentage() {
         return valuePercentage;
     }
@@ -198,7 +198,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("valuePercentage", this.valuePercentage);
     }
     
-    @Column
+    @Column(nullable = false)
     public Double getHealthModifier() {
         return healthModifier;
     }
@@ -208,7 +208,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("healthModifier", this.healthModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getManaModifier() {
         return manaModifier;
     }
@@ -218,7 +218,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("manaModifier", this.manaModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getExperienceModifier() {
         return experienceModifier;
     }
@@ -228,7 +228,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("experienceModifier", this.experienceModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getGoldModifier() {
         return goldModifier;
     }
@@ -238,7 +238,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("goldModifier", this.goldModifier);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getChance() {
         return chance;
     }
@@ -248,7 +248,7 @@ public class Event extends MappedEntity implements IEntity {
         this.set("chance", this.chance);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getVariance() {
         return variance;
     }

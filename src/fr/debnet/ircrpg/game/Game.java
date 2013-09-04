@@ -1352,13 +1352,15 @@ public class Game {
         Potion potion = Potion.from(code);
         switch (potion) {
             case HEALTH:
-                return String.format(Strings.FORMAT_POTION_HEALTH, 
-                    Config.POTION_HEALTH_RESTORE * 100, Config.POTION_HEALTH_COST);
+                return String.format(Strings.FORMAT_POTION_HEALTH, Potion.HEALTH,
+                    Config.POTION_HEALTH_RESTORE * 100, 
+                    Config.POTION_HEALTH_COST);
             case MANA:
-                return String.format(Strings.FORMAT_POTION_MANA, 
-                    Config.POTION_MANA_RESTORE * 100, Config.POTION_MANA_COST);
+                return String.format(Strings.FORMAT_POTION_MANA, Potion.MANA,
+                    Config.POTION_MANA_RESTORE * 100, 
+                    Config.POTION_MANA_COST);
             case REMEDY:
-                return String.format(Strings.FORMAT_POTION_REMEDY,
+                return String.format(Strings.FORMAT_POTION_REMEDY, Potion.REMEDY,
                     Config.POTION_REMEDY_COST);
         }
         // Item
@@ -1513,14 +1515,16 @@ public class Game {
      * @return Formatted string
      */
     public String showPlayers() {
+        int count = 0;
         List<String> players = new ArrayList<>();
         for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
             if (entry.getValue().getOnline()) {
                 players.add(entry.getKey());
+                count++;
             }
         }
         if (players.isEmpty()) players.add(Strings.FORMAT_NONE);
-        return String.format(Strings.FORMAT_LIST_PLAYERS, players.size(), Strings.join(players, ","));
+        return String.format(Strings.FORMAT_LIST_PLAYERS, count, Strings.join(players, ","));
     }
 
     /**

@@ -149,7 +149,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("version", this.version);
     }
 
-    @Column
+    @Column(nullable = false)
     @Index(name = "result_date")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     public Calendar getDate() {
@@ -171,7 +171,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("success", this.success);
     }
 
-    @Column
+    @Column(nullable = false)
     @Index(name = "result_action")
     @Enumerated(value=EnumType.STRING)
     public Action getAction() {
@@ -217,7 +217,7 @@ public class Result extends MappedEntity implements IEntity {
         this.player = player;
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPlayerHealthChanges() {
         return playerHealthChanges;
     }
@@ -232,7 +232,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerHealthChanges", this.playerHealthChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPlayerManaChanges() {
         return playerManaChanges;
     }
@@ -247,7 +247,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerManaChanges", this.playerManaChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPlayerGoldChanges() {
         return playerGoldChanges;
     }
@@ -262,7 +262,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerGoldChanges", this.playerGoldChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPlayerExperienceChanges() {
         return playerExperienceChanges;
     }
@@ -286,7 +286,7 @@ public class Result extends MappedEntity implements IEntity {
         this.target = target;
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getTargetHealthChanges() {
         return targetHealthChanges;
     }
@@ -301,7 +301,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("targetHealthChanges", this.targetHealthChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getTargetManaChanges() {
         return targetManaChanges;
     }
@@ -316,7 +316,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("targetManaChanges", this.targetManaChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getTargetGoldChanges() {
         return targetGoldChanges;
     }
@@ -331,7 +331,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("targetGoldChanges", this.targetGoldChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getTargetExperienceChanges() {
         return targetExperienceChanges;
     }
@@ -346,7 +346,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("targetExperienceChanges", this.targetExperienceChanges);
     }
 
-    @Column
+    @Column(nullable = false)
     public double getValue() {
         return value;
     }
@@ -356,7 +356,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("value", this.value);
     }
 
-    @Column
+    @Column(nullable = false)
     public String getDetails() {
         return details;
     }
