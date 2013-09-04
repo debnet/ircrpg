@@ -154,6 +154,15 @@ public class Game {
     }
     
     /**
+     * Reload queues
+     */
+    public void reloadQueues() {
+        for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
+            this.updateQueues(entry.getValue());
+        }
+    }
+    
+    /**
      * Get player by nickname
      * @param nickname Nickname
      * @return Player instance or null if not found
@@ -1339,10 +1348,25 @@ public class Game {
      * @return Formated string
      */
     public String look(String code) {
+        // Potion
+        Potion potion = Potion.from(code);
+        switch (potion) {
+            case HEALTH:
+                return String.format(Strings.FORMAT_POTION_HEALTH, 
+                    Config.POTION_HEALTH_RESTORE * 100, Config.POTION_HEALTH_COST);
+            case MANA:
+                return String.format(Strings.FORMAT_POTION_MANA, 
+                    Config.POTION_MANA_RESTORE * 100, Config.POTION_MANA_COST);
+            case REMEDY:
+                return String.format(Strings.FORMAT_POTION_REMEDY,
+                    Config.POTION_REMEDY_COST);
+        }
+        // Item
         if (this.itemsByCode.containsKey(code)) {
             Item item = this.itemsByCode.get(code);
             return Strings.format(Strings.FORMAT_ITEM_INFOS, item.toMap());
         }
+        // Spell
         if (this.spellsByCode.containsKey(code)) {
             Spell spell = this.spellsByCode.get(code);
             return Strings.format(Strings.FORMAT_SPELL_INFOS, spell.toMap());
@@ -1496,7 +1520,7 @@ public class Game {
             }
         }
         if (players.isEmpty()) players.add(Strings.FORMAT_NONE);
-        return String.format(Strings.FORMAT_LIST_PLAYERS, Strings.join(players, ","));
+        return String.format(Strings.FORMAT_LIST_PLAYERS, players.size(), Strings.join(players, ","));
     }
 
     /**

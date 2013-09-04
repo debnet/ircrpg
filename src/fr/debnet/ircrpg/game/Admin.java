@@ -311,11 +311,19 @@ public class Admin {
                 this.game.reloadEvents();
                 break;
             default:
-                if ("config".equalsIgnoreCase(type)) {
-                    Config.loadProperties("config.properties", Config.class);
-                } else if ("string".equalsIgnoreCase(type)) {
-                    Config.loadProperties("strings.properties", Strings.class);
-                } else return false;
+                switch (type) {
+                    case Strings.ADMIN_CONFIG:
+                        Config.loadProperties("config.properties", Config.class);
+                        break;
+                    case Strings.ADMIN_STRINGS:
+                        Config.loadProperties("strings.properties", Strings.class);
+                        break;
+                    case Strings.ADMIN_QUEUES:
+                        this.game.reloadQueues();
+                        break;
+                    default:
+                        return false;
+                }
                 break;
         }
         // Return

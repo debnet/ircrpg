@@ -6,6 +6,7 @@ import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.game.Game;
+import fr.debnet.ircrpg.models.Modifiers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.util.ArrayList;
@@ -102,6 +103,8 @@ public class UpdateQueue extends Thread implements IQueue {
             }
             return;
         }
+        // Get player's modifiers
+        Modifiers modifiers = new Modifiers(player);
         
         Calendar date = Config.MAX_DATE;
         // Check if the player's current activity will end
@@ -130,9 +133,25 @@ public class UpdateQueue extends Thread implements IQueue {
             nextDate.add(Calendar.MILLISECOND, player.getStatusDuration().intValue());
             if (nextDate.before(date)) date = nextDate;
         }
+        // Check when the player will die from poisoning
+        if (player.getStatus() == Status.POISONED) {
+            double damagePerHour = player.getMaxHealth() * 
+                (Config.POISON_EFFECT + modifiers.getPoisonEffect());
+            int timeDeath = (int)((player.getCurrentHealth() / damagePerHour) * Config.HOUR);
+            // Check if the status duration can kill the player
+            if (timeDeath < this.player.getStatusDuration()) {
+                Calendar nextDate = Calendar.getInstance();
+                nextDate.add(Calendar.MILLISECOND, timeDeath);
+                if (nextDate.before(date)) date = nextDate;
+            }
+        }
         // Check if the player will earn a level from training
         if (player.getActivity() == Activity.TRAINING) {
-            // TODO: 
+            double expRequired = player.getExperienceRequired() - player.getExperience();
+            int timeRequired = (int)((expRequired / Config.RATE_EXPERIENCE) * Config.HOUR);
+            Calendar nextDate = Calendar.getInstance();
+            nextDate.add(Calendar.MILLISECOND, timeRequired);
+            if (nextDate.before(date)) date = nextDate;
         }
         // If the current player is next to update
         if (this.date == null || date.before(this.date)) {

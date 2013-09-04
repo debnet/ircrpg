@@ -51,6 +51,12 @@ public class Strings {
     public static String FORMAT_ITEM_INFOS;
     @Property(name = "format.spell_infos")
     public static String FORMAT_SPELL_INFOS;
+    @Property(name = "format.potion_health")
+    public static String FORMAT_POTION_HEALTH;
+    @Property(name = "format.potion_mana")
+    public static String FORMAT_POTION_MANA;
+    @Property(name = "format.potion_remedy")
+    public static String FORMAT_POTION_REMEDY;
     @Property(name = "format.list_players")
     public static String FORMAT_LIST_PLAYERS;
     
@@ -469,6 +475,10 @@ public class Strings {
     private static final String _TEAL = "teal";
     private static final String _WHITE = "white";
     private static final String _YELLOW = "yellow";
+    // Admin
+    public static final String ADMIN_CONFIG = "config";
+    public static final String ADMIN_STRINGS = "strings";
+    public static final String ADMIN_QUEUES = "queues";
     
     // Map of colors
     private final static Map<String, Object> COLORS = new HashMap<String, Object>() {
