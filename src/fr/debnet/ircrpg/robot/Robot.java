@@ -278,7 +278,11 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_EDIT.equals(command)) {
                 if (words.length == 3) {
                     String type = words[1];
-                    String code = words[2];
+                    String code = "";
+                    for (int i = 2; i < words.length; i++) {
+                        code += " " + words[i];
+                        code = code.trim();
+                    }
                     if (this.game.getAdmin().editObject(sender, type, code))
                         this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
                     else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
@@ -317,7 +321,11 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_DELETE.equals(command)) {
                 if (words.length == 3) {
                     String type = words[1];
-                    String code = words[2];
+                    String code = "";
+                    for (int i = 2; i < words.length; i++) {
+                        code += " " + words[i];
+                        code = code.trim();
+                    }
                     if (this.game.getAdmin().deleteObject(sender, type, code))
                         this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
                     else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
@@ -365,9 +373,7 @@ public class Robot extends IrcBot implements INotifiable {
     
     @Override
     public void notify(Result result) {
-        for (String channel : this.getChannels()) {
-            this.sendFormattedMessage(channel, Helpers.getMessage(result));
-        }
+        this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
     @Override

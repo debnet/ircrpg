@@ -1141,6 +1141,8 @@ public class Game {
                 break;
             }
         }
+        // Decrease skill points
+        player.addSkillPoints(-1);
         // Update and save player
         this.updateAndReturn(result, player, true, false);
         // Return

@@ -356,7 +356,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("value", this.value);
     }
 
-    @Column(nullable = false)
+    @Column
     public String getDetails() {
         return details;
     }
