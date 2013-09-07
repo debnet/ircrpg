@@ -1395,7 +1395,7 @@ public class Game {
         }
         // Return data
         if (items.isEmpty()) items.add(Strings.FORMAT_NONE);
-        String string = String.format(Strings.FORMAT_PLAYER_ITEMS, Strings.join(items, ","));
+        String string = String.format(Strings.FORMAT_PLAYER_ITEMS, Strings.join(items, ", "));
         return Strings.format(string, player.toMap());
     }
     
@@ -1416,7 +1416,7 @@ public class Game {
         }
         // Return data
         if (spells.isEmpty()) spells.add(Strings.FORMAT_NONE);
-        String string = String.format(Strings.FORMAT_PLAYER_SPELLS, Strings.join(spells, ","));
+        String string = String.format(Strings.FORMAT_PLAYER_SPELLS, Strings.join(spells, ", "));
         return Strings.format(string, player.toMap());
     }
     
@@ -1476,7 +1476,7 @@ public class Game {
         }
         // Return data
         if (items.isEmpty()) items.add(Strings.FORMAT_NONE);
-        String string = String.format(Strings.FORMAT_SHOP_ITEMS, Strings.join(items, ","));
+        String string = String.format(Strings.FORMAT_SHOP_ITEMS, Strings.join(items, ", "));
         return Strings.format(string, player.toMap());
     }
     
@@ -1508,7 +1508,7 @@ public class Game {
         }
         // Return data
         if (spells.isEmpty()) spells.add(Strings.FORMAT_NONE);
-        String string = String.format(Strings.FORMAT_SHOP_SPELLS, Strings.join(spells, ","));
+        String string = String.format(Strings.FORMAT_SHOP_SPELLS, Strings.join(spells, ", "));
         return Strings.format(string, player.toMap());
     }
     
@@ -1526,7 +1526,7 @@ public class Game {
             }
         }
         if (players.isEmpty()) players.add(Strings.FORMAT_NONE);
-        return String.format(Strings.FORMAT_LIST_PLAYERS, count, Strings.join(players, ","));
+        return String.format(Strings.FORMAT_LIST_PLAYERS, count, Strings.join(players, ", "));
     }
 
     /**
