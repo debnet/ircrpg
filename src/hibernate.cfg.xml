@@ -2,19 +2,6 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <!--
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">marc</property>
-    <property name="hibernate.connection.password">19121986</property>
-    <property name="hbm2ddl.auto">validate</property>
-    <property name="hibernate.show_sql">true</property>
-    <property name="hibernate.format_sql">false</property>
-    <property name="hibernate.use_sql_comments">false</property>
-    <property name="hibernate.generate_statistics">true</property>
-    <property name="hibernate.connection.autocommit">true</property>
-    -->
     <mapping class="fr.debnet.ircrpg.models.Player"/>
     <mapping class="fr.debnet.ircrpg.models.Item"/>
     <mapping class="fr.debnet.ircrpg.models.Spell"/>
