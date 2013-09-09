@@ -377,25 +377,46 @@ public class Robot extends IrcBot implements INotifiable {
     }
     
     @Override
-    protected void onConnect() {
-        
+    protected void onJoin(String channel, String sender, String login, String hostname) {
+        // Try reconnect player on join
+        if (!this.getNick().equals(sender)) {
+            Result result = this.game.tryRelogin(sender, hostname);
+            if (result.isSuccess()) {
+                this.sendFormattedMessage(Helpers.getMessage(result));
+                this.voice(channel, sender);
+            } else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
+        // Try reconnect all players when the bot joins the channel
+        } else {
+            for (User user : this.getUsers(channel)) {
+                if (this.game.getPlayerByNickname(user.getNick()) != null) {
+                    this.sendRawLineViaQueue("WHOIS " + user.getNick());
+                }
+            }
+        }
     }
-
+    
     @Override
-    protected void onDisconnect() {
-        this.game.disconnect();
+    protected void onPart(String channel, String sender, String login, String hostname) {
+        Result result = this.game.logout(sender);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
-
+    
     @Override
-    protected void onServerResponse(int code, String response) {
-        
+    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        Result result = this.game.logout(sourceNick);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
-
+    
     @Override
-    protected void onUserList(String channel, User[] users) {
-        
+    protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
+        this.game.changeNickname(oldNick, newNick);
     }
-
+    
+    @Override
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+        this.processMessage(sourceNick, sourceHostname, notice);
+    }
+    
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
         this.processMessage(sender, hostname, message);
@@ -405,46 +426,43 @@ public class Robot extends IrcBot implements INotifiable {
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
         this.processMessage(sender, hostname, message);
     }
+    
+    @Override
+    protected void onDisconnect() {
+        this.game.disconnectAll();
+    }
+    
+    @Override
+    protected void onConnect() {
+        
+    }
+    
+    @Override
+    protected void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+        if (this.getNick().equals(recipientNick)) {
+            this.disconnect();
+            this.joinChannel(channel);
+        }
+    }
+
+    @Override
+    protected void onServerResponse(int code, String response) {
+        String[] split = response.split(" ");
+        switch (code) {
+            case 311: // Whois response (1 = nickname, 3 = hostname)
+                this.game.tryRelogin(split[1], split[3]);
+                break;
+        }
+    }
+
+    @Override
+    protected void onUserList(String channel, User[] users) {
+        
+    }
 
     @Override
     protected void onAction(String sender, String login, String hostname, String target, String action) {
         
-    }
-
-    @Override
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
-        this.processMessage(sourceNick, sourceHostname, notice);
-    }
-
-    @Override
-    protected void onJoin(String channel, String sender, String login, String hostname) {
-        Result result = this.game.tryRelogin(sender, hostname);
-        if (result.isSuccess()) {
-            this.sendFormattedMessage(Helpers.getMessage(result));
-            this.voice(channel, sender);
-        } else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
-    }
-
-    @Override
-    protected void onPart(String channel, String sender, String login, String hostname) {
-        Result result = this.game.logout(sender);
-        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
-    }
-
-    @Override
-    protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
-        this.game.changeNickname(oldNick, newNick);
-    }
-
-    @Override
-    protected void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-        
-    }
-
-    @Override
-    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        Result result = this.game.logout(sourceNick);
-        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
     @Override

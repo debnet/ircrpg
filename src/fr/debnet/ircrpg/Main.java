@@ -14,8 +14,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Game game = new Game();
-        Robot robot = new Robot(game);
+        final Game game = new Game();
+        final Robot robot = new Robot(game);
         if (Config.IRC_ENABLED) robot.connect();
+        
+        // Catch SIGTERM and disconnecting all players
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                game.disconnectAll();
+            }
+        });
     }
 }

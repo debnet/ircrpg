@@ -548,7 +548,10 @@ public class Game {
         if (!self) {
             defender = this.getPlayer(result, target, true);
             if (defender == null) return result;
-        } else defender = attacker;
+        } else {
+            defender = attacker;
+            result.setTarget(defender);
+        }
         // Update players
         this.updateAndReturn(result, attacker, false, false);
         if (!self) this.updateAndReturn(result, defender, false, true);
@@ -1631,7 +1634,7 @@ public class Game {
     /**
      * Disconnect all players
      */
-    public void disconnect() {
+    public void disconnectAll() {
         for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
             Player player = entry.getValue();
             player.setOnline(false);
@@ -1657,7 +1660,7 @@ public class Game {
                 player.setNickname(nickname);
                 player.setHostname(hostname);
                 player.setOnline(true);
-                player.setAdmin(this.playersByNickname.size() == 0);
+                player.setAdmin(this.playersByNickname.isEmpty());
                 if (Config.PERSISTANCE) {
                     if (DAO.<Player>addObject(player) == 0) {
                         result.addReturn(Return.PERSISTANCE_ERROR);
