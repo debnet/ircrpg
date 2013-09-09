@@ -373,26 +373,17 @@ public class Robot extends IrcBot implements INotifiable {
     
     @Override
     public void notify(Result result) {
-        this.sendFormattedMessage(Helpers.getMessage(result));
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
         // Try reconnect player on join
-        if (!this.getNick().equals(sender)) {
-            Result result = this.game.tryRelogin(sender, hostname);
-            if (result.isSuccess()) {
-                this.sendFormattedMessage(Helpers.getMessage(result));
-                this.voice(channel, sender);
-            } else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
-        // Try reconnect all players when the bot joins the channel
-        } else {
-            for (User user : this.getUsers(channel)) {
-                if (this.game.getPlayerByNickname(user.getNick()) != null) {
-                    this.sendRawLineViaQueue("WHOIS " + user.getNick());
-                }
-            }
-        }
+        Result result = this.game.tryRelogin(sender, hostname);
+        if (result.isSuccess()) {
+            this.sendFormattedMessage(Helpers.getMessage(result));
+            this.voice(channel, sender);
+        } else this.sendFormattedMessage(sender, Strings.WELCOME, channel);
     }
     
     @Override
@@ -451,6 +442,15 @@ public class Robot extends IrcBot implements INotifiable {
         switch (code) {
             case 311: // Whois response (1 = nickname, 3 = hostname)
                 this.game.tryRelogin(split[1], split[3]);
+                break;
+            case 353: // List of channel's users
+                for (User user : this.getUsers(this.getChannels()[0])) {
+                    if (this.game.getPlayerByNickname(user.getNick()) != null) {
+                        this.sendRawLineViaQueue(String.format("WHOIS %s", user.getNick()));
+                    }
+                }
+                break;
+            default:
                 break;
         }
     }
