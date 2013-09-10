@@ -97,10 +97,8 @@ public class UpdateQueue extends Thread implements IQueue {
     public synchronized void update(Player player) {
         // Check if the player is online
         if (!player.getOnline()) {
-            if (player == this.player) {
-                this.players.remove(player);
-                this.next();
-            }
+            this.players.remove(player);
+            if (player == this.player) this.next();
             return;
         }
         // Get player's modifiers

@@ -464,7 +464,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("remedyPotions", this.remedyPotions);
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public Set<Item> getItems() {
         return items;
@@ -485,7 +485,7 @@ public class Player extends MappedEntity implements IEntity {
         this.set("items", this.items);
     }
     
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     public Set<Spell> getSpells() {
         return spells;

@@ -103,7 +103,7 @@ public class EventQueue extends Thread implements IQueue {
 
     @Override
     public synchronized void update(Player player) {
-        if (player.getOnline()) {
+        if (!player.getOnline()) {
             this.events.remove(player);
             return;
         }

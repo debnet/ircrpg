@@ -8,6 +8,7 @@ import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -208,7 +209,7 @@ public class Result extends MappedEntity implements IEntity {
         }
     }
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Player getPlayer() {
         return player;
     }
@@ -277,7 +278,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Player getTarget() {
         return target;
     }
