@@ -46,6 +46,7 @@ public class Item extends MappedEntity implements IEntity {
     private Double poisonEffectModifier;
     private Double stealingChanceModifier;
     private Double stealingGoldModifier;
+    private Double experienceModifier;
 
     public Item() {
         this.initialize();
@@ -76,7 +77,8 @@ public class Item extends MappedEntity implements IEntity {
         this.setManaPotionRegenModifier(0d);
         this.setPoisonEffectModifier(0d);
         this.setStealingChanceModifier(0d);
-        this.setStealingGoldModifier(0d);   
+        this.setStealingGoldModifier(0d);
+        this.setExperienceModifier(0d);
     }
     
     @Override
@@ -344,6 +346,16 @@ public class Item extends MappedEntity implements IEntity {
     public void setStealingGoldModifier(Double stealingGoldModifier) {
         this.stealingGoldModifier = stealingGoldModifier;
         this.set("stealingGoldModifier", this.stealingGoldModifier);
+    }
+    
+    @Column(nullable = false)
+    public Double getExperienceModifier() {
+        return experienceModifier;
+    }
+
+    public void setExperienceModifier(Double experienceModifier) {
+        this.experienceModifier = experienceModifier;
+        this.set("experienceModifier", this.experienceModifier);
     }
     
     @Override

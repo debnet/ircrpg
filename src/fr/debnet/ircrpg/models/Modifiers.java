@@ -21,6 +21,7 @@ public class Modifiers {
     private double poisonEffect;
     private double theftChance;
     private double theftGold;
+    private double experienceModifier;
 
     public Modifiers(Player player) {
         for (Item item : player.getItems()) {
@@ -39,6 +40,7 @@ public class Modifiers {
             this.poisonEffect += item.getPoisonEffectModifier();
             this.theftChance += item.getStealingChanceModifier();
             this.theftGold += item.getStealingGoldModifier();
+            this.experienceModifier += item.getExperienceModifier();
         }
     }
 
@@ -100,5 +102,9 @@ public class Modifiers {
 
     public double getTheftGold() {
         return theftGold;
+    }
+    
+    public double getExperienceModifier() {
+        return experienceModifier;
     }
 }

@@ -13,7 +13,8 @@ public enum CheckPlayer
     IS_DEAD,
     IS_PARALYZED,
     IS_BUSY,
-    IS_TARGET;
+    IS_TARGET,
+    HAS_ACTED;
     
     public static EnumSet<CheckPlayer> from(CheckPlayer... checks) {
         return EnumSet.of(CheckPlayer.NONE, checks);

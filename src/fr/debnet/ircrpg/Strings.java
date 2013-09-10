@@ -131,6 +131,8 @@ public class Strings {
     public static String COMMAND_LOGOUT;
     @Property(name = "command.register")
     public static String COMMAND_REGISTER;
+    @Property(name = "command.password")
+    public static String COMMAND_PASSWORD;
     @Property(name = "command.infos")
     public static String COMMAND_INFOS;
     @Property(name = "command.attack")
@@ -197,6 +199,8 @@ public class Strings {
     public static String HELP_LOGOUT;
     @Property(name = "help.register")
     public static String HELP_REGISTER;
+    @Property(name = "help.password")
+    public static String HELP_PASSWORD;
     @Property(name = "help.infos")
     public static String HELP_INFOS;
     @Property(name = "help.attack")
@@ -248,6 +252,8 @@ public class Strings {
     public static String RETURN_ADMIN_COMMAND_SUCCEED;
     @Property(name = "return.admin_command_failed")
     public static String RETURN_ADMIN_COMMAND_FAILED;
+    @Property(name = "return.action_too_fast")
+    public static String RETURN_ACTION_TOO_FAST;
     // General returns (player)
     @Property(name = "return.unknown_player")
     public static String RETURN_UNKNOWN_PLAYER;
@@ -452,6 +458,8 @@ public class Strings {
     public static String RETURN_LOGIN_SUCCEED;
     @Property(name = "return.logout_succeed")
     public static String RETURN_LOGOUT_SUCCEED;
+    @Property(name = "return.password_changed")
+    public static String RETURN_PASSWORD_CHANGED;
     
     /* Constants */
     // Colors

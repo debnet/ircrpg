@@ -16,6 +16,7 @@ public enum Return implements IEnum {
     UNKNOWN_COMMAND             (0x03, Strings.RETURN_UNKNOWN_COMMAND),
     ADMIN_COMMAND_SUCCEED       (0x04, Strings.RETURN_ADMIN_COMMAND_SUCCEED),
     ADMIN_COMMAND_FAILED        (0x05, Strings.RETURN_ADMIN_COMMAND_FAILED),
+    ACTION_TOO_FAST             (0x06, Strings.RETURN_ACTION_TOO_FAST),
     // General returns (player)
     UNKNOWN_PLAYER              (0x10, Strings.RETURN_UNKNOWN_PLAYER),
     PLAYER_OFFLINE              (0x11, Strings.RETURN_OFFLINE_PLAYER),
@@ -124,7 +125,8 @@ public enum Return implements IEnum {
     NOT_ONLINE                  (0xA5, Strings.RETURN_NOT_ONLINE),
     REGISTER_SUCCEED            (0xA6, Strings.RETURN_REGISTER_SUCCEED),
     LOGIN_SUCCEED               (0xA7, Strings.RETURN_LOGIN_SUCCEED),
-    LOGOUT_SUCCEED              (0xA8, Strings.RETURN_LOGOUT_SUCCEED);
+    LOGOUT_SUCCEED              (0xA8, Strings.RETURN_LOGOUT_SUCCEED),
+    PASSWORD_CHANGED            (0xA9, Strings.RETURN_PASSWORD_CHANGED);
     
     private final int value;
     private final String text;

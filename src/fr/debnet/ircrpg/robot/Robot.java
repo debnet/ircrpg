@@ -96,6 +96,14 @@ public class Robot extends IrcBot implements INotifiable {
                     if (result.isSuccess()) this.deVoice(this.getChannels()[0], sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
+            // Password
+            else if (Strings.COMMAND_PASSWORD.equals(command)) {
+                if (words.length == 2) {
+                    String password = words[1];
+                    if (this.game.changePassword(sender, password))
+                        this.sendFormattedMessage(sender, Strings.RETURN_PASSWORD_CHANGED);
+                } else this.sendFormattedMessage(sender, help.get(command));
+            }
             // Attack
             else if (Strings.COMMAND_ATTACK.equals(command)) {
                 if (words.length == 2) {
@@ -638,6 +646,7 @@ public class Robot extends IrcBot implements INotifiable {
         help.put(Strings.COMMAND_LOGIN, Strings.HELP_LOGIN);
         help.put(Strings.COMMAND_LOGOUT, Strings.HELP_LOGOUT);
         help.put(Strings.COMMAND_REGISTER, Strings.HELP_REGISTER);
+        help.put(Strings.COMMAND_PASSWORD, Strings.HELP_PASSWORD);
         help.put(Strings.COMMAND_INFOS, Strings.HELP_INFOS);
         help.put(Strings.COMMAND_ATTACK, Strings.HELP_ATTACK);
         help.put(Strings.COMMAND_MAGIC, Strings.HELP_MAGIC);

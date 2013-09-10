@@ -560,7 +560,8 @@ public class Game {
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY, 
                 CheckPlayer.IS_DEAD, 
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Check defender
@@ -627,7 +628,7 @@ public class Game {
                 // Experience gained (attacker)
                 double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
                 bonus = bonus < 0 ? 0 : bonus;
-                double xp = Config.EXPERIENCE_ATTACK * bonus;
+                double xp = Config.EXPERIENCE_ATTACK * (bonus + attackerModifiers.getExperienceModifier());
                 attacker.addExperience(xp);
                 // Update return
                 result.addPlayerExperienceChanges(xp);
@@ -667,7 +668,7 @@ public class Game {
                         // Experience gained (defenser)
                         double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
                         bonus = bonus < 0 ? 0 : bonus;
-                        double xp = Config.EXPERIENCE_DEFENSE * bonus;
+                        double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
                         defender.addExperience(xp);
                         // Update statistics
                         result.addTargetExperienceChanges(xp);
@@ -758,7 +759,7 @@ public class Game {
                 if (!spell.getIsSelf()) {
                     double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
                     bonus = bonus < 0 ? 0 : bonus;
-                    double xp = Config.EXPERIENCE_ATTACK * bonus;
+                    double xp = Config.EXPERIENCE_ATTACK * (bonus + attackerModifiers.getExperienceModifier());
                     attacker.addExperience(xp);
                     // Update statistics
                     result.addPlayerExperienceChanges(xp);
@@ -770,6 +771,7 @@ public class Game {
             result.addPlayerManaChanges(-spell.getManaCost());
         }
         // Update and save players
+        attacker.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, attacker, true, false);
         if (!self) this.updateAndReturn(result, defender, true, true);
         // Return
@@ -809,7 +811,8 @@ public class Game {
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY,
                 CheckPlayer.IS_DEAD,
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Check defender
@@ -848,7 +851,7 @@ public class Game {
             // Experience gained (defenser)
             double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
             bonus = bonus < 0 ? 0 : bonus;
-            double xp = Config.EXPERIENCE_DEFENSE * bonus;
+            double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
             defender.addExperience(xp);
             // Update statistics
             result.addTargetExperienceChanges(xp);
@@ -868,6 +871,7 @@ public class Game {
             attacker.addMoneyStolen(gold);
         }
         // Update and save players
+        attacker.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, attacker, true, false);
         this.updateAndReturn(result, defender, true, true);
         // Return
@@ -904,7 +908,8 @@ public class Game {
         if (!Helpers.checkPlayer(result, player, 
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY,
-                CheckPlayer.IS_DEAD
+                CheckPlayer.IS_DEAD,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Player modifiers
@@ -956,6 +961,7 @@ public class Game {
             }
         }
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
@@ -984,7 +990,8 @@ public class Game {
         if (!Helpers.checkPlayer(result, player, 
             CheckPlayer.from(
                 CheckPlayer.IS_DEAD,
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Check the activity penalty
@@ -1003,6 +1010,7 @@ public class Game {
         player.setActivity(activity);
         player.setActivityDuration(0l);
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         switch (activity) {
@@ -1075,6 +1083,7 @@ public class Game {
         player.setActivity(Activity.WAITING);
         player.setActivityDuration(0l);
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setValue(earned);
@@ -1107,7 +1116,8 @@ public class Game {
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY,
                 CheckPlayer.IS_DEAD,
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Check player skill points
@@ -1147,6 +1157,7 @@ public class Game {
         // Decrease skill points
         player.addSkillPoints(-1);
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
@@ -1186,7 +1197,8 @@ public class Game {
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY,
                 CheckPlayer.IS_DEAD,
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Item
@@ -1258,6 +1270,7 @@ public class Game {
             result.setDetails(potion.toString());
         }
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
@@ -1296,6 +1309,7 @@ public class Game {
         result.addReturn(Return.ITEM_SUCCESSFULLY_SOLD);
         result.setDetails(item.getName());
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
@@ -1328,7 +1342,8 @@ public class Game {
             CheckPlayer.from(
                 CheckPlayer.IS_BUSY,
                 CheckPlayer.IS_DEAD,
-                CheckPlayer.IS_PARALYZED
+                CheckPlayer.IS_PARALYZED,
+                CheckPlayer.HAS_ACTED
             )
         )) return result;
         // Add item in player's inventory
@@ -1341,6 +1356,7 @@ public class Game {
         // Update statistics
         player.addMoneySpent(spell.getGoldCost());
         // Update and save player
+        player.setLastAction(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
@@ -1626,6 +1642,21 @@ public class Game {
             player.setNickname(newNickname);
             this.playersByNickname.remove(oldNickname);
             this.playersByNickname.put(newNickname, player);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Change the player's password
+     * @param nickname Player's nickname
+     * @param password New password
+     * @return True if success, false else
+     */
+    public boolean changePassword(String nickname, String password) {
+        Player player = this.getPlayerByNickname(nickname);
+        if (player != null) {
+            player.setPassword(password);
             return true;
         }
         return false;

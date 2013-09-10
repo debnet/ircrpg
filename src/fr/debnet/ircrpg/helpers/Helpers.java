@@ -11,6 +11,7 @@ import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.models.Result;
+import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.Map;
 
@@ -47,6 +48,15 @@ public class Helpers {
                 player.getActivity() != Activity.WAITING) {
             result.addReturn(target ? Return.TARGET_BUSY : Return.PLAYER_BUSY);
             return false;
+        }
+        // Check the last action done by the player
+        if (checks.contains(CheckPlayer.HAS_ACTED) && !target) {
+            Calendar date = Calendar.getInstance();
+            date.add(Calendar.SECOND, -Config.ACTION_COOLDOWN);
+            if (player.getLastAction().after(date)) {
+                result.addReturn(Return.ACTION_TOO_FAST);
+                return false;
+            }
         }
         return true;
     }

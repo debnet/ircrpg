@@ -60,6 +60,7 @@ public class Player extends MappedEntity implements IEntity {
     private Long statusDuration;
     private Calendar lastUpdate;
     private Calendar lastEvent;
+    private Calendar lastAction;
     private Set<Item> items;
     private Set<Spell> spells;
     
@@ -80,6 +81,7 @@ public class Player extends MappedEntity implements IEntity {
     }
     
     private void initialize() {
+        Calendar now = Calendar.getInstance();
         this.setId(0l);
         this.setVersion(0);
         this.setUsername(null);
@@ -106,8 +108,9 @@ public class Player extends MappedEntity implements IEntity {
         this.setRemedyPotions(0);
         this.setActivityDuration(0l);
         this.setStatusDuration(0l);
-        this.setLastUpdate(Calendar.getInstance());
-        this.setLastEvent(Calendar.getInstance());
+        this.setLastUpdate(now);
+        this.setLastEvent(now);
+        this.setLastAction(now);
         this.setItems(new HashSet<Item>());
         this.setSpells(new HashSet<Spell>());
         
@@ -417,6 +420,17 @@ public class Player extends MappedEntity implements IEntity {
     public void setLastEvent(Calendar lastEvent) {
         this.lastEvent = lastEvent;
         this.set("lastEvent", this.lastEvent);
+    }
+    
+    @Column(nullable = false)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    public Calendar getLastAction() {
+        return lastAction;
+    }
+
+    public void setLastAction(Calendar lastAction) {
+        this.lastAction = lastAction;
+        this.set("lastAction", this.lastAction);
     }
 
     @Column(nullable = false)
