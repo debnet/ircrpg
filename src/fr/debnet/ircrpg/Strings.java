@@ -189,6 +189,10 @@ public class Strings {
     public static String COMMAND_CONFIG;
     @Property(name = "command.reload")
     public static String COMMAND_RELOAD;
+    @Property(name = "command.disconnect")
+    public static String COMMAND_DISCONNECT;
+    @Property(name = "command.reconnect")
+    public static String COMMAND_RECONNECT;
     
     /* Command helps */
     @Property(name = "help.help")

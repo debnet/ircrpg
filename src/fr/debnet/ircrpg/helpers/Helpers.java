@@ -50,7 +50,7 @@ public class Helpers {
             return false;
         }
         // Check the last action done by the player
-        if (checks.contains(CheckPlayer.HAS_ACTED) && !target) {
+        if (Config.ACTION_ENABLED && checks.contains(CheckPlayer.HAS_ACTED) && !target) {
             Calendar date = Calendar.getInstance();
             date.add(Calendar.SECOND, -Config.ACTION_COOLDOWN);
             if (player.getLastAction().after(date)) {
@@ -286,7 +286,7 @@ public class Helpers {
         if (result.getCustomMessage() == null) {
             StringBuilder build = new StringBuilder();
             for (Return r : result.getReturns()) {
-                build.append(Strings.format(r.toString(), map).trim());
+                build.append(Strings.format(r.getText(), map).trim());
                 build.append(" ");
             }
             return build.toString().trim();

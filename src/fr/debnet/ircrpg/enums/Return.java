@@ -138,7 +138,7 @@ public enum Return implements IEnum {
     
     @Override
     public String toString() {
-        return this.text;
+        return this.name();
     }
     
     @Override

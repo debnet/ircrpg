@@ -5,7 +5,6 @@ import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.enums.Status;
-import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.models.Result;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -63,7 +62,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_HEALTH_POTIONS));
@@ -71,7 +70,7 @@ public class DrinkTest {
         r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_MANA_POTIONS));
@@ -79,7 +78,7 @@ public class DrinkTest {
         r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.NOT_ENOUGH_REMEDY_POTIONS));
@@ -96,7 +95,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.HEALTH_RESTORED));
@@ -115,12 +114,12 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.MANA_RESTORED));
         assertEquals("Mana potions", 0, this.player.getManaPotions().intValue());
-        assertEquals("MP restored", 50d, r.getPlayerManaChanges(), EPSILON);
+        assertEquals("MP restored", 25d, r.getPlayerManaChanges(), EPSILON);
     }
     
     @Test
@@ -135,7 +134,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_PARALYSIS_CURED));
@@ -155,7 +154,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_POISON_CURED));
@@ -173,7 +172,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.HEALTH.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.HEALTH_ALREADY_RESTORED));
@@ -191,7 +190,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.MANA.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.MANA_ALREADY_RESTORED));
@@ -209,7 +208,7 @@ public class DrinkTest {
         Result r = this.game.drink("p1", Potion.REMEDY.toString());
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.NO_NEGATIVE_STATUS));

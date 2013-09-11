@@ -5,7 +5,6 @@ import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.enums.Status;
-import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.models.Result;
 import java.util.Calendar;
 import org.junit.After;
@@ -71,7 +70,7 @@ public class UpdateTest {
         // Returns
         assertTrue(r.isSuccess());
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
     }
     
     @Test
@@ -85,7 +84,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_POISON_CURED));
@@ -103,7 +102,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_PARALYSIS_CURED));
@@ -121,7 +120,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_DEATH_CURED));
@@ -140,7 +139,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_KILLED_BY_POISON));
@@ -158,11 +157,11 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_RESTING_ENDED));
-        assertEquals("HP changes", 120d, r.getPlayerHealthChanges(), EPSILON);
+        assertEquals("HP changes", 20d, r.getPlayerHealthChanges(), EPSILON);
     }
     
     @Test
@@ -175,11 +174,11 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_WORKING_ENDED));
-        assertEquals("Gold changes", 120d, r.getPlayerGoldChanges(), EPSILON);
+        assertEquals("Gold changes", 20d, r.getPlayerGoldChanges(), EPSILON);
     }
     
     @Test
@@ -192,11 +191,11 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_TRAINING_ENDED));
-        assertEquals("XP changes", 120d, r.getPlayerExperienceChanges(), EPSILON);
+        assertEquals("XP changes", 20d, r.getPlayerExperienceChanges(), EPSILON);
     }
     
     @Test
@@ -209,7 +208,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_WAITING_ENDED));
@@ -225,7 +224,7 @@ public class UpdateTest {
         Result r = this.game.update(this.player, false, false);
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_LEVEL_UP));

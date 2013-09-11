@@ -120,6 +120,8 @@ public class Config {
     public static int EVENT_SLEEP;
     @Property(name = "game.event.time")
     public static int EVENT_TIME;
+    @Property(name = "game.action.enabled")
+    public static boolean ACTION_ENABLED;
     @Property(name = "game.action.cooldown")
     public static int ACTION_COOLDOWN;
     

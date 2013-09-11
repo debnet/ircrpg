@@ -19,6 +19,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -44,12 +45,12 @@ public class Admin {
     
     /**
      * Create a new object
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param type Model type
      * @return True is success, false else
      */
-    public boolean newObject(String nickname, String type) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean newObject(String admin, String type) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Get model type
         Model model = Model.from(type);
@@ -80,13 +81,13 @@ public class Admin {
     
     /**
      * Edit existing object
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param type Model type
      * @param code Object code
      * @return True if success, false else
      */
-    public boolean editObject(String nickname, String type, String code) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean editObject(String admin, String type, String code) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Get model type
         Model model = Model.from(type);
@@ -117,13 +118,13 @@ public class Admin {
     
     /**
      * Set property of an object
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param property Property name
      * @param value Value
      * @return True if success, false else
      */
-    public boolean setObject(String nickname, String property, String value) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean setObject(String admin, String property, String value) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Get current object
         IEntity object = this.objects.get(player);
@@ -171,12 +172,12 @@ public class Admin {
     
     /**
      * Get property value of the current object
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param property Property name
      * @return Returned value
      */
-    public String getObject(String nickname, String property) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public String getObject(String admin, String property) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return null;
         // Get current object
         IEntity object = this.objects.get(player);
@@ -196,11 +197,11 @@ public class Admin {
     
     /**
      * Insert or update current object in database
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @return True if success, false else
      */
-    public boolean saveObject(String nickname) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean saveObject(String admin) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Get current object
         IEntity object = this.objects.get(player);
@@ -213,16 +214,16 @@ public class Admin {
     
     /**
      * Delete object from database
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param type Model type
      * @param code Object code
      * @return True if success, false else
      */
-    public boolean deleteObject(String nickname, String type, String code) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean deleteObject(String admin, String type, String code) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Edit object
-        boolean success = this.editObject(nickname, type, code);
+        boolean success = this.editObject(admin, type, code);
         if (!success) return false;
         // Delete object
         IEntity object = this.objects.get(player);
@@ -232,11 +233,11 @@ public class Admin {
     
     /**
      * Return current object map
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @return Object mapping
      */
-    public String dumpObject(String nickname) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public String dumpObject(String admin) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return null;
         // Get current object
         IEntity object = this.objects.get(player);
@@ -248,12 +249,12 @@ public class Admin {
     
     /**
      * Get config value
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param key Config key
      * @return Config value
      */
-    public String getConfig(String nickname, String key) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public String getConfig(String admin, String key) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return null;
         // Get config
         return Config.getConfig(key);
@@ -261,13 +262,13 @@ public class Admin {
     
     /**
      * Set config value
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param key Config key
      * @param value Config value
      * @return True if success, false else
      */
-    public boolean setConfig(String nickname, String key, String value) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean setConfig(String admin, String key, String value) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Set config
         return Config.setConfig(key, value); 
@@ -275,11 +276,11 @@ public class Admin {
     
     /**
      * Get list of config keys
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @return List of config keys
      */
-    public String listConfig(String nickname) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public String listConfig(String admin) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return null;
         // Get config list
         return Config.toMap().toString();
@@ -287,12 +288,12 @@ public class Admin {
     
     /**
      * Reload a entity list or config/string
-     * @param nickname Player's nickname
+     * @param admin Admin's nickname
      * @param type Type to reload
      * @return True if success, false else
      */
-    public boolean reload(String nickname, String type) {
-        Player player = this.game.getPlayerByNickname(nickname);
+    public boolean reload(String admin, String type) {
+        Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Get model type
         Model model = Model.from(type);
@@ -327,6 +328,40 @@ public class Admin {
                 break;
         }
         // Return
+        return true;
+    }
+    
+    /**
+     * Disconnect all players online
+     * @param admin Admin's nickname
+     * @return True if success, false else
+     */
+    public boolean disconnectAll(String admin) {
+        Player player = this.game.getPlayerByNickname(admin);
+        if (player == null || !player.getAdmin()) return false;
+        // Disconnect all players
+        this.game.disconnectAll();
+        return true;
+    }
+    
+    /**
+     * Reconnect a list of players
+     * @param admin Admin's nickname
+     * @param nicknames Players' nicknames
+     * @return True if success, false else
+     */
+    public boolean reconnectAll(String admin, String[] nicknames) {
+        Player player = this.game.getPlayerByNickname(admin);
+        if (player == null || !player.getAdmin()) return false;
+        // Reconnect all players
+        for (String nickname : nicknames) {
+            player = this.game.getPlayerByNickname(nickname);
+            if (player != null) {
+                player.setOnline(true);
+                player.setLastUpdate(Calendar.getInstance());
+                this.game.update(player, true, false);
+            }
+        }
         return true;
     }
 }

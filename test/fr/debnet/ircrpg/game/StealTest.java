@@ -2,7 +2,6 @@ package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.Config;
-import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import org.junit.After;
@@ -65,7 +64,7 @@ public class StealTest {
         Result r = this.game.steal("u1", "p2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
@@ -73,7 +72,7 @@ public class StealTest {
         r = this.game.steal("p1", "u2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_TARGET));
@@ -90,7 +89,7 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_OFFLINE));
@@ -102,7 +101,7 @@ public class StealTest {
         r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.TARGET_OFFLINE));
@@ -119,7 +118,7 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.THEFT_SUCCEED));
@@ -139,7 +138,7 @@ public class StealTest {
         Result r = this.game.steal("p1", "p2");
         // Returns
         System.out.println(r);
-        System.out.println(Helpers.getMessage(r));
+        //System.out.println(Helpers.getMessage(r));
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.THEFT_FAILED));

@@ -378,6 +378,8 @@ public class Game {
         hours = diff * 1d / Config.HOUR;
         switch (player.getActivity()) {
             case RESTING: {
+                // Limiting hours to max time
+                hours = hours > Config.RESTING_TIME_MAX / 60d ? Config.RESTING_TIME_MAX / 60d : hours;
                 // Restoring health points
                 double healRate = Config.RATE_HEALTH + modifiers.getHealthRate();
                 double heal = healRate * hours;
@@ -388,7 +390,7 @@ public class Game {
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
                 if (player.getActivityDuration() >= Config.RESTING_TIME_MAX * Config.MINUTE) {
-                    result.setValue(healRate * Config.RESTING_TIME_MAX / 60);
+                    result.setValue(healRate * Config.RESTING_TIME_MAX / 60d);
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_RESTING_ENDED : Return.PLAYER_RESTING_ENDED);
@@ -400,6 +402,8 @@ public class Game {
                 break;
             }
             case TRAINING: {
+                // Limiting hours to max time
+                hours = hours > Config.TRAINING_TIME_MAX / 60d ? Config.TRAINING_TIME_MAX / 60d : hours;
                 // Add experience points
                 double xpRate = Config.RATE_EXPERIENCE + modifiers.getExperienceRate();
                 double xp = xpRate * hours;
@@ -407,7 +411,7 @@ public class Game {
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
                 if (player.getActivityDuration() >= Config.TRAINING_TIME_MAX * Config.MINUTE) {
-                    result.setValue(xpRate * Config.TRAINING_TIME_MAX / 60);
+                    result.setValue(xpRate * Config.TRAINING_TIME_MAX / 60d);
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_TRAINING_ENDED : Return.PLAYER_TRAINING_ENDED);
@@ -419,6 +423,8 @@ public class Game {
                 break;
             }
             case WORKING: {
+                // Limiting hours to max time
+                hours = hours > Config.WORKING_TIME_MAX / 60d ? Config.WORKING_TIME_MAX / 60d : hours;
                 // Earn gold coins 
                 double goldRate = Config.RATE_GOLD + modifiers.getGoldRate();
                 double gold = goldRate * hours;
@@ -426,7 +432,7 @@ public class Game {
                 // Removing activity if timeout
                 player.addActivityDuration(diff);
                 if (player.getActivityDuration() >= Config.WORKING_TIME_MAX * Config.MINUTE) {
-                    result.setValue(goldRate * Config.WORKING_TIME_MAX / 60);
+                    result.setValue(goldRate * Config.WORKING_TIME_MAX / 60d);
                     player.setActivity(Activity.WAITING);
                     player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_WORKING_ENDED : Return.PLAYER_WORKING_ENDED);
@@ -677,6 +683,7 @@ public class Game {
             }
         } else {
             result.setAction(Action.MAGIC);
+            result.setDetails(spell.getName());
             // With spell
             if (self && !spell.getIsSelf()) {
                 // Update return
@@ -690,11 +697,11 @@ public class Game {
             }
             double accuracy = Config.MAGIC_ACCURACY + attackerModifiers.getMagicAccuracy();
             if (random.nextDouble() > accuracy) {
+                // Update return
                 result.addReturn(Return.MAGIC_FAILED);
             } else {
                 // Update return
                 result.addReturn(Return.MAGIC_SUCCEED);
-                result.setDetails(spell.getName());
                 // Health change
                 double hp = defender.getCurrentHealth();
                 double maxHp = defender.getMaxHealth() + defenderModifiers.getHealth();

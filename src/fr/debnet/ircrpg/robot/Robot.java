@@ -11,6 +11,7 @@ import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.interfaces.INotifiable;
+import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +37,8 @@ public class Robot extends IrcBot implements INotifiable {
             this.setName(Config.IRC_NICKNAME);
             this.setEncoding(Config.IRC_CHARSET);
             super.connect(Config.IRC_SERVER, Config.IRC_PORT, Config.IRC_PASSWORD);
-            this.joinChannel(Config.IRC_CHANNEL);
+            String[] channels = Config.IRC_CHANNEL.split(",");
+            for (String channel : channels) this.joinChannel(Config.IRC_CHANNEL);
         } catch (IOException | IrcException ex) {
             Logger.getLogger(Robot.class.getName()).severe(ex.getLocalizedMessage());
             System.exit(-1);
@@ -75,7 +77,11 @@ public class Robot extends IrcBot implements INotifiable {
                     String password = words[2];
                     Result result = this.game.register(username, password, sender, hostname);
                     this.displayResult(result, sender);
-                    if (result.isSuccess()) this.voice(this.getChannels()[0], sender);
+                    if (result.isSuccess()) {
+                        for (String channel : this.getChannels()) {
+                            this.voice(channel, sender);
+                        }
+                    }
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Login
@@ -85,7 +91,11 @@ public class Robot extends IrcBot implements INotifiable {
                     String password = words[2];
                     Result result = this.game.login(username, password, sender, hostname);
                     this.displayResult(result, sender);
-                    if (result.isSuccess()) this.voice(this.getChannels()[0], sender);
+                    if (result.isSuccess()) {
+                        for (String channel : this.getChannels()) {
+                            this.voice(channel, sender);
+                        }
+                    }
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Logout
@@ -93,7 +103,11 @@ public class Robot extends IrcBot implements INotifiable {
                 if (words.length == 1) {
                     Result result = this.game.logout(sender);
                     this.displayResult(result, sender);
-                    if (result.isSuccess()) this.deVoice(this.getChannels()[0], sender);
+                    if (result.isSuccess()) {
+                        for (String channel : this.getChannels()) {
+                            this.deVoice(channel, sender);
+                        }
+                    }
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Password
@@ -277,9 +291,8 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_NEW.equals(command)) {
                 if (words.length == 2) {
                     String type = words[1];
-                    if (this.game.getAdmin().newObject(sender, type))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().newObject(sender, type);
+                    this.displayAdminResult(success, sender);
                 }
             }
             // Edit
@@ -291,9 +304,8 @@ public class Robot extends IrcBot implements INotifiable {
                         code += " " + words[i];
                         code = code.trim();
                     }
-                    if (this.game.getAdmin().editObject(sender, type, code))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().editObject(sender, type, code);
+                    this.displayAdminResult(success, sender);
                 }
             }
             // Set
@@ -305,9 +317,8 @@ public class Robot extends IrcBot implements INotifiable {
                         value += " " + words[i];
                         value = value.trim();
                     }
-                    if (this.game.getAdmin().setObject(sender, property, value))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().setObject(sender, property, value);
+                    this.displayAdminResult(success, sender);
                 }
             }
             // Get
@@ -321,9 +332,8 @@ public class Robot extends IrcBot implements INotifiable {
             }
             // Save
             else if (Strings.COMMAND_SAVE.equals(command)) {
-                if (this.game.getAdmin().saveObject(sender))
-                    this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                boolean success = this.game.getAdmin().saveObject(sender);
+                this.displayAdminResult(success, sender);
             }
             // Delete
             else if (Strings.COMMAND_DELETE.equals(command)) {
@@ -334,9 +344,8 @@ public class Robot extends IrcBot implements INotifiable {
                         code += " " + words[i];
                         code = code.trim();
                     }
-                    if (this.game.getAdmin().deleteObject(sender, type, code))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().deleteObject(sender, type, code);
+                    this.displayAdminResult(success, sender);
                 }
             }
             // Map
@@ -354,19 +363,38 @@ public class Robot extends IrcBot implements INotifiable {
                 } else if (words.length == 3) {
                     String key = words[1];
                     String value = words[2];
-                    if (this.game.getAdmin().setConfig(sender, key, value))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().setConfig(sender, key, value);
+                    this.displayAdminResult(success, sender);
                 } else this.sendFormattedMessage(sender, this.game.getAdmin().listConfig(sender));
             }
             // Reload
             else if (Strings.COMMAND_RELOAD.equals(command)) {
                 if (words.length == 2) {
                     String type = words[1];
-                    if (this.game.getAdmin().reload(sender, type))
-                        this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
-                    else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
+                    boolean success = this.game.getAdmin().reload(sender, type);
+                    this.displayAdminResult(success, sender);
                 }
+            }
+            // Disconnect
+            else if (Strings.COMMAND_DISCONNECT.equals(command)) {
+                boolean success = this.game.getAdmin().disconnectAll(sender);
+                this.displayAdminResult(success, sender);
+            }
+            // Reconnect
+            else if (Strings.COMMAND_RECONNECT.equals(command)) {
+                boolean success = false;
+                Player player = this.game.getPlayerByNickname(sender);
+                if (player != null && player.getAdmin()) {
+                    for (String channel : this.getChannels()) {
+                        for (User user : this.getUsers(channel)) {
+                            if (this.game.getPlayerByNickname(user.getNick()) != null) {
+                                this.sendRawLineViaQueue(String.format("WHOIS %s", user.getNick()));
+                            }
+                        }
+                    }
+                    success = true;
+                }
+                this.displayAdminResult(success, sender);
             }
             // Help
             else this.sendFormattedMessage(sender, Strings.RETURN_UNKNOWN_COMMAND);
@@ -377,6 +405,12 @@ public class Robot extends IrcBot implements INotifiable {
         if (result.isSuccess())
             this.sendFormattedMessage(Helpers.getMessage(result));
         else this.sendFormattedMessage(sender, Helpers.getMessage(result));
+    }
+    
+    private void displayAdminResult(boolean success, String sender) {
+        if (success)
+            this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
+        else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
     }
     
     @Override
@@ -451,10 +485,12 @@ public class Robot extends IrcBot implements INotifiable {
             case 311: // Whois response (1 = nickname, 3 = hostname)
                 this.game.tryRelogin(split[1], split[3]);
                 break;
-            case 353: // List of channel's users
-                for (User user : this.getUsers(this.getChannels()[0])) {
-                    if (this.game.getPlayerByNickname(user.getNick()) != null) {
-                        this.sendRawLineViaQueue(String.format("WHOIS %s", user.getNick()));
+            case 353: // List of users by channel
+                for (String channel : this.getChannels()) {
+                    for (User user : this.getUsers(channel)) {
+                        if (this.game.getPlayerByNickname(user.getNick()) != null) {
+                            this.sendRawLineViaQueue(String.format("WHOIS %s", user.getNick()));
+                        }
                     }
                 }
                 break;
