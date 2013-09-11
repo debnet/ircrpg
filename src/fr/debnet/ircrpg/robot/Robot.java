@@ -481,6 +481,8 @@ public class Robot extends IrcBot implements INotifiable {
             this.disconnect();
             this.joinChannel(channel);
         }
+        Result result = this.game.logout(recipientNick);
+        if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
     @Override

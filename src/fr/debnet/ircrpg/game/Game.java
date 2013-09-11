@@ -93,8 +93,8 @@ public class Game {
         this.playersByNickname.clear();
         this.playersByUsername.clear();
         for (Player player : players) {
-            this.playersByNickname.put(player.getNickname(), player);
-            this.playersByUsername.put(player.getUsername(), player);
+            this.playersByNickname.put(player.getNickname().toLowerCase(), player);
+            this.playersByUsername.put(player.getUsername().toLowerCase(), player);
             // Update each queue with all players
             this.updateQueues(player);
         }
@@ -168,8 +168,9 @@ public class Game {
      * @return Player instance or null if not found
      */
     public Player getPlayerByNickname(String nickname) {
-        if (this.playersByNickname.containsKey(nickname)) {
-            return this.playersByNickname.get(nickname);
+        String key = nickname.toLowerCase();
+        if (this.playersByNickname.containsKey(key)) {
+            return this.playersByNickname.get(key);
         }
         return null;
     }
@@ -180,8 +181,9 @@ public class Game {
      * @return Player instance or null if not found
      */
     public Player getPlayerByUsername(String username) {
-        if (this.playersByUsername.containsKey(username)) {
-            return this.playersByUsername.get(username);
+        String key = username.toLowerCase();
+        if (this.playersByUsername.containsKey(key)) {
+            return this.playersByUsername.get(key);
         }
         return null;
     }
@@ -1572,8 +1574,8 @@ public class Game {
                 if (player.getPassword().equals(password)) {
                     // Clean player references
                     this.playersByNickname.remove(player.getNickname());
-                    this.playersByNickname.remove(nickname);
-                    this.playersByNickname.put(nickname, player);
+                    this.playersByNickname.remove(nickname.toLowerCase());
+                    this.playersByNickname.put(nickname.toLowerCase(), player);
                     // Update player
                     player.setNickname(nickname);
                     player.setHostname(hostname);
@@ -1647,8 +1649,8 @@ public class Game {
         Player player = this.getPlayerByNickname(oldNickname);
         if (player != null) {
             player.setNickname(newNickname);
-            this.playersByNickname.remove(oldNickname);
-            this.playersByNickname.put(newNickname, player);
+            this.playersByNickname.remove(oldNickname.toLowerCase());
+            this.playersByNickname.put(newNickname.toLowerCase(), player);
             return true;
         }
         return false;
@@ -1690,8 +1692,8 @@ public class Game {
      */
     public Result register(String username, String password, String nickname, String hostname) {
         Result result = new Result(Action.REGISTER);
-        if (!this.playersByUsername.containsKey(username)) {
-            if (!this.playersByNickname.containsKey(nickname)) {
+        if (!this.playersByUsername.containsKey(username.toLowerCase())) {
+            if (!this.playersByNickname.containsKey(nickname.toLowerCase())) {
                 Player player = new Player();
                 player.setUsername(username);
                 player.setPassword(password);
@@ -1705,8 +1707,8 @@ public class Game {
                         return result;
                     }
                 }
-                this.playersByUsername.put(username, player);
-                this.playersByNickname.put(nickname, player);
+                this.playersByUsername.put(username.toLowerCase(), player);
+                this.playersByNickname.put(nickname.toLowerCase(), player);
                 result.setPlayer(player);
                 result.addReturn(Return.REGISTER_SUCCEED);
                 result.setSuccess(true);
