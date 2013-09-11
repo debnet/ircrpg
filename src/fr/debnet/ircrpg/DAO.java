@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -21,6 +22,9 @@ import org.hibernate.Transaction;
  */
 public class DAO {
 
+    // Logger
+    private static final Logger logger = Logger.getLogger(DAO.class.getName());
+    
     static {
         try {
             //sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
@@ -56,7 +60,7 @@ public class DAO {
         try {
             object = (T)session.get(_class, id);
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
         } finally {
             session.close();
         }
@@ -94,7 +98,7 @@ public class DAO {
             if (limit) query.setMaxResults(1);
             object = (T)query.uniqueResult();
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
         } finally {
             session.close();
         }
@@ -132,7 +136,7 @@ public class DAO {
             if (limit > 0) query.setMaxResults(limit);
             list = query.list();
         } catch (HibernateException e) {
-            Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
         } finally {
             session.close();
         }
@@ -156,7 +160,7 @@ public class DAO {
                 transaction.commit();
                 b = true;
             } catch (HibernateException e) {
-                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+                logger.log(Level.SEVERE, e.getLocalizedMessage());
             } finally {
                 if (!transaction.wasCommitted()) transaction.rollback();
                 session.close();
@@ -182,7 +186,7 @@ public class DAO {
                 object.setId(id);
                 transaction.commit();
             } catch (HibernateException e) {
-                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+                logger.log(Level.SEVERE, e.getLocalizedMessage());
             } finally {
                 if (!transaction.wasCommitted()) transaction.rollback();
                 session.close();
@@ -208,7 +212,7 @@ public class DAO {
                 transaction.commit();
                 b = true;
             } catch (HibernateException e) {
-                Logger.getLogger(DAO.class.getName()).severe(e.getLocalizedMessage());
+                logger.log(Level.SEVERE, e.getLocalizedMessage());
             } finally {
                 if (!transaction.wasCommitted()) transaction.rollback();
                 session.close();

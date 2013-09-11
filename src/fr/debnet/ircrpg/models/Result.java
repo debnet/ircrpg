@@ -98,8 +98,7 @@ public class Result extends MappedEntity implements IEntity {
     @Override
     public String toString() {
         StringBuilder build = new StringBuilder();
-        build.append(String.format("[%s] (%b) %s (value=%.2f, details:%s)", 
-            this.action, this.success, this.returns, this.value, this.details));
+        build.append(String.format("[%s] (%b) %s", this.action, this.success, this.returns));
         if (this.success && this.player != null) {
             build.append('\n');
             build.append(String.format("\"%s\" ($ %+.2f ; XP %+.2f ; HP %+.2f ; MP %+.2f)", 

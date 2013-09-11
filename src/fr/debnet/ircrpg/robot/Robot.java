@@ -16,6 +16,7 @@ import fr.debnet.ircrpg.models.Result;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +25,9 @@ import java.util.logging.Logger;
  */
 public class Robot extends IrcBot implements INotifiable {
 
+    // Logger
+    private static final Logger logger = Logger.getLogger(Robot.class.getName());
+    
     private Game game;
     
     public Robot(Game game) {
@@ -40,7 +44,7 @@ public class Robot extends IrcBot implements INotifiable {
             String[] channels = Config.IRC_CHANNEL.split(",");
             for (String channel : channels) this.joinChannel(Config.IRC_CHANNEL);
         } catch (IOException | IrcException ex) {
-            Logger.getLogger(Robot.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             System.exit(-1);
         }
     }
@@ -402,6 +406,7 @@ public class Robot extends IrcBot implements INotifiable {
     }
     
     private void displayResult(Result result, String sender) {
+        logger.log(Level.INFO, result.toString());
         if (result.isSuccess())
             this.sendFormattedMessage(Helpers.getMessage(result));
         else this.sendFormattedMessage(sender, Helpers.getMessage(result));

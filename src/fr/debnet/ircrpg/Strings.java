@@ -465,6 +465,9 @@ public class Strings {
     @Property(name = "return.password_changed")
     public static String RETURN_PASSWORD_CHANGED;
     
+    /* Logger */
+    
+    
     /* Constants */
     // Colors
     private static final String _NORMAL = "n";

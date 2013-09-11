@@ -23,6 +23,9 @@ import java.util.logging.Logger;
  */
 public class UpdateQueue extends Thread implements IQueue {
 
+    // Logger
+    private static final Logger logger = Logger.getLogger(UpdateQueue.class.getName());
+    
     private static IQueue queue;
     
     public static IQueue getInstance(Game game) {
@@ -75,7 +78,7 @@ public class UpdateQueue extends Thread implements IQueue {
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(UpdateQueue.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
     }

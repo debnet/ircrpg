@@ -31,6 +31,9 @@ import java.util.logging.Logger;
  */
 public class Admin {
     
+    // Logger
+    private static final Logger logger = Logger.getLogger(Admin.class.getName());
+    
     private Game game;
     private Map<Player, IEntity> objects;
     
@@ -163,7 +166,7 @@ public class Admin {
                     return false;
             }
         } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             return false;
         }
         // Return
@@ -190,7 +193,7 @@ public class Admin {
             // Get value
             return getter.invoke(object).toString();
         } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
         }
     }

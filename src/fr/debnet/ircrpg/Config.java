@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -18,6 +19,9 @@ import java.util.logging.Logger;
  * @author Marc
  */
 public class Config {
+    
+    // Logger
+    private static final Logger logger = Logger.getLogger(Config.class.getName());
     
     /* IRC config */
     @Property(name = "irc.enabled") 
@@ -137,7 +141,7 @@ public class Config {
     
     static {
         Config.loadConfig("config.properties");
-        
+        // Get the maximum date
         Calendar date = Calendar.getInstance();
         date.setTime(new Date(Long.MAX_VALUE));
         MAX_DATE = date;
@@ -160,7 +164,7 @@ public class Config {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             System.exit(-1);
         }
     }
@@ -186,7 +190,7 @@ public class Config {
                 }
             }
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
         }
         return null;
     }
@@ -217,7 +221,7 @@ public class Config {
                 }
             }
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
         }
         return false;
     }
@@ -238,7 +242,7 @@ public class Config {
                 }
             }
         } catch (Exception ex) {
-            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
         }
         return map;
     }
@@ -282,7 +286,7 @@ public class Config {
                 }
             }
         } catch (IOException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(Config.class.getName()).severe(ex.getLocalizedMessage());
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             System.exit(-1);
         }
     }
