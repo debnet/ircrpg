@@ -406,7 +406,7 @@ public class Robot extends IrcBot implements INotifiable {
     }
     
     private void displayResult(Result result, String sender) {
-        logger.log(Level.INFO, result.toString());
+        logger.log(Level.INFO, String.format("%s: %s", sender, result.toString()));
         if (result.isSuccess())
             this.sendFormattedMessage(Helpers.getMessage(result));
         else this.sendFormattedMessage(sender, Helpers.getMessage(result));

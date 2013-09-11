@@ -1549,7 +1549,7 @@ public class Game {
         List<String> players = new ArrayList<>();
         for (Map.Entry<String, Player> entry : this.playersByNickname.entrySet()) {
             if (entry.getValue().getOnline()) {
-                players.add(entry.getKey());
+                players.add(entry.getValue().getNickname());
                 count++;
             }
         }
