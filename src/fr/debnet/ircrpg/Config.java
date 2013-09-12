@@ -133,9 +133,10 @@ public class Config {
     public static Map<String, String> HIBERNATE_CONFIG;
     
     /* Constants */
-    public static final long HOUR = 3600000;
-    public static final long MINUTE = 60000;
     public static final long SECOND = 1000;
+    public static final long MINUTE = 60000;
+    public static final long HOUR = 3600000;
+    public static final long DAY = 86400000;
     // Max date
     public static final Calendar MAX_DATE;
     

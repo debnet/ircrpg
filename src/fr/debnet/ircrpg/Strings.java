@@ -27,6 +27,8 @@ public class Strings {
     public static String FORMAT_TIME_MINUTES;
     @Property(name = "format.time_hours")
     public static String FORMAT_TIME_HOURS;
+    @Property(name = "format.time_days")
+    public static String FORMAT_TIME_DAYS;
     
     /* Formats */
     @Property(name = "format.none")

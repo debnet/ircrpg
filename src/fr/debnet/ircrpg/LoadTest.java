@@ -29,7 +29,7 @@ public class LoadTest extends Thread {
         for (int i = 1; i < 10000; i++) {
             String username = String.format("Username%04d", i);
             String nickname = String.format("Nickname%04d", i);
-            Result result = game.register(username, null, nickname, null);
+            Result result = game.register(username, "", nickname, "");
             if (result.isSuccess()) {
                 players.add(nickname);
                 LoadTest loadTest = new LoadTest(nickname);

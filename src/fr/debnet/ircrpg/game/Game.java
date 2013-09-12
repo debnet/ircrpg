@@ -339,6 +339,7 @@ public class Game {
                 // Lower health points
                 double damage = (player.getMaxHealth() * 
                     (Config.POISON_EFFECT + modifiers.getPoisonEffect())) * hours;
+                damage = damage < 0 ? 0d : damage;
                 player.addHealth(-damage);
                 // Update statistics
                 player.addDamageTaken(damage);

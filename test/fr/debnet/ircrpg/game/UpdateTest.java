@@ -88,7 +88,7 @@ public class UpdateTest {
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_POISON_CURED));
-        assertEquals("HP lost", -5d, r.getPlayerHealthChanges(), EPSILON);
+        assertEquals("HP lost", -10d, r.getPlayerHealthChanges(), EPSILON);
     }
     
     @Test
@@ -143,7 +143,7 @@ public class UpdateTest {
         assertTrue(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.PLAYER_KILLED_BY_POISON));
-        assertEquals("HP changes", -5d, r.getPlayerHealthChanges(), EPSILON);
+        assertEquals("HP changes", -10d, r.getPlayerHealthChanges(), EPSILON);
     }
     
     @Test
