@@ -107,7 +107,7 @@ public class Game {
         List<Item> items = DAO.<Item>getObjectList("from " + Model.ITEM);
         this.itemsByCode.clear();
         for (Item item : items) {
-            this.itemsByCode.put(item.getCode(), item);
+            this.itemsByCode.put(item.getCode().toLowerCase(), item);
         }
     }
     
@@ -118,7 +118,7 @@ public class Game {
         List<Spell> spells = DAO.<Spell>getObjectList("from " + Model.SPELL);
         this.spellsByCode.clear();
         for (Spell spell : spells) {
-            this.spellsByCode.put(spell.getCode(), spell);
+            this.spellsByCode.put(spell.getCode().toLowerCase(), spell);
         }
     }
     
@@ -129,7 +129,7 @@ public class Game {
         List<Event> events = DAO.<Event>getObjectList("from " + Model.EVENT);
         this.eventsByCode.clear();
         for (Event event : events) {
-            this.eventsByCode.put(event.getCode(), event);
+            this.eventsByCode.put(event.getCode().toLowerCase(), event);
         }
     }
     
@@ -1186,11 +1186,11 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Check if item is potion
-        Potion potion = Potion.from(code);
+        Potion potion = Potion.from(code.toLowerCase());
         // Check item
         Item item = null;
         if (potion == Potion.NONE) {
-            item = this.getItemByCode(code);
+            item = this.getItemByCode(code.toLowerCase());
             if (!Helpers.checkItem(result, player, item, 
                 CheckItem.from(
                     CheckItem.CAN_BE_AFFORDED,
@@ -1299,7 +1299,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Check item
-        Item item = this.getItemByCode(code);
+        Item item = this.getItemByCode(code.toLowerCase());
         if (!Helpers.checkItem(result, player, item, 
             CheckItem.from(
                 CheckItem.IS_ALREADY_BOUGHT
@@ -1338,7 +1338,7 @@ public class Game {
         Player player = this.getPlayer(result, sender);
         if (player == null) return result;
         // Check spell
-        Spell spell = this.getSpellByCode(code);
+        Spell spell = this.getSpellByCode(code.toLowerCase());
         if (!Helpers.checkSpell(result, player, spell, 
             CheckSpell.from(
                 CheckSpell.CAN_BE_AFFORDED,
@@ -1380,7 +1380,7 @@ public class Game {
      */
     public String look(String code) {
         // Potion
-        Potion potion = Potion.from(code);
+        Potion potion = Potion.from(code.toLowerCase());
         switch (potion) {
             case HEALTH:
                 return String.format(Strings.FORMAT_POTION_HEALTH, Potion.HEALTH,
@@ -1395,13 +1395,13 @@ public class Game {
                     Config.POTION_REMEDY_COST);
         }
         // Item
-        if (this.itemsByCode.containsKey(code)) {
-            Item item = this.itemsByCode.get(code);
+        Item item = this.getItemByCode(code.toLowerCase());
+        if (item != null) {
             return Strings.format(Strings.FORMAT_ITEM_INFOS, item.toMap());
         }
         // Spell
-        if (this.spellsByCode.containsKey(code)) {
-            Spell spell = this.spellsByCode.get(code);
+        Spell spell = this.getSpellByCode(code.toLowerCase());
+        if (spell != null) {
             return Strings.format(Strings.FORMAT_SPELL_INFOS, spell.toMap());
         }
         return null;

@@ -52,7 +52,7 @@ public class Robot extends IrcBot implements INotifiable {
     private void sendFormattedMessage(String message, Object... args) {
         if (this.isConnected()) {
             for (String channel : this.getChannels()) {
-                message = String.format(message, args);
+                if (args.length > 0) message = String.format(message, args);
                 message = Strings.formatMessage(message);
                 for (String string : Strings.slice(message, Config.IRC_MAX_LENGTH))
                     super.sendMessage(channel, string);
@@ -62,7 +62,7 @@ public class Robot extends IrcBot implements INotifiable {
     
     private void sendFormattedMessage(String target, String message, Object... args) {
         if (this.isConnected()) {
-            message = String.format(message, args);
+            if (args.length > 0) message = String.format(message, args);
             message = Strings.formatMessage(message);
             for (String string : Strings.slice(message, Config.IRC_MAX_LENGTH))
                 super.sendNotice(target, string);
