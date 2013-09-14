@@ -420,6 +420,7 @@ public class Robot extends IrcBot implements INotifiable {
     
     @Override
     public void notify(Result result) {
+        logger.log(Level.INFO, result.toString());
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
@@ -427,6 +428,7 @@ public class Robot extends IrcBot implements INotifiable {
     protected void onJoin(String channel, String sender, String login, String hostname) {
         // Try reconnect player on join
         Result result = this.game.tryRelogin(sender, hostname);
+        logger.log(Level.INFO, String.format("%s: %s", sender, result.toString()));
         if (result.isSuccess()) {
             this.sendFormattedMessage(Helpers.getMessage(result));
             this.voice(channel, sender);
@@ -436,12 +438,14 @@ public class Robot extends IrcBot implements INotifiable {
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
         Result result = this.game.logout(sender);
+        logger.log(Level.INFO, String.format("%s: %s", sender, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         Result result = this.game.logout(sourceNick);
+        logger.log(Level.INFO, String.format("%s: %s", sourceNick, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
@@ -482,6 +486,7 @@ public class Robot extends IrcBot implements INotifiable {
             this.joinChannel(channel);
         }
         Result result = this.game.logout(recipientNick);
+        logger.log(Level.INFO, String.format("%s: %s", recipientNick, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
 
@@ -490,7 +495,8 @@ public class Robot extends IrcBot implements INotifiable {
         String[] split = response.split(" ");
         switch (code) {
             case 311: // Whois response (1 = nickname, 3 = hostname)
-                this.game.tryRelogin(split[1], split[3]);
+                Result result = this.game.tryRelogin(split[1], split[3]);
+                logger.log(Level.INFO, String.format("%s: %s", split[1], result.toString()));
                 break;
             case 353: // List of users by channel
                 for (String channel : this.getChannels()) {

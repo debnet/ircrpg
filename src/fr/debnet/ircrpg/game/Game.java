@@ -633,15 +633,27 @@ public class Game {
                     // Update statistics
                     attacker.addKills(1);
                     defender.addDeaths(1);
+                    // Gold looted
+                    double gold = (Config.THEFT_GOLD + attackerModifiers.getTheftGold()) 
+                            * defender.getGold() * random.nextDouble();
+                    // Update players
+                    attacker.addGold(gold);
+                    defender.addGold(-gold);
+                    // Update return
+                    result.addPlayerGoldChanges(gold);
+                    result.addTargetGoldChanges(-gold);
+                    // Update statistics
+                    attacker.addMoneyStolen(gold);
                 }
-                // Experience gained (attacker)
-                double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
-                bonus = bonus < 0 ? 0 : bonus;
-                double xp = Config.EXPERIENCE_ATTACK * (bonus + attackerModifiers.getExperienceModifier());
-                attacker.addExperience(xp);
-                // Update return
-                result.addPlayerExperienceChanges(xp);
             }
+            // Experience gained (attacker)
+            double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
+            bonus = bonus < 0 ? 0 : bonus;
+            double xp = chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK * 
+                    (bonus + attackerModifiers.getExperienceModifier());
+            attacker.addExperience(xp);
+            // Update return
+            result.addPlayerExperienceChanges(xp);
             // Defender phase
             if (defender.getStatus() != Status.DEAD) {
                 if (defender.getStatus() == Status.PARALYZED) {
@@ -673,11 +685,22 @@ public class Game {
                             // Update statistics
                             defender.addKills(1);
                             attacker.addDeaths(1);
+                            // Gold looted
+                            double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
+                                    * defender.getGold() * random.nextDouble();
+                            // Update players
+                            defender.addGold(gold);
+                            attacker.addGold(-gold);
+                            // Update return
+                            result.addPlayerGoldChanges(-gold);
+                            result.addTargetGoldChanges(gold);
+                            // Update statistics
+                            defender.addMoneyStolen(gold);
                         }
                         // Experience gained (defenser)
-                        double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
+                        bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
                         bonus = bonus < 0 ? 0 : bonus;
-                        double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
+                        xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
                         defender.addExperience(xp);
                         // Update statistics
                         result.addTargetExperienceChanges(xp);
@@ -733,6 +756,17 @@ public class Game {
                     // Update statistics
                     attacker.addKills(1);
                     defender.addDeaths(1);
+                    // Gold looted
+                    double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
+                            * defender.getGold() * random.nextDouble();
+                    // Update players
+                    defender.addGold(gold);
+                    attacker.addGold(-gold);
+                    // Update return
+                    result.addPlayerGoldChanges(-gold);
+                    result.addTargetGoldChanges(gold);
+                    // Update statistics
+                    defender.addMoneyStolen(gold);
                 } else {
                     Status status = defender.getStatus();
                     // Status change
@@ -857,6 +891,17 @@ public class Game {
                 // Update statistics
                 defender.addKills(1);
                 attacker.addDeaths(1);
+                // Gold looted
+                double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
+                        * defender.getGold() * random.nextDouble();
+                // Update players
+                defender.addGold(gold);
+                attacker.addGold(-gold);
+                // Update return
+                result.addPlayerGoldChanges(-gold);
+                result.addTargetGoldChanges(gold);
+                // Update statistics
+                defender.addMoneyStolen(gold);
             }
             // Experience gained (defenser)
             double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;

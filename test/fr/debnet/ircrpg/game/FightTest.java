@@ -158,7 +158,7 @@ public class FightTest {
         assertTrue(r.hasReturn(Return.ATTACK_FAILED));
         assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
         // Test attacker changes
-        assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
+        assertEquals("Attacker XP changes", 15d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -6d, r.getPlayerHealthChanges(), EPSILON);
         // Test defender changes
         assertEquals("Defender XP changes", 15d, r.getTargetExperienceChanges(), EPSILON);
@@ -206,7 +206,7 @@ public class FightTest {
         assertTrue(r.hasReturn(Return.ATTACK_FAILED));
         assertTrue(r.hasReturn(Return.DEFENSE_FAILED));
         // Test attacker changes
-        assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
+        assertEquals("Attacker XP changes", 15d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", 0d, r.getPlayerHealthChanges(), EPSILON);
         // Test defender changes
         assertEquals("Defender XP changes", 0d, r.getTargetExperienceChanges(), EPSILON);
@@ -451,7 +451,7 @@ public class FightTest {
         assertTrue(r.hasReturn(Return.DEFENSE_SUCCEED));
         assertTrue(r.hasReturn(Return.PLAYER_KILLED));
         // Test attacker changes
-        assertEquals("Attacker XP changes", 0d, r.getPlayerExperienceChanges(), EPSILON);
+        assertEquals("Attacker XP changes", 15d, r.getPlayerExperienceChanges(), EPSILON);
         assertEquals("Attacker HP changes", -500d, r.getPlayerHealthChanges(), EPSILON);
         // Test defender changes
         assertEquals("Defender XP changes", 15d, r.getTargetExperienceChanges(), EPSILON);
