@@ -112,8 +112,8 @@ public class StealTest {
         // Description
         System.out.println("- steal succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0d);
-        this.game.getRandom().addDefaultValue(0.9d);
+        this.game.getRandom().addDefaultValue(0.1d);
+        this.game.getRandom().addDefaultValue(0.5d);
         // Create theft
         Result r = this.game.steal("p1", "p2");
         // Returns
@@ -123,9 +123,9 @@ public class StealTest {
         // Test return values
         assertTrue(r.hasReturn(Return.THEFT_SUCCEED));
         // Test attacker changes
-        assertEquals("Attacker gold changes", 9d, r.getPlayerGoldChanges(), EPSILON);
+        assertEquals("Attacker gold changes", 5d, r.getPlayerGoldChanges(), EPSILON);
         // Test defender changes
-        assertEquals("Defender gold changes", -9d, r.getTargetGoldChanges(), EPSILON);
+        assertEquals("Defender gold changes", -5d, r.getTargetGoldChanges(), EPSILON);
     }
     
     @Test

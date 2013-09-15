@@ -218,7 +218,7 @@ public class FightTest {
         // Description
         System.out.println("- offensive spell succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addDefaultValue(0.1d);
         // Create fight
         Result r = this.game.fight("p1", "p2", "s");
         // Returns
@@ -435,8 +435,8 @@ public class FightTest {
         // Description
         System.out.println("- attacker killed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.9d);
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addDefaultValue(0.6d);
+        this.game.getRandom().addDefaultValue(0.4d);
         // Change player defense
         Player p = this.game.getPlayerByUsername("p2");
         p.setDefense(1000);
@@ -452,7 +452,7 @@ public class FightTest {
         assertTrue(r.hasReturn(Return.PLAYER_KILLED));
         // Test attacker changes
         assertEquals("Attacker XP changes", 15d, r.getPlayerExperienceChanges(), EPSILON);
-        assertEquals("Attacker HP changes", -500d, r.getPlayerHealthChanges(), EPSILON);
+        assertEquals("Attacker HP changes", -600d, r.getPlayerHealthChanges(), EPSILON);
         // Test defender changes
         assertEquals("Defender XP changes", 15d, r.getTargetExperienceChanges(), EPSILON);
         assertEquals("Defender HP changes", 0d, r.getTargetHealthChanges(), EPSILON);

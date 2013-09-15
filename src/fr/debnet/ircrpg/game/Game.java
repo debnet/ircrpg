@@ -739,7 +739,8 @@ public class Game {
                 return result;
             }
             double accuracy = Config.MAGIC_ACCURACY + attackerModifiers.getMagicAccuracy();
-            if (random.nextDouble() > accuracy) {
+            double chance = random.nextDouble();
+            if (chance > accuracy) {
                 // Update return
                 result.addReturn(Return.MAGIC_FAILED);
             } else {
