@@ -642,9 +642,13 @@ public class Game {
                 defender.addDamageTaken(damage);
                 // Is defender dead?
                 if (defender.getCurrentHealth() <= 0) {
+                    // Change status
                     defender.setStatus(Status.DEAD);
                     defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                     defender.setCurrentHealth(0d);
+                    // Reset activity
+                    defender.setActivity(Activity.NONE);
+                    defender.setActivityDuration(0l);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
                     // Update statistics
@@ -694,9 +698,13 @@ public class Game {
                         attacker.addDamageTaken(damage);
                         // Is attacker dead?
                         if (attacker.getCurrentHealth() <= 0) {
+                            // Change status
                             attacker.setStatus(Status.DEAD);
                             attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                             attacker.setCurrentHealth(0d);
+                            // Reset activity
+                            attacker.setActivity(Activity.NONE);
+                            attacker.setActivityDuration(0l);
                             // Update return
                             result.addReturn(Return.PLAYER_KILLED);
                             // Update statistics
@@ -766,9 +774,13 @@ public class Game {
                 }
                 // Is defender dead?
                 if (hp <= 0) {
+                    // Change status
                     defender.setStatus(Status.DEAD);
                     defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                     defender.setCurrentHealth(0d);
+                    // Reset activity
+                    defender.setActivity(Activity.NONE);
+                    defender.setActivityDuration(0l);
                     // Update return
                     result.addReturn(Return.TARGET_KILLED);
                     // Update statistics
@@ -901,9 +913,13 @@ public class Game {
             attacker.addDamageTaken(damage);
             // Is attacker dead?
             if (attacker.getCurrentHealth() <= 0) {
+                // Change status
                 attacker.setStatus(Status.DEAD);
                 attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
                 attacker.setCurrentHealth(0d);
+                // Reset activity
+                attacker.setActivity(Activity.NONE);
+                attacker.setActivityDuration(0l);
                 // Update return
                 result.addReturn(Return.PLAYER_KILLED);
                 // Update statistics
