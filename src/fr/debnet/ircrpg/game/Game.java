@@ -1096,6 +1096,9 @@ public class Game {
                 break;
         }
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
@@ -1159,6 +1162,9 @@ public class Game {
         // Return
         result.setValue(earned);
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
@@ -1232,6 +1238,9 @@ public class Game {
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
@@ -1345,6 +1354,9 @@ public class Game {
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
@@ -1384,6 +1396,9 @@ public class Game {
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
@@ -1431,6 +1446,9 @@ public class Game {
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
+        if (Config.PERSISTANCE) {
+            DAO.<Result>addObject(result);
+        }
         return result;
     }
     
