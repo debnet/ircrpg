@@ -507,25 +507,41 @@ public class Game {
      */
     public Result executeEvent(Player player, Event event) {
         Result result = new Result(Action.EVENT, player);
+        // Player's modifiers
+        Modifiers modifiers = new Modifiers(player);
         // Calculate variance
-        double variance = (this.random.nextDouble() + 0.5d) * event.getVariance();
-        variance = variance == 0d ? 1d : variance;
+        double variance = (this.random.nextDouble() < 0.5d ? -1 : 1) * event.getVariance();
+        variance = variance == 0d ? 1d : (1d + variance);
         // Health
-        double health = event.getHealthModifier() * variance;
-        player.addHealth(health);
-        result.setPlayerHealthChanges(health);
+        if (event.getHealthModifier() != 0d) {
+            double maxHealth = player.getMaxHealth() + modifiers.getHealth();
+            double health = event.getHealthModifier() * variance;
+            health = player.getCurrentHealth() + health > maxHealth ?
+                maxHealth - player.getCurrentHealth() : health;
+            player.addHealth(health);
+            result.setPlayerHealthChanges(health);
+        }
         // Mana
-        double mana = event.getManaModifier() * variance;
-        player.addMana(mana);
-        result.setPlayerManaChanges(mana);
+        if (event.getManaModifier() != 0d) {
+            double maxMana = player.getMaxMana() + modifiers.getMana();
+            double mana = event.getManaModifier() * variance;
+            mana = player.getCurrentMana() + mana > maxMana ?
+                maxMana - player.getCurrentMana() : mana;
+            player.addMana(mana);
+            result.setPlayerManaChanges(mana);
+        }
         // Experience
-        double xp = event.getExperienceModifier() * variance;
-        player.addExperience(xp);
-        result.setPlayerExperienceChanges(xp);
+        if (event.getExperienceModifier() != 0d) {
+            double xp = event.getExperienceModifier() * variance;
+            player.addExperience(xp);
+            result.setPlayerExperienceChanges(xp);
+        }
         // Gold
-        double gold = event.getGoldModifier() * variance;
-        player.addGold(gold);
-        result.setPlayerGoldChanges(gold);
+        if (event.getGoldModifier() != 0d) {
+            double gold = event.getGoldModifier() * variance;
+            player.addGold(gold);
+            result.setPlayerGoldChanges(gold);
+        }
         // Event specific
         result.setDetails(event.getId().toString());
         result.setCustomMessage(event.getDescription());
