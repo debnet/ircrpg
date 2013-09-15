@@ -649,7 +649,7 @@ public class Game {
             // Experience gained (attacker)
             double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
             bonus = bonus < 0 ? 0 : bonus;
-            double xp = chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK * 
+            double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
                     (bonus + attackerModifiers.getExperienceModifier());
             attacker.addExperience(xp);
             // Update return
