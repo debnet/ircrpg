@@ -72,12 +72,12 @@ public class EventQueue extends Thread implements IQueue {
                             value = (int)(this.random.nextDouble() * events.size());
                             Event event = events.get(value);
                             // Calculate the executeEvent chance
-                            value = (int)(this.random.nextDouble() * 100);
+                            double chance = this.random.nextDouble();
                             // Check the player timespan since last executeEvent
                             Calendar date = (Calendar)player.getLastEvent().clone();
                             date.add(Calendar.MINUTE, Config.EVENT_TIME);
                             // Event execution
-                            if (now.after(date) && value >= event.getChance()) {
+                            if (now.after(date) && chance >= event.getChance()) {
                                 Result result = this.game.executeEvent(player, event);
                                 // Notify observers
                                 for (INotifiable notifiable : this.notifiables) {

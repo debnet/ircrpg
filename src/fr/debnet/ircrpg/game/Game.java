@@ -253,27 +253,27 @@ public class Game {
             if (!status) continue;
             // Check level
             boolean level = event.getLevelCondition() == 0 || (isBelow ? 
-                    event.getLevelCondition() <= player.getLevel() :
-                    event.getLevelCondition() >= player.getLevel() );
+                    event.getLevelCondition() >= player.getLevel() :
+                    event.getLevelCondition() <= player.getLevel() );
             if (!level) continue;
             // Check gold
             boolean gold = event.getGoldCondition() == 0 || (isBelow ? 
-                    event.getGoldCondition() <= player.getGold() :
-                    event.getGoldCondition() >= player.getGold() );
+                    event.getGoldCondition() >= player.getGold() :
+                    event.getGoldCondition() <= player.getGold() );
             if (!gold) continue;
             // Check health
             boolean health = event.getHealthCondition() == 0 || (isPercentage ? 
                 (isBelow ? event.getHealthCondition() <= healthPercentage : 
                     event.getHealthCondition() >= healthPercentage) : 
                 (isBelow ? event.getHealthCondition() <= player.getCurrentHealth() :
-                    event.getHealthCondition() >= player.getCurrentHealth() ));
+                    event.getHealthCondition() <= player.getCurrentHealth() ));
             if (!health) continue;
             // Check mana
             boolean mana = event.getManaCondition() == 0 || (isPercentage ? 
                 (isBelow ? event.getManaCondition() <= manaPercentage : 
                     event.getManaCondition() >= manaPercentage) : 
                 (isBelow ? event.getManaCondition() <= player.getCurrentMana() :
-                    event.getManaCondition() >= player.getCurrentMana() ));
+                    event.getManaCondition() <= player.getCurrentMana() ));
             if (!mana) continue;
             // Add executeEvent to list (all checks passed)
             events.add(event);
@@ -546,6 +546,7 @@ public class Game {
         result.setDetails(event.getId().toString());
         result.setCustomMessage(event.getDescription());
         // Update and save player
+        player.setLastEvent(Calendar.getInstance());
         this.updateAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
