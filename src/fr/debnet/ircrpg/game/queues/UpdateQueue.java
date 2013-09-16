@@ -114,10 +114,13 @@ public class UpdateQueue extends Thread implements IQueue {
             nextDate.add(Calendar.MILLISECOND, -player.getActivityDuration().intValue());
             switch (player.getActivity()) {
                 case WAITING:
-                    nextDate.add(Calendar.MINUTE, Config.ACTIVITY_PENALTY);
+                    nextDate.add(Calendar.MINUTE, Config.PENALTY_ACTIVITY);
                     break;
                 case RESTING:
                     nextDate.add(Calendar.MINUTE, Config.RESTING_TIME_MAX);
+                    break;
+                case PRAYING:
+                    nextDate.add(Calendar.MINUTE, Config.PRAYING_TIME_MAX);
                     break;
                 case TRAINING:
                     nextDate.add(Calendar.MINUTE, Config.TRAINING_TIME_MAX);

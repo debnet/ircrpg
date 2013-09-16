@@ -368,7 +368,7 @@ public class FightTest {
         System.out.println("- player activity error:");
         // Change player status
         Activity[] activities = new Activity[] { 
-            Activity.RESTING, Activity.TRAINING, Activity.WORKING 
+            Activity.RESTING, Activity.PRAYING, Activity.TRAINING, Activity.WORKING 
         };
         for (Activity activity : activities) {
             // Change player activity

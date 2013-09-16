@@ -16,6 +16,7 @@ public class Modifiers {
     private double experienceRate;
     private double goldRate;
     private double healthRate;
+    private double manaRate;
     private double potionHealth;
     private double potionMana;
     private double poisonEffect;
@@ -32,6 +33,7 @@ public class Modifiers {
             this.experienceRate += item.getExperienceRateModifier();
             this.goldRate += item.getGoldRateModifier();
             this.healthRate += item.getHealthRateModifier();
+            this.manaRate += item.getManaRateModifier();
             this.attackAccuracy += item.getAttackAccuracyModifier();
             this.defenseAccuracy += item.getDefenseAccuracyModifier();
             this.magicAccuracy += item.getMagicAccuracyModifier();
@@ -82,6 +84,10 @@ public class Modifiers {
 
     public double getHealthRate() {
         return healthRate;
+    }
+    
+    public double getManaRate() {
+        return manaRate;
     }
 
     public double getPotionHealth() {

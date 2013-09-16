@@ -13,7 +13,8 @@ public enum Activity implements IEnum {
     WAITING     (0x1, Strings.ACTIVITY_WAITING),
     WORKING     (0x2, Strings.ACTIVITY_WORKING),
     TRAINING    (0x3, Strings.ACTIVITY_TRAINING),
-    RESTING     (0x4, Strings.ACTIVITY_RESTING);
+    RESTING     (0x4, Strings.ACTIVITY_RESTING),
+    PRAYING     (0x5, Strings.ACTIVITY_PRAYING);
     
     private final int value;
     private final String text;

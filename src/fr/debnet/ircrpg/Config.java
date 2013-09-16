@@ -52,6 +52,8 @@ public class Config {
     public static double RATE_GOLD;
     @Property(name = "game.rate.health") 
     public static double RATE_HEALTH;
+    @Property(name = "game.rate.mana") 
+    public static double RATE_MANA;
     @Property(name = "game.rate.level") 
     public static int RATE_LEVEL;
     @Property(name = "game.rate.skill") 
@@ -98,14 +100,20 @@ public class Config {
     public static int RESTING_TIME_MIN;
     @Property(name = "game.resting.max") 
     public static int RESTING_TIME_MAX;
+    @Property(name = "game.praying.min") 
+    public static int PRAYING_TIME_MIN;
+    @Property(name = "game.praying.max") 
+    public static int PRAYING_TIME_MAX;
     @Property(name = "game.training.min") 
     public static int TRAINING_TIME_MIN;
     @Property(name = "game.training.max") 
     public static int TRAINING_TIME_MAX;
-    @Property(name = "game.activity.penalty") 
-    public static int ACTIVITY_PENALTY;
-    @Property(name = "game.death.penalty") 
-    public static int DEATH_PENALTY;
+    @Property(name = "game.penalty.activity") 
+    public static int PENALTY_ACTIVITY;
+    @Property(name = "game.penalty.death") 
+    public static int PENALTY_DEATH;
+    @Property(name = "game.penalty.gold") 
+    public static double PENALTY_GOLD;
     @Property(name = "game.poison.effect") 
     public static double POISON_EFFECT;
     @Property(name = "game.sell.malus") 
@@ -114,8 +122,10 @@ public class Config {
     public static int EXPERIENCE_ATTACK;
     @Property(name = "game.experience.defense") 
     public static int EXPERIENCE_DEFENSE;
-    @Property(name = "game.experience.bonus") 
-    public static double EXPERIENCE_BONUS;
+    @Property(name = "game.bonus.experience") 
+    public static double BONUS_EXPERIENCE;
+    @Property(name = "game.bonus.gold") 
+    public static double BONUS_GOLD;
     @Property(name = "game.theft.chance") 
     public static double THEFT_CHANCE;
     @Property(name = "game.theft.gold") 

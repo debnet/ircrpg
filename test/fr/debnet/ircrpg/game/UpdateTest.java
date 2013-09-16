@@ -165,6 +165,24 @@ public class UpdateTest {
     }
     
     @Test
+    public void testUpdatePraying() {
+        // Description
+        System.out.println("- player praying:");
+        // Change player activity
+        this.player.setActivity(Activity.PRAYING);
+        this.player.setCurrentHealth(20d);
+        // Update player
+        Result r = this.game.update(this.player, false, false);
+        // Returns
+        System.out.println(r);
+        //System.out.println(Helpers.getMessage(r));
+        assertTrue(r.isSuccess());
+        // Test return values
+        assertTrue(r.hasReturn(Return.PLAYER_PRAYING_ENDED));
+        assertEquals("MP changes", 10d, r.getPlayerManaChanges(), EPSILON);
+    }
+    
+    @Test
     public void testUpdateWorking() {
         // Description
         System.out.println("- player working:");

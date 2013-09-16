@@ -118,7 +118,7 @@ public class Helpers {
                 }
                 // Check if the item has enough stock
                 if (checks.contains(CheckItem.HAS_ENOUGH_STOCK) && 
-                        item.getStock() > 0) {
+                        item.getStock() == 0) {
                     result.addReturn(Return.ITEM_STOCK_EMPTY);
                     return false;
                 }

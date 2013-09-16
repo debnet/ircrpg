@@ -384,9 +384,9 @@ public class Game {
                 // Limiting hours to max time
                 hours = hours > Config.RESTING_TIME_MAX / 60d ? Config.RESTING_TIME_MAX / 60d : hours;
                 // Restoring health points
+                int maxHp = player.getMaxHealth() + modifiers.getHealth();
                 double healRate = Config.RATE_HEALTH + modifiers.getHealthRate();
                 double heal = healRate * hours;
-                int maxHp = player.getMaxHealth() + modifiers.getHealth();
                 double hp = player.getCurrentHealth() + heal;
                 hp = hp > maxHp ? maxHp : hp;
                 player.setCurrentHealth(hp);
@@ -402,6 +402,30 @@ public class Game {
                 player.addTimeResting((long) (hours * Config.HOUR));
                 // Update return
                 result.addPlayerHealthChanges(heal);
+                break;
+            }
+            case PRAYING: {
+                // Limiting hours to max time
+                hours = hours > Config.PRAYING_TIME_MAX / 60d ? Config.PRAYING_TIME_MAX / 60d : hours;
+                // Restoring health points
+                int maxMp = player.getMaxMana() + modifiers.getMana();
+                double healRate = Config.RATE_MANA + modifiers.getManaRate();
+                double heal = healRate * hours;
+                double mp = player.getCurrentMana() + heal;
+                mp = mp > maxMp ? maxMp : mp;
+                player.setCurrentMana(mp);
+                // Removing activity if timeout
+                player.addActivityDuration(diff);
+                if (player.getActivityDuration() >= Config.PRAYING_TIME_MAX * Config.MINUTE) {
+                    result.setValue(healRate * Config.PRAYING_TIME_MAX / 60d);
+                    player.setActivity(Activity.WAITING);
+                    player.setActivityDuration(0l);
+                    result.addReturn(target ? Return.TARGET_PRAYING_ENDED : Return.PLAYER_PRAYING_ENDED);
+                }
+                // Update statistics
+                player.addTimeResting((long) (hours * Config.HOUR));
+                // Update return
+                result.addPlayerManaChanges(heal);
                 break;
             }
             case TRAINING: {
@@ -448,7 +472,7 @@ public class Game {
             }
             case WAITING: {
                 player.addActivityDuration(diff);
-                if (player.getActivityDuration() >= Config.ACTIVITY_PENALTY * Config.MINUTE) {
+                if (player.getActivityDuration() >= Config.PENALTY_ACTIVITY * Config.MINUTE) {
                     player.setActivity(Activity.NONE);
                     player.setActivityDuration(0l);
                     result.addReturn(target ? Return.TARGET_WAITING_ENDED : Return.PLAYER_WAITING_ENDED);
@@ -460,7 +484,7 @@ public class Game {
         if (player.getCurrentHealth() <= 0 && player.getStatus() != Status.DEAD) {
             // Change status
             player.setStatus(Status.DEAD);
-            player.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
+            player.setStatusDuration(Config.PENALTY_DEATH * Config.MINUTE);
             player.setCurrentHealth(0d);
             // Reset activity
             player.setActivity(Activity.NONE);
@@ -644,7 +668,7 @@ public class Game {
                 if (defender.getCurrentHealth() <= 0) {
                     // Change status
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
+                    defender.setStatusDuration(Config.PENALTY_DEATH * Config.MINUTE);
                     defender.setCurrentHealth(0d);
                     // Reset activity
                     defender.setActivity(Activity.NONE);
@@ -655,8 +679,9 @@ public class Game {
                     attacker.addKills(1);
                     defender.addDeaths(1);
                     // Gold looted
-                    double gold = (Config.THEFT_GOLD + attackerModifiers.getTheftGold()) 
-                            * defender.getGold() * random.nextDouble();
+                    double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_GOLD;
+                    bonus = bonus < 0 ? 0 : bonus;
+                    double gold = Config.PENALTY_GOLD * defender.getGold() * bonus;
                     // Update players
                     attacker.addGold(gold);
                     defender.addGold(-gold);
@@ -667,14 +692,16 @@ public class Game {
                     attacker.addMoneyStolen(gold);
                 }
             }
-            // Experience gained (attacker)
-            double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
-            bonus = bonus < 0 ? 0 : bonus;
-            double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
-                    (bonus + attackerModifiers.getExperienceModifier());
-            attacker.addExperience(xp);
-            // Update return
-            result.addPlayerExperienceChanges(xp);
+            {
+                // Experience gained (attacker)
+                double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
+                bonus = bonus < 0 ? 0 : bonus;
+                double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
+                        (bonus + attackerModifiers.getExperienceModifier());
+                attacker.addExperience(xp);
+                // Update return
+                result.addPlayerExperienceChanges(xp);
+            }
             // Defender phase
             if (defender.getStatus() != Status.DEAD) {
                 if (defender.getStatus() == Status.PARALYZED) {
@@ -700,7 +727,7 @@ public class Game {
                         if (attacker.getCurrentHealth() <= 0) {
                             // Change status
                             attacker.setStatus(Status.DEAD);
-                            attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
+                            attacker.setStatusDuration(Config.PENALTY_DEATH * Config.MINUTE);
                             attacker.setCurrentHealth(0d);
                             // Reset activity
                             attacker.setActivity(Activity.NONE);
@@ -711,8 +738,9 @@ public class Game {
                             defender.addKills(1);
                             attacker.addDeaths(1);
                             // Gold looted
-                            double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
-                                    * defender.getGold() * random.nextDouble();
+                            double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_GOLD;
+                            bonus = bonus < 0 ? 0 : bonus;
+                            double gold = Config.PENALTY_GOLD * defender.getGold() * bonus;
                             // Update players
                             defender.addGold(gold);
                             attacker.addGold(-gold);
@@ -723,9 +751,9 @@ public class Game {
                             defender.addMoneyStolen(gold);
                         }
                         // Experience gained (defenser)
-                        bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
+                        double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_EXPERIENCE;
                         bonus = bonus < 0 ? 0 : bonus;
-                        xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
+                        double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
                         defender.addExperience(xp);
                         // Update statistics
                         result.addTargetExperienceChanges(xp);
@@ -776,7 +804,7 @@ public class Game {
                 if (hp <= 0) {
                     // Change status
                     defender.setStatus(Status.DEAD);
-                    defender.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
+                    defender.setStatusDuration(Config.PENALTY_DEATH * Config.MINUTE);
                     defender.setCurrentHealth(0d);
                     // Reset activity
                     defender.setActivity(Activity.NONE);
@@ -787,8 +815,9 @@ public class Game {
                     attacker.addKills(1);
                     defender.addDeaths(1);
                     // Gold looted
-                    double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
-                            * defender.getGold() * random.nextDouble();
+                    double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_GOLD;
+                    bonus = bonus < 0 ? 0 : bonus;
+                    double gold = Config.PENALTY_GOLD * defender.getGold() * bonus;
                     // Update players
                     defender.addGold(gold);
                     attacker.addGold(-gold);
@@ -831,9 +860,10 @@ public class Game {
                 }
                 // Experience earned (if offensive spell)
                 if (!spell.getIsSelf()) {
-                    double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.EXPERIENCE_BONUS;
+                    double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
                     bonus = bonus < 0 ? 0 : bonus;
-                    double xp = Config.EXPERIENCE_ATTACK * (bonus + attackerModifiers.getExperienceModifier());
+                    double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
+                        (bonus + attackerModifiers.getExperienceModifier());
                     attacker.addExperience(xp);
                     // Update statistics
                     result.addPlayerExperienceChanges(xp);
@@ -915,7 +945,7 @@ public class Game {
             if (attacker.getCurrentHealth() <= 0) {
                 // Change status
                 attacker.setStatus(Status.DEAD);
-                attacker.setStatusDuration(Config.DEATH_PENALTY * Config.MINUTE);
+                attacker.setStatusDuration(Config.PENALTY_DEATH * Config.MINUTE);
                 attacker.setCurrentHealth(0d);
                 // Reset activity
                 attacker.setActivity(Activity.NONE);
@@ -926,8 +956,9 @@ public class Game {
                 defender.addKills(1);
                 attacker.addDeaths(1);
                 // Gold looted
-                double gold = (Config.THEFT_GOLD + defenderModifiers.getTheftGold()) 
-                        * defender.getGold() * random.nextDouble();
+                double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_GOLD;
+                bonus = bonus < 0 ? 0 : bonus;
+                double gold = Config.PENALTY_GOLD * defender.getGold() * bonus;
                 // Update players
                 defender.addGold(gold);
                 attacker.addGold(-gold);
@@ -938,7 +969,7 @@ public class Game {
                 defender.addMoneyStolen(gold);
             }
             // Experience gained (defenser)
-            double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.EXPERIENCE_BONUS;
+            double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
             bonus = bonus < 0 ? 0 : bonus;
             double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
             defender.addExperience(xp);
@@ -948,8 +979,10 @@ public class Game {
             // Update return
             result.addReturn(Return.THEFT_SUCCEED);
             // Gold stolen
+            double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_GOLD;
+            bonus = bonus < 0 ? 0 : bonus;
             double gold = (Config.THEFT_GOLD + attackerModifiers.getTheftGold()) 
-                    * defender.getGold() * random.nextDouble();
+                    * defender.getGold() * (1d - chance) * bonus;
             // Update players
             attacker.addGold(gold);
             defender.addGold(-gold);
@@ -1085,7 +1118,7 @@ public class Game {
         )) return result;
         // Check the activity penalty
         if (player.getActivity() == Activity.WAITING) {
-            Time time = new Time((Config.ACTIVITY_PENALTY * Config.MINUTE) - player.getActivityDuration());
+            Time time = new Time((Config.PENALTY_ACTIVITY * Config.MINUTE) - player.getActivityDuration());
             result.setDetails(time.toString());
             result.addReturn(Return.PLAYER_IS_WAITING);
             return result;
@@ -1589,13 +1622,13 @@ public class Game {
         for (Map.Entry<String, Item> entry : this.itemsByCode.entrySet()) {
             Item item = entry.getValue();
             // Check item conditions
+            // boolean money = item.getGoldCost() <= player.getGold();
             boolean admin = !item.getIsAdmin() || (item.getIsAdmin() && player.getAdmin());
             boolean level = item.getMinLevel() <= player.getLevel();
-            boolean money = item.getGoldCost() <= player.getGold();
             boolean stock = item.getStock() > 0;
             boolean owned = !player.getItems().contains(item);
             // Add item to list
-            if (admin && level && money && stock && owned) {
+            if (admin && level && stock && owned) {
                 String string = Strings.format(Strings.FORMAT_ITEM_NAME, item.toMap());
                 items.add(string);
             }
@@ -1621,13 +1654,13 @@ public class Game {
         for (Map.Entry<String, Spell> entry : this.spellsByCode.entrySet()) {
             Spell spell = entry.getValue();
             // Check item conditions
+            // boolean money = spell.getGoldCost() <= player.getGold();
             boolean admin = !spell.getIsAdmin() || (spell.getIsAdmin() && player.getAdmin());
             boolean level = spell.getMinLevel() <= player.getLevel();
-            boolean money = spell.getGoldCost() <= player.getGold();
             boolean magic = spell.getManaCost() <= player.getMaxMana();
             boolean owned = !player.getSpells().contains(spell);
             // Add item to list
-            if (admin && level && money && magic && owned) {
+            if (admin && level && magic && owned) {
                 String string = Strings.format(Strings.FORMAT_ITEM_NAME, spell.toMap());
                 spells.add(string);
             }

@@ -123,9 +123,9 @@ public class StealTest {
         // Test return values
         assertTrue(r.hasReturn(Return.THEFT_SUCCEED));
         // Test attacker changes
-        assertEquals("Attacker gold changes", 5d, r.getPlayerGoldChanges(), EPSILON);
+        assertEquals("Attacker gold changes", 18d, r.getPlayerGoldChanges(), EPSILON);
         // Test defender changes
-        assertEquals("Defender gold changes", -5d, r.getTargetGoldChanges(), EPSILON);
+        assertEquals("Defender gold changes", -18d, r.getTargetGoldChanges(), EPSILON);
     }
     
     @Test

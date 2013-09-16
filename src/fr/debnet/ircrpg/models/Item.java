@@ -41,6 +41,7 @@ public class Item extends MappedEntity implements IEntity {
     private Double experienceRateModifier;
     private Double goldRateModifier;
     private Double healthRateModifier;
+    private Double manaRateModifier;
     private Double healthPotionRegenModifier;
     private Double manaPotionRegenModifier;
     private Double poisonEffectModifier;
@@ -296,6 +297,16 @@ public class Item extends MappedEntity implements IEntity {
     public void setHealthRateModifier(Double healthRateModifier) {
         this.healthRateModifier = healthRateModifier;
         this.set("healthRateModifier", this.healthRateModifier);
+    }
+    
+    @Column(nullable = false)
+    public Double getManaRateModifier() {
+        return manaRateModifier;
+    }
+
+    public void setManaRateModifier(Double manaRateModifier) {
+        this.manaRateModifier = manaRateModifier;
+        this.set("manaRateModifier", this.manaRateModifier);
     }
 
     @Column(nullable = false)

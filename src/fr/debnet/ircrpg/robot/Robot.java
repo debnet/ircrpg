@@ -301,7 +301,7 @@ public class Robot extends IrcBot implements INotifiable {
             }
             // Edit
             else if (Strings.COMMAND_EDIT.equals(command)) {
-                if (words.length == 3) {
+                if (words.length >= 3) {
                     String type = words[1];
                     String code = "";
                     for (int i = 2; i < words.length; i++) {
@@ -341,7 +341,7 @@ public class Robot extends IrcBot implements INotifiable {
             }
             // Delete
             else if (Strings.COMMAND_DELETE.equals(command)) {
-                if (words.length == 3) {
+                if (words.length >= 3) {
                     String type = words[1];
                     String code = "";
                     for (int i = 2; i < words.length; i++) {

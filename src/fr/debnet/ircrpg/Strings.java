@@ -95,6 +95,8 @@ public class Strings {
     public static String ACTIVITY_TRAINING;
     @Property(name = "activity.resting")
     public static String ACTIVITY_RESTING;
+    @Property(name = "activity.praying")
+    public static String ACTIVITY_PRAYING;
     
     /* Status */
     @Property(name = "status.normal")
@@ -145,10 +147,12 @@ public class Strings {
     public static String COMMAND_STEAL;
     @Property(name = "command.work")
     public static String COMMAND_WORK;
-    @Property(name = "command.rest")
-    public static String COMMAND_REST;
     @Property(name = "command.train")
     public static String COMMAND_TRAIN;
+    @Property(name = "command.rest")
+    public static String COMMAND_REST;
+    @Property(name = "command.pray")
+    public static String COMMAND_PRAY;
     @Property(name = "command.return")
     public static String COMMAND_RETURN;
     @Property(name = "command.buy")
@@ -217,10 +221,12 @@ public class Strings {
     public static String HELP_STEAL;
     @Property(name = "help.work")
     public static String HELP_WORK;
-    @Property(name = "help.rest")
-    public static String HELP_REST;
     @Property(name = "help.train")
     public static String HELP_TRAIN;
+    @Property(name = "help.rest")
+    public static String HELP_REST;
+    @Property(name = "help.pray")
+    public static String HELP_PRAY;
     @Property(name = "help.return")
     public static String HELP_RETURN;
     @Property(name = "help.buy")
@@ -285,14 +291,16 @@ public class Strings {
     public static String RETURN_PLAYER_DEATH_CURED;
     @Property(name = "return.player_killed_by_poison")
     public static String RETURN_PLAYER_KILLED_BY_POISON;
-    @Property(name = "return.player_working_ended")
-    public static String RETURN_PLAYER_WORKING_ENDED;
-    @Property(name = "return.player_resting_ended")
-    public static String RETURN_PLAYER_RESTING_ENDED;
-    @Property(name = "return.player_training_ended")
-    public static String RETURN_PLAYER_TRAINING_ENDED;
     @Property(name = "return.player_waiting_ended")
     public static String RETURN_PLAYER_WAITING_ENDED;
+    @Property(name = "return.player_working_ended")
+    public static String RETURN_PLAYER_WORKING_ENDED;
+    @Property(name = "return.player_training_ended")
+    public static String RETURN_PLAYER_TRAINING_ENDED;
+    @Property(name = "return.player_resting_ended")
+    public static String RETURN_PLAYER_RESTING_ENDED;
+    @Property(name = "return.player_praying_ended")
+    public static String RETURN_PLAYER_PRAYING_ENDED;
     // General returns (target)
     @Property(name = "return.target_dead")
     public static String RETURN_TARGET_DEAD;
@@ -314,14 +322,16 @@ public class Strings {
     public static String RETURN_TARGET_DEATH_CURED;
     @Property(name = "return.target_killed_by_poison")
     public static String RETURN_TARGET_KILLED_BY_POISON;
-    @Property(name = "return.target_working_ended")
-    public static String RETURN_TARGET_WORKING_ENDED;
-    @Property(name = "return.target_resting_ended")
-    public static String RETURN_TARGET_RESTING_ENDED;
-    @Property(name = "return.target_training_ended")
-    public static String RETURN_TARGET_TRAINING_ENDED;
     @Property(name = "return.target_waiting_ended")
     public static String RETURN_TARGET_WAITING_ENDED;
+    @Property(name = "return.target_working_ended")
+    public static String RETURN_TARGET_WORKING_ENDED;
+    @Property(name = "return.target_training_ended")
+    public static String RETURN_TARGET_TRAINING_ENDED;
+    @Property(name = "return.target_resting_ended")
+    public static String RETURN_TARGET_RESTING_ENDED;
+    @Property(name = "return.target_praying_ended")
+    public static String RETURN_TARGET_PRAYING_ENDED;
     // Fighting returns
     @Property(name = "return.spell_not_learned")
     public static String RETURN_SPELL_NOT_LEARNED;
@@ -388,10 +398,12 @@ public class Strings {
     public static String RETURN_NOT_TRAINED_ENOUGH;
     @Property(name = "return.start_working")
     public static String RETURN_START_WORKING;
-    @Property(name = "return.start_resting")
-    public static String RETURN_START_RESTING;
     @Property(name = "return.start_training")
     public static String RETURN_START_TRAINING;
+    @Property(name = "return.start_resting")
+    public static String RETURN_START_RESTING;
+    @Property(name = "return.start_praying")
+    public static String RETURN_START_PRAYING;
     // Level up returns
     @Property(name = "return.unknown_skill")
     public static String RETURN_UNKNOWN_SKILL;
@@ -466,9 +478,6 @@ public class Strings {
     public static String RETURN_LOGOUT_SUCCEED;
     @Property(name = "return.password_changed")
     public static String RETURN_PASSWORD_CHANGED;
-    
-    /* Logger */
-    
     
     /* Constants */
     // Colors
