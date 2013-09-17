@@ -37,6 +37,7 @@ public class DAO {
                 config.setProperty(entry.getKey(), entry.getValue());
             sessionFactory = config.buildSessionFactory();
         } catch (IOException | HibernateException ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage());
             throw new ExceptionInInitializerError(ex);
         }
     }
@@ -60,8 +61,9 @@ public class DAO {
         Session session = sessionFactory.openSession();
         try {
             object = (T)session.get(_class, id);
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s] (id: %d) %s", 
+                _class.getSimpleName(), id, ex.getLocalizedMessage()));
         } finally {
             session.close();
         }
@@ -98,8 +100,9 @@ public class DAO {
                     query.setParameter(sql, args[i]);
             if (limit) query.setMaxResults(1);
             object = (T)query.uniqueResult();
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s] %s", 
+                sql, ex.getLocalizedMessage()));
         } finally {
             session.close();
         }
@@ -136,8 +139,9 @@ public class DAO {
                     query.setParameter(sql, args[i]);
             if (limit > 0) query.setMaxResults(limit);
             list = query.list();
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s]", 
+                sql, ex.getLocalizedMessage()));
         } finally {
             session.close();
         }
@@ -157,11 +161,13 @@ public class DAO {
         transaction.begin();
         try {
             session.lock(object, LockMode.NONE);
-            session.update(object);
+            session.merge(object);
+            session.flush();
             transaction.commit();
             b = true;
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s] (id: %d) %s", 
+                object.getModel(), object.getId(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
             session.close();
@@ -181,12 +187,12 @@ public class DAO {
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
-            session.lock(object, LockMode.NONE);
             id = (Long) session.save(object);
             object.setId(id);
             transaction.commit();
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s] %s", 
+                object.getModel(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
             session.close();
@@ -206,12 +212,12 @@ public class DAO {
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
-            session.lock(object, LockMode.NONE);
             session.delete(object);
             transaction.commit();
             b = true;
-        } catch (HibernateException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (HibernateException ex) {
+            logger.log(Level.SEVERE, String.format("[%s] (id: %d) %s", 
+                object.getModel(), object.getId(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
             session.close();
