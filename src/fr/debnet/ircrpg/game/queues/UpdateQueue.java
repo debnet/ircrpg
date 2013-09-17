@@ -67,12 +67,12 @@ public class UpdateQueue extends Thread implements IQueue {
                     Calendar now = Calendar.getInstance();
                     if (now.after(this.date)) {
                         // Update player
-                        Result result = this.game.update(this.player, true, false);
+                        Result result = this.game.updatePlayer(this.player, true, false);
                         // Notify observers
                         for (INotifiable notifiable : this.notifiables) {
                             notifiable.notify(result);
                         }
-                        // Get the next player to update
+                        // Get the next player to updatePlayer
                         this.next();
                     }
                 }
@@ -157,12 +157,12 @@ public class UpdateQueue extends Thread implements IQueue {
             nextDate.add(Calendar.MILLISECOND, timeRequired);
             if (nextDate.before(date)) date = nextDate;
         }
-        // If the current player is next to update
+        // If the current player is next to updatePlayer
         if (this.date == null || date.before(this.date)) {
             this.player = player;
             this.date = date;
         }
-        // Add or update player
+        // Add or updatePlayer player
         this.players.remove(player);
         this.players.put(player, date);
     }

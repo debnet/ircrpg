@@ -29,7 +29,7 @@ public class LoadTest extends Thread {
         for (int i = 1; i < 10000; i++) {
             String username = String.format("Username%04d", i);
             String nickname = String.format("Nickname%04d", i);
-            Result result = game.register(username, "", nickname, "");
+            Result result = game.registerPlayer(username, "", nickname, "");
             if (result.isSuccess()) {
                 players.add(nickname);
                 LoadTest loadTest = new LoadTest(nickname);
@@ -59,7 +59,7 @@ public class LoadTest extends Thread {
             int index = (int) (random.nextDouble() * players.size());
             if (index != 0) {
                 String enemy = players.get(index);
-                Result result = game.fight(this.player, enemy, null);
+                Result result = game.fightPlayer(this.player, enemy, null);
                 String message = String.format("[%s] %s", this.player, Helpers.getMessage(result));
                 System.out.println(message);
             }

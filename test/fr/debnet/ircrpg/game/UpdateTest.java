@@ -47,9 +47,9 @@ public class UpdateTest {
         // Override configuration
         Config.loadConfig("config.tests.properties");
         // Create player
-        Result r = this.game.register("p1", null, "p1", null);
+        Result r = this.game.registerPlayer("p1", null, "p1", null);
         assertTrue("Creating player", r.isSuccess());
-        // Change player last time update
+        // Change player last time updatePlayer
         Calendar time = Calendar.getInstance();
         time.add(Calendar.HOUR, -24);
         this.player = this.game.getPlayerByUsername("p1");
@@ -66,7 +66,7 @@ public class UpdateTest {
         // Description
         System.out.println("- normal update:");
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         assertTrue(r.isSuccess());
         System.out.println(r);
@@ -81,7 +81,7 @@ public class UpdateTest {
         this.player.setStatus(Status.POISONED);
         this.player.setStatusDuration(Config.HOUR);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -99,7 +99,7 @@ public class UpdateTest {
         this.player.setStatus(Status.PARALYZED);
         this.player.setStatusDuration(Config.HOUR);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -117,7 +117,7 @@ public class UpdateTest {
         this.player.setStatus(Status.DEAD);
         this.player.setStatusDuration(Config.HOUR * 24);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -136,7 +136,7 @@ public class UpdateTest {
         this.player.setStatusDuration(Config.HOUR);
         this.player.setCurrentHealth(1d);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -154,7 +154,7 @@ public class UpdateTest {
         this.player.setActivity(Activity.RESTING);
         this.player.setCurrentHealth(50d);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -172,7 +172,7 @@ public class UpdateTest {
         this.player.setActivity(Activity.PRAYING);
         this.player.setCurrentHealth(20d);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -189,7 +189,7 @@ public class UpdateTest {
         // Change player activity
         this.player.setActivity(Activity.WORKING);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -206,7 +206,7 @@ public class UpdateTest {
         // Change player activity
         this.player.setActivity(Activity.TRAINING);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -223,7 +223,7 @@ public class UpdateTest {
         // Change player activity
         this.player.setActivity(Activity.WAITING);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -239,7 +239,7 @@ public class UpdateTest {
         // Change player activity
         this.player.addExperience(1000d);
         // Update player
-        Result r = this.game.update(this.player, false, false);
+        Result r = this.game.updatePlayer(this.player, false, false);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));

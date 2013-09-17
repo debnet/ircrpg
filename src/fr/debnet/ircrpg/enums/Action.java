@@ -20,5 +20,6 @@ public enum Action {
     SELL,
     LEARN,
     UPGRADE,
+    RESET,
     EVENT,
 }

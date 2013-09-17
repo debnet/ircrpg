@@ -41,10 +41,10 @@ public class StealTest {
     @Before
     public void setUp() {
         // Create player
-        Result r = this.game.register("p1", null, "p1", null);
+        Result r = this.game.registerPlayer("p1", null, "p1", null);
         assertTrue("Creating player", r.isSuccess());
         // Create enemy
-        r = this.game.register("p2", null, "p2", null);
+        r = this.game.registerPlayer("p2", null, "p2", null);
         assertTrue("Creating enemy", r.isSuccess());
         // Add gold to enemy
         Player p2 = this.game.getPlayerByNickname("p2");
@@ -60,8 +60,8 @@ public class StealTest {
     public void testStealErrorUnknownPlayers() {
         // Description
         System.out.println("- unknown players error:");
-        // Create fight
-        Result r = this.game.steal("u1", "p2");
+        // Create fightPlayer
+        Result r = this.game.stealPlayer("u1", "p2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -69,7 +69,7 @@ public class StealTest {
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
         // Create theft
-        r = this.game.steal("p1", "u2");
+        r = this.game.stealPlayer("p1", "u2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -86,7 +86,7 @@ public class StealTest {
         Player p1 = this.game.getPlayerByUsername("p1");
         p1.setOnline(false);
         // Create theft
-        Result r = this.game.steal("p1", "p2");
+        Result r = this.game.stealPlayer("p1", "p2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -98,7 +98,7 @@ public class StealTest {
         Player p2 = this.game.getPlayerByUsername("p2");
         p2.setOnline(false);
         // Create theft
-        r = this.game.steal("p1", "p2");
+        r = this.game.stealPlayer("p1", "p2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -115,7 +115,7 @@ public class StealTest {
         this.game.getRandom().addDefaultValue(0.1d);
         this.game.getRandom().addDefaultValue(0.5d);
         // Create theft
-        Result r = this.game.steal("p1", "p2");
+        Result r = this.game.stealPlayer("p1", "p2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -135,7 +135,7 @@ public class StealTest {
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.5d);
         // Create theft
-        Result r = this.game.steal("p1", "p2");
+        Result r = this.game.stealPlayer("p1", "p2");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));

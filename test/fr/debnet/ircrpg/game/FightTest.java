@@ -44,10 +44,10 @@ public class FightTest {
     @Before
     public void setUp() {
         // Create player
-        Result r = this.game.register("p1", null, "p1", null);
+        Result r = this.game.registerPlayer("p1", null, "p1", null);
         assertTrue("Creating player", r.isSuccess());
         // Create enemy
-        r = this.game.register("p2", null, "p2", null);
+        r = this.game.registerPlayer("p2", null, "p2", null);
         assertTrue("Creating enemy", r.isSuccess());
         // Create spell
         Spell s = new Spell();
@@ -70,16 +70,16 @@ public class FightTest {
     public void testFightErrorUnknownPlayers() {
         // Description
         System.out.println("- unknown players error:");
-        // Create fight
-        Result r = this.game.fight("u1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("u1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
         assertFalse(r.isSuccess());
         // Test return values
         assertTrue(r.hasReturn(Return.UNKNOWN_PLAYER));
-        // Create fight
-        r = this.game.fight("p1", "u2", null);
+        // Create fightPlayer
+        r = this.game.fightPlayer("p1", "u2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -95,8 +95,8 @@ public class FightTest {
         // Set player 1 offline
         Player p1 = this.game.getPlayerByUsername("p1");
         p1.setOnline(false);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -107,8 +107,8 @@ public class FightTest {
         p1.setOnline(true);
         Player p2 = this.game.getPlayerByUsername("p2");
         p2.setOnline(false);
-        // Create fight
-        r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -124,8 +124,8 @@ public class FightTest {
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.5d);
         this.game.getRandom().addDefaultValue(0.5d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -148,8 +148,8 @@ public class FightTest {
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.6d);
         this.game.getRandom().addDefaultValue(0.4d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -172,8 +172,8 @@ public class FightTest {
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.4d);
         this.game.getRandom().addDefaultValue(0.6d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -196,8 +196,8 @@ public class FightTest {
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.9d);
         this.game.getRandom().addDefaultValue(0.9d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -219,8 +219,8 @@ public class FightTest {
         System.out.println("- offensive spell succeed:");
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.1d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", "s");
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -242,8 +242,8 @@ public class FightTest {
         System.out.println("- offensive spell failed:");
         // Mock for random values
         this.game.getRandom().addDefaultValue(0.9d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", "s");
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -270,8 +270,8 @@ public class FightTest {
         s.setHealthDamage(0d);
         s.setStatus(Status.POISONED);
         s.setStatusDuration(Long.MAX_VALUE);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", "s");
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -293,8 +293,8 @@ public class FightTest {
         // Modify spell
         Spell s = this.game.getSpellByCode("s");
         s.setManaCost(100d);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", "s");
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -310,8 +310,8 @@ public class FightTest {
         // Remove learned spells from player
         Player p = this.game.getPlayerByUsername("p1");
         p.getSpells().clear();
-        // Create fight
-        Result r = this.game.fight("p1", "p2", "s");
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -328,8 +328,8 @@ public class FightTest {
         Player p = this.game.getPlayerByUsername("p1");
         p.setStatus(Status.PARALYZED);
         p.setStatusDuration(Config.HOUR);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -339,8 +339,8 @@ public class FightTest {
         // Change player status
         p.setStatus(Status.DEAD);
         p.setStatusDuration(Config.HOUR);
-        // Create fight
-        r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -352,8 +352,8 @@ public class FightTest {
         p = this.game.getPlayerByUsername("p2");
         p.setStatus(Status.DEAD);
         p.setStatusDuration(Config.HOUR);
-        // Create fight
-        r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -375,8 +375,8 @@ public class FightTest {
             Player p = this.game.getPlayerByUsername("p1");
             p.setActivity(activity);
             p.setActivityDuration(0l);
-            // Create fight
-            Result r = this.game.fight("p1", "p2", null);
+            // Create fightPlayer
+            Result r = this.game.fightPlayer("p1", "p2", null);
             // Returns
             System.out.println(r);
             //System.out.println(Helpers.getMessage(r));
@@ -390,8 +390,8 @@ public class FightTest {
             p = this.game.getPlayerByUsername("p2");
             p.setActivity(activity);
             p.setActivityDuration(0l);
-            // Create fight
-            r = this.game.fight("p1", "p2", null);
+            // Create fightPlayer
+            r = this.game.fightPlayer("p1", "p2", null);
             // Returns
             System.out.println(r);
             //System.out.println(Helpers.getMessage(r));
@@ -413,8 +413,8 @@ public class FightTest {
         // Change player attack
         Player p = this.game.getPlayerByUsername("p1");
         p.setAttack(1000);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -440,8 +440,8 @@ public class FightTest {
         // Change player defense
         Player p = this.game.getPlayerByUsername("p2");
         p.setDefense(1000);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));
@@ -468,8 +468,8 @@ public class FightTest {
         // Change player level
         Player p = this.game.getPlayerByUsername("p2");
         p.setLevel(2);
-        // Create fight
-        Result r = this.game.fight("p1", "p2", null);
+        // Create fightPlayer
+        Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
         System.out.println(r);
         //System.out.println(Helpers.getMessage(r));

@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -151,20 +152,19 @@ public class DAO {
      */
     public static <T extends IEntity> boolean setObject(T object) {
         boolean b = false;
-        synchronized (object) {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
-            transaction.begin();
-            try {
-                session.update(object);
-                transaction.commit();
-                b = true;
-            } catch (HibernateException e) {
-                logger.log(Level.SEVERE, e.getLocalizedMessage());
-            } finally {
-                if (!transaction.wasCommitted()) transaction.rollback();
-                session.close();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        transaction.begin();
+        try {
+            session.lock(object, LockMode.NONE);
+            session.update(object);
+            transaction.commit();
+            b = true;
+        } catch (HibernateException e) {
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } finally {
+            if (!transaction.wasCommitted()) transaction.rollback();
+            session.close();
         }
         return b;
     }
@@ -177,20 +177,19 @@ public class DAO {
      */
     public static <T extends IEntity> Long addObject(T object) {
         Long id = null;
-        synchronized (object) {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
-            transaction.begin();
-            try {
-                id = (Long) session.save(object);
-                object.setId(id);
-                transaction.commit();
-            } catch (HibernateException e) {
-                logger.log(Level.SEVERE, e.getLocalizedMessage());
-            } finally {
-                if (!transaction.wasCommitted()) transaction.rollback();
-                session.close();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        transaction.begin();
+        try {
+            session.lock(object, LockMode.NONE);
+            id = (Long) session.save(object);
+            object.setId(id);
+            transaction.commit();
+        } catch (HibernateException e) {
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } finally {
+            if (!transaction.wasCommitted()) transaction.rollback();
+            session.close();
         }
         return id;
     }
@@ -203,20 +202,19 @@ public class DAO {
      */
     public static <T extends IEntity> boolean delObject(T object) {
         boolean b = false;
-        synchronized (object) {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
-            transaction.begin();
-            try {
-                session.delete(object);
-                transaction.commit();
-                b = true;
-            } catch (HibernateException e) {
-                logger.log(Level.SEVERE, e.getLocalizedMessage());
-            } finally {
-                if (!transaction.wasCommitted()) transaction.rollback();
-                session.close();
-            }
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        transaction.begin();
+        try {
+            session.lock(object, LockMode.NONE);
+            session.delete(object);
+            transaction.commit();
+            b = true;
+        } catch (HibernateException e) {
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
+        } finally {
+            if (!transaction.wasCommitted()) transaction.rollback();
+            session.close();
         }
         return b;
     }

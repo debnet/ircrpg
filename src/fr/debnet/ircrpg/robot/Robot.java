@@ -79,7 +79,7 @@ public class Robot extends IrcBot implements INotifiable {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    Result result = this.game.register(username, password, sender, hostname);
+                    Result result = this.game.registerPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
                         for (String channel : this.getChannels()) {
@@ -93,7 +93,7 @@ public class Robot extends IrcBot implements INotifiable {
                 if (words.length == 3) {
                     String username = words[1];
                     String password = words[2];
-                    Result result = this.game.login(username, password, sender, hostname);
+                    Result result = this.game.loginPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
                         for (String channel : this.getChannels()) {
@@ -105,7 +105,7 @@ public class Robot extends IrcBot implements INotifiable {
             // Logout
             else if (Strings.COMMAND_LOGOUT.equals(command)) {
                 if (words.length == 1) {
-                    Result result = this.game.logout(sender);
+                    Result result = this.game.logoutPlayer(sender);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
                         for (String channel : this.getChannels()) {
@@ -126,7 +126,7 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_ATTACK.equals(command)) {
                 if (words.length == 2) {
                     String target = words[1];
-                    Result result = this.game.fight(sender, target, null);
+                    Result result = this.game.fightPlayer(sender, target, null);
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
@@ -139,7 +139,7 @@ public class Robot extends IrcBot implements INotifiable {
                         magic += " " + words[i];
                         magic = magic.trim();
                     }
-                    Result result = this.game.fight(sender, target, magic);
+                    Result result = this.game.fightPlayer(sender, target, magic);
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
@@ -147,7 +147,7 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_STEAL.equals(command)) {
                 if (words.length == 2) {
                     String target = words[1];
-                    Result result = this.game.steal(sender, target);
+                    Result result = this.game.stealPlayer(sender, target);
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
@@ -187,7 +187,7 @@ public class Robot extends IrcBot implements INotifiable {
                         item += " " + words[i];
                         item = item.trim();
                     }
-                    Result result = this.game.buy(sender, item);
+                    Result result = this.game.buyItem(sender, item);
                     this.displayResult(result, sender);
                 } else {
                     String string = this.game.showItemsToBuy(sender);
@@ -202,10 +202,10 @@ public class Robot extends IrcBot implements INotifiable {
                         item += " " + words[i];
                         item = item.trim();
                     }
-                    Result result = this.game.buy(sender, item);
+                    Result result = this.game.sellItem(sender, item);
                     this.displayResult(result, sender);
                 } else {
-                    String string = this.game.showItems(sender);
+                    String string = this.game.showPlayerItems(sender);
                     if (string != null) this.sendFormattedMessage(sender, string);
                 }
             }
@@ -217,7 +217,7 @@ public class Robot extends IrcBot implements INotifiable {
                         code += " " + words[i];
                         code = code.trim();
                     }
-                    String string = this.game.look(code);
+                    String string = this.game.lookItemSpell(code);
                     if (string != null) this.sendFormattedMessage(sender, string);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
@@ -229,7 +229,7 @@ public class Robot extends IrcBot implements INotifiable {
                         item += " " + words[i];
                         item = item.trim();
                     }
-                    Result result = this.game.drink(sender, item);
+                    Result result = this.game.drinkPotion(sender, item);
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
@@ -241,7 +241,7 @@ public class Robot extends IrcBot implements INotifiable {
                         spell += " " + words[i];
                         spell = spell.trim();
                     }
-                    Result result = this.game.learn(sender, spell);
+                    Result result = this.game.learnSpell(sender, spell);
                     this.displayResult(result, sender);
                 } else {
                     String string = this.game.showSpellsToLearn(sender);
@@ -251,32 +251,32 @@ public class Robot extends IrcBot implements INotifiable {
             // Level up
             else if (Strings.COMMAND_LEVELUP.equals(command)) {
                 if (words.length == 2) {
-                    Result result = this.game.upgrade(sender, words[1]);
+                    Result result = this.game.upgradePlayer(sender, words[1]);
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
             // Infos
             else if (Strings.COMMAND_INFOS.equals(command)) {
                 String nickname = words.length == 2 ? words[1] : sender;
-                String string = this.game.showInfos(nickname);
+                String string = this.game.showPlayerInfos(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Stats
             else if (Strings.COMMAND_STATS.equals(command)) {
                 String nickname = words.length == 2 ? words[1] : sender;
-                String string = this.game.showStats(nickname);
+                String string = this.game.showPlayerStats(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Items 
             else if (Strings.COMMAND_ITEMS.equals(command)) {
                 String nickname = words.length == 2 ? words[1] : sender;
-                String string = this.game.showItems(nickname);
+                String string = this.game.showPlayerItems(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Spells 
             else if (Strings.COMMAND_SPELLS.equals(command)) {
                 String nickname = words.length == 2 ? words[1] : sender;
-                String string = this.game.showSpells(nickname);
+                String string = this.game.showPlayerSpells(nickname);
                 if (string != null) this.sendFormattedMessage(sender, string);
             }
             // Players 
@@ -381,7 +381,7 @@ public class Robot extends IrcBot implements INotifiable {
             }
             // Disconnect
             else if (Strings.COMMAND_DISCONNECT.equals(command)) {
-                boolean success = this.game.getAdmin().disconnectAll(sender);
+                boolean success = this.game.getAdmin().disconnectPlayers(sender);
                 this.displayAdminResult(success, sender);
             }
             // Reconnect
@@ -437,14 +437,14 @@ public class Robot extends IrcBot implements INotifiable {
     
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
-        Result result = this.game.logout(sender);
+        Result result = this.game.logoutPlayer(sender);
         logger.log(Level.INFO, String.format("%s: %s", sender, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
     
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        Result result = this.game.logout(sourceNick);
+        Result result = this.game.logoutPlayer(sourceNick);
         logger.log(Level.INFO, String.format("%s: %s", sourceNick, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
@@ -471,7 +471,7 @@ public class Robot extends IrcBot implements INotifiable {
     
     @Override
     protected void onDisconnect() {
-        this.game.disconnectAll();
+        this.game.disconnectPlayers();
     }
     
     @Override
@@ -485,7 +485,7 @@ public class Robot extends IrcBot implements INotifiable {
             this.disconnect();
             this.joinChannel(channel);
         }
-        Result result = this.game.logout(recipientNick);
+        Result result = this.game.logoutPlayer(recipientNick);
         logger.log(Level.INFO, String.format("%s: %s", recipientNick, result.toString()));
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
@@ -701,8 +701,9 @@ public class Robot extends IrcBot implements INotifiable {
         help.put(Strings.COMMAND_MAGIC, Strings.HELP_MAGIC);
         help.put(Strings.COMMAND_STEAL, Strings.HELP_STEAL);
         help.put(Strings.COMMAND_WORK, Strings.HELP_WORK);
-        help.put(Strings.COMMAND_REST, Strings.HELP_REST);
         help.put(Strings.COMMAND_TRAIN, Strings.HELP_TRAIN);
+        help.put(Strings.COMMAND_REST, Strings.HELP_REST);
+        help.put(Strings.COMMAND_PRAY, Strings.HELP_PRAY);
         help.put(Strings.COMMAND_RETURN, Strings.HELP_RETURN);
         help.put(Strings.COMMAND_BUY, Strings.HELP_BUY);
         help.put(Strings.COMMAND_SELL, Strings.HELP_SELL);

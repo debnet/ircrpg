@@ -199,7 +199,7 @@ public class Admin {
     }
     
     /**
-     * Insert or update current object in database
+     * Insert or updatePlayer current object in database
      * @param admin Admin's nickname
      * @return True if success, false else
      */
@@ -339,11 +339,11 @@ public class Admin {
      * @param admin Admin's nickname
      * @return True if success, false else
      */
-    public boolean disconnectAll(String admin) {
+    public boolean disconnectPlayers(String admin) {
         Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Disconnect all players
-        this.game.disconnectAll();
+        this.game.disconnectPlayers();
         return true;
     }
     
@@ -353,7 +353,7 @@ public class Admin {
      * @param nicknames Players' nicknames
      * @return True if success, false else
      */
-    public boolean reconnectAll(String admin, String[] nicknames) {
+    public boolean reconnectPlayers(String admin, String[] nicknames) {
         Player player = this.game.getPlayerByNickname(admin);
         if (player == null || !player.getAdmin()) return false;
         // Reconnect all players
@@ -362,7 +362,7 @@ public class Admin {
             if (player != null) {
                 player.setOnline(true);
                 player.setLastUpdate(Calendar.getInstance());
-                this.game.update(player, true, false);
+                this.game.updatePlayer(player, true, false);
             }
         }
         return true;
