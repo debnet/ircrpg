@@ -277,7 +277,7 @@ public class Result extends MappedEntity implements IEntity {
         this.set("playerExperienceChanges", this.playerExperienceChanges);
     }
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     public Player getTarget() {
         return target;
     }

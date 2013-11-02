@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
@@ -61,6 +62,7 @@ public class DAO {
         Session session = sessionFactory.openSession();
         try {
             object = (T)session.get(_class, id);
+            Hibernate.initialize(object);
         } catch (HibernateException ex) {
             logger.log(Level.SEVERE, String.format("[%s] (id: %d) %s", 
                 _class.getSimpleName(), id, ex.getLocalizedMessage()));
@@ -77,8 +79,8 @@ public class DAO {
      * @param args Arguments
      * @return Entity object
      */
-    public static <T extends IEntity> T getObject(String sql, Object... args) {
-        return DAO.getObject(sql, false, args);
+    public static <T extends IEntity> T getObject(String sql, Parameter... parameters) {
+        return DAO.getObject(sql, false, parameters);
     }
     
     /**
@@ -90,20 +92,27 @@ public class DAO {
      * @return Entity object
      */
     @SuppressWarnings("unchecked")
-    public static <T extends IEntity> T getObject(String sql, boolean limit, Object... args) {
+    public static <T extends IEntity> T getObject(String sql, boolean limit, Parameter... parameters) {
         T object = null;
         Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        transaction.begin();
         try {
             Query query = session.createQuery(sql);
-            if (args != null)
-                for (int i = 0; i < args.length; i++)
-                    query.setParameter(sql, args[i]);
+            if (parameters != null) {
+                for (Parameter parameter : parameters) {
+                    query.setParameter(parameter.getName(), parameter.getValue());
+                }
+            }
             if (limit) query.setMaxResults(1);
             object = (T)query.uniqueResult();
+            Hibernate.initialize(object);
+            transaction.commit();
         } catch (HibernateException ex) {
             logger.log(Level.SEVERE, String.format("[%s] %s", 
                 sql, ex.getLocalizedMessage()));
         } finally {
+            if (!transaction.wasCommitted()) transaction.rollback();
             session.close();
         }
         return object;
@@ -116,8 +125,8 @@ public class DAO {
      * @param args Arguments
      * @return Entity list
      */
-    public static <T extends IEntity> List<T> getObjectList(String sql, Object... args) {
-        return DAO.getObjectList(sql, 0, args);
+    public static <T extends IEntity> List<T> getObjectList(String sql, Parameter... parameters) {
+        return DAO.getObjectList(sql, 0, parameters);
     }
 
     /**
@@ -129,20 +138,27 @@ public class DAO {
      * @return 
      */
     @SuppressWarnings("unchecked")
-    public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Object... args) {
+    public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Parameter... parameters) {
         List<T> list = new ArrayList<>();
         Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        transaction.begin();
         try {
             Query query = session.createQuery(sql);
-            if (args != null)
-                for (int i = 0; i < args.length; i++)
-                    query.setParameter(sql, args[i]);
+            if (parameters != null) {
+                for (Parameter parameter : parameters) {
+                    query.setParameter(parameter.getName(), parameter.getValue());
+                }
+            }
             if (limit > 0) query.setMaxResults(limit);
             list = query.list();
+            for (T object : list) Hibernate.initialize(object);
+            transaction.commit();
         } catch (HibernateException ex) {
             logger.log(Level.SEVERE, String.format("[%s]", 
                 sql, ex.getLocalizedMessage()));
         } finally {
+            if (!transaction.wasCommitted()) transaction.rollback();
             session.close();
         }
         return list;
@@ -162,7 +178,6 @@ public class DAO {
         try {
             session.lock(object, LockMode.NONE);
             session.merge(object);
-            session.flush();
             transaction.commit();
             b = true;
         } catch (HibernateException ex) {

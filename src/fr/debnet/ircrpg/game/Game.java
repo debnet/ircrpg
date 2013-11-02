@@ -2,6 +2,7 @@ package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.DAO;
+import fr.debnet.ircrpg.Parameter;
 import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Activity;
@@ -173,6 +174,8 @@ public class Game {
             return this.playersByNickname.get(key);
         }
         return null;
+//        return DAO.<Player>getObject("from " + Model.PLAYER + " where nickname = :nickname", 
+//                Parameter.<String>Create("nickname", key));
     }
 
     /**
@@ -186,6 +189,8 @@ public class Game {
             return this.playersByUsername.get(key);
         }
         return null;
+//        return DAO.<Player>getObject("from " + Model.PLAYER + " where username = :username", 
+//                Parameter.<String>Create("username", key));
     }
     
     /**
@@ -198,6 +203,8 @@ public class Game {
             return this.itemsByCode.get(item);
         }
         return null;
+//        return DAO.<Item>getObject("from " + Model.ITEM + " where code = :code", 
+//                Parameter.<String>Create("code", item));
     }
     
     /**
@@ -210,6 +217,8 @@ public class Game {
             return this.spellsByCode.get(spell);
         }
         return null;
+//        return DAO.<Spell>getObject("from " + Model.SPELL + " where code = :code", 
+//                Parameter.<String>Create("code", spell));
     }
     
     /**
@@ -222,6 +231,8 @@ public class Game {
             return this.eventsByCode.get(event);
         }
         return null;
+//        return DAO.<Event>getObject("from " + Model.EVENT + " where code = :code", 
+//                Parameter.<String>Create("code", event));
     }
     
     /**
