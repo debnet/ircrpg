@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -59,7 +58,7 @@ public class DAO {
     @SuppressWarnings("unchecked")
     public static <T extends IEntity> T getObject(Class<T> _class, Long id) {
         T object = null;
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession(); 
         try {
             object = (T)session.get(_class, id);
             Hibernate.initialize(object);
@@ -67,7 +66,7 @@ public class DAO {
             logger.log(Level.SEVERE, String.format("[%s] (id: %d) %s", 
                 _class.getSimpleName(), id, ex.getLocalizedMessage()));
         } finally {
-            session.close();
+            //session.close();
         }
         return object;
     }
@@ -94,7 +93,7 @@ public class DAO {
     @SuppressWarnings("unchecked")
     public static <T extends IEntity> T getObject(String sql, boolean limit, Parameter... parameters) {
         T object = null;
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
@@ -113,7 +112,7 @@ public class DAO {
                 sql, ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+            //session.close();
         }
         return object;
     }
@@ -140,7 +139,7 @@ public class DAO {
     @SuppressWarnings("unchecked")
     public static <T extends IEntity> List<T> getObjectList(String sql, int limit, Parameter... parameters) {
         List<T> list = new ArrayList<>();
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
@@ -159,7 +158,7 @@ public class DAO {
                 sql, ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+            //session.close();
         }
         return list;
     }
@@ -172,12 +171,11 @@ public class DAO {
      */
     public static <T extends IEntity> boolean setObject(T object) {
         boolean b = false;
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
-            session.lock(object, LockMode.NONE);
-            session.merge(object);
+            session.update(object);
             transaction.commit();
             b = true;
         } catch (HibernateException ex) {
@@ -185,7 +183,7 @@ public class DAO {
                 object.getModel(), object.getId(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+            //session.close();
         }
         return b;
     }
@@ -198,7 +196,7 @@ public class DAO {
      */
     public static <T extends IEntity> Long addObject(T object) {
         Long id = null;
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
@@ -210,7 +208,7 @@ public class DAO {
                 object.getModel(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+            //session.close();
         }
         return id;
     }
@@ -223,7 +221,7 @@ public class DAO {
      */
     public static <T extends IEntity> boolean delObject(T object) {
         boolean b = false;
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         transaction.begin();
         try {
@@ -235,7 +233,7 @@ public class DAO {
                 object.getModel(), object.getId(), ex.getLocalizedMessage()));
         } finally {
             if (!transaction.wasCommitted()) transaction.rollback();
-            session.close();
+            //session.close();
         }
         return b;
     }

@@ -2,7 +2,6 @@ package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.Config;
 import fr.debnet.ircrpg.DAO;
-import fr.debnet.ircrpg.Parameter;
 import fr.debnet.ircrpg.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Activity;
@@ -527,10 +526,9 @@ public class Game {
             this.updateQueues(player);
         }
         // Return
+        result.setDetails(null);
         result.setSuccess(true);
-        if (Config.PERSISTANCE && !result.getReturns().isEmpty()) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -585,9 +583,7 @@ public class Game {
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
 
@@ -703,16 +699,15 @@ public class Game {
                     attacker.addMoneyStolen(gold);
                 }
             }
-            {
-                // Experience gained (attacker)
-                double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
-                bonus = bonus < 0 ? 0 : bonus;
-                double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
-                        (bonus + attackerModifiers.getExperienceModifier());
-                attacker.addExperience(xp);
-                // Update return
-                result.addPlayerExperienceChanges(xp);
-            }
+            // Experience gained (attacker)
+            double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
+            bonus = bonus < 0 ? 0 : bonus;
+            double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
+                    (bonus + attackerModifiers.getExperienceModifier());
+            attacker.addExperience(xp);
+            // Update return
+            result.setDetails(null);
+            result.addPlayerExperienceChanges(xp);
             // Defender phase
             if (defender.getStatus() != Status.DEAD) {
                 if (defender.getStatus() == Status.PARALYZED) {
@@ -749,7 +744,7 @@ public class Game {
                             defender.addKills(1);
                             attacker.addDeaths(1);
                             // Gold looted
-                            double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_GOLD;
+                            bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_GOLD;
                             bonus = bonus < 0 ? 0 : bonus;
                             double gold = Config.PENALTY_GOLD * defender.getGold() * bonus;
                             // Update players
@@ -762,11 +757,11 @@ public class Game {
                             defender.addMoneyStolen(gold);
                         }
                         // Experience gained (defenser)
-                        double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_EXPERIENCE;
+                        bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_EXPERIENCE;
                         bonus = bonus < 0 ? 0 : bonus;
-                        double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
+                        xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
                         defender.addExperience(xp);
-                        // Update statistics
+                        // Update return
                         result.addTargetExperienceChanges(xp);
                     }
                 }
@@ -876,7 +871,7 @@ public class Game {
                     double xp = (chance > accuracy ? Config.EXPERIENCE_DEFENSE : Config.EXPERIENCE_ATTACK) * 
                         (bonus + attackerModifiers.getExperienceModifier());
                     attacker.addExperience(xp);
-                    // Update statistics
+                    // Update return
                     result.addPlayerExperienceChanges(xp);
                 }
             }
@@ -891,9 +886,7 @@ public class Game {
         if (!self) this.updatePlayerAndReturn(result, defender, true, true);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1008,10 +1001,9 @@ public class Game {
         this.updatePlayerAndReturn(result, attacker, true, false);
         this.updatePlayerAndReturn(result, defender, true, true);
         // Return
+        result.setDetails(null);
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1097,10 +1089,9 @@ public class Game {
         player.setLastAction(Calendar.getInstance());
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
+        result.setDetails(potion.getText());
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1157,10 +1148,9 @@ public class Game {
                 result.addReturn(Return.START_WORKING);
                 break;
         }
+        result.setDetails(activity.getText());
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1215,6 +1205,7 @@ public class Game {
                 break;
             }
         }
+        result.setDetails(player.getActivity().getText());
         // Clear activity
         player.setActivity(Activity.WAITING);
         player.setActivityDuration(0l);
@@ -1224,9 +1215,7 @@ public class Game {
         // Return
         result.setValue(earned);
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1299,10 +1288,9 @@ public class Game {
         player.setLastAction(Calendar.getInstance());
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
+        result.setDetails(skill.getText());
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1416,9 +1404,7 @@ public class Game {
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1460,9 +1446,7 @@ public class Game {
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1510,9 +1494,7 @@ public class Game {
         this.updatePlayerAndReturn(result, player, true, false);
         // Return
         result.setSuccess(true);
-        if (Config.PERSISTANCE) {
-            DAO.<Result>addObject(result);
-        }
+        this.saveResult(result);
         return result;
     }
     
@@ -1733,6 +1715,7 @@ public class Game {
                 } else result.addReturn(Return.WRONG_PASSWORD);
             } else result.addReturn(Return.ALREADY_ONLINE);
         } else result.addReturn(Return.USERNAME_NOT_FOUND);
+        this.saveResult(result);
         return result;
     }
     
@@ -1757,6 +1740,7 @@ public class Game {
                 result.setPlayer(player);
                 result.addReturn(Return.LOGIN_SUCCEED);
                 result.setSuccess(true);
+                this.saveResult(result);
             }
         }
         return result;
@@ -1779,6 +1763,7 @@ public class Game {
             result.setPlayer(player);
             result.addReturn(Return.LOGOUT_SUCCEED);
             result.setSuccess(true);
+            this.saveResult(result);
         } else result.addReturn(Return.NOT_ONLINE);
         return result;
     }
@@ -1858,6 +1843,7 @@ public class Game {
                 result.setSuccess(true);
             } else result.addReturn(Return.NICKNAME_IN_USE);
         } else result.addReturn(Return.USERNAME_ALREADY_TAKEN);
+        this.saveResult(result);
         return result;
     }
     
@@ -1909,7 +1895,7 @@ public class Game {
     /**
      * Explicitly add an item in the list
      * @param item Item instance
-     * @return True if the item is successfully added, false sinon
+     * @return True if the item is successfully added, false else
      */
     protected boolean addItem(Item item) {
         if (!this.itemsByCode.containsKey(item.getCode())) {
@@ -1925,7 +1911,7 @@ public class Game {
     /**
      * Explicitly add a spell in the list
      * @param spell Spell instance
-     * @return True if the spell is successfully added, false sinon
+     * @return True if the spell is successfully added, false else
      */
     protected boolean addSpell(Spell spell) {
         if (!this.spellsByCode.containsKey(spell.getCode())) {
@@ -1934,6 +1920,18 @@ public class Game {
                 return DAO.<Spell>addObject(spell) != 0;
             }
             return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Save the result in database
+     * @param result Result instance
+     * @return True if success, false else
+     */
+    private boolean saveResult(Result result) {
+        if (Config.PERSISTANCE && result.getReturns().size() > 0) {
+            return DAO.<Result>addObject(result) != 0l;
         }
         return false;
     }

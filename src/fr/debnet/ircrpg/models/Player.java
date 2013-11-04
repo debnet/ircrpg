@@ -735,6 +735,12 @@ public class Player extends MappedEntity implements IEntity {
     @Override
     public void updateMapping() {
         Modifiers modifiers = new Modifiers(this);
+        // Bonuses
+        this.set("maxHealthBonus", modifiers.getHealth());
+        this.set("maxManaBonus", modifiers.getMana());
+        this.set("attackBonus", modifiers.getAttack());
+        this.set("defenseBonus", modifiers.getDefense());
+        // Calculated statistics
         this.set("maxHealthCalculated", this.maxHealth + modifiers.getHealth());
         this.set("maxManaCalculated", this.maxMana + modifiers.getMana());
         this.set("attackCalculated", this.attack + modifiers.getAttack());
