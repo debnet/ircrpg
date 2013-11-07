@@ -15,6 +15,8 @@ import fr.debnet.ircrpg.models.Time;
 import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -294,5 +296,19 @@ public class Helpers {
             }
             return build.toString().trim();
         } else return Strings.format(result.getCustomMessage(), map).trim();
+    }
+    
+    /**
+     * Hash string
+     * @param string String to hash
+     * @return Hashed string
+     */
+    public static String hash(String string) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            return new String(digest.digest(string.getBytes()));
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
     }
 }

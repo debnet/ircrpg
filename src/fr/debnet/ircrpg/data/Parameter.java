@@ -5,7 +5,7 @@
 package fr.debnet.ircrpg.data;
 
 /**
- *
+ * HSQL parameter
  * @author Marc
  */
 public class Parameter<T> {
@@ -13,11 +13,23 @@ public class Parameter<T> {
     private String name;
     private T value;
 
+    /**
+     * Constructor
+     * @param name Name
+     * @param value Value
+     */
     public Parameter(String name, T value) {
         this.name = name;
         this.value = value;
     }
     
+    /**
+     * Create a new parameter
+     * @param <T> Type
+     * @param name Name
+     * @param value Value
+     * @return 
+     */
     public static <T> Parameter Create(String name, T value) {
         return new Parameter(name, value);
     }

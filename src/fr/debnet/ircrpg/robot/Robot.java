@@ -24,23 +24,33 @@ import java.util.logging.Logger;
  * @author Marc
  */
 public class Robot extends IrcBot implements INotifiable {
-
+    
     // Logger
     private static final Logger logger = Logger.getLogger(Robot.class.getName());
     
     private Game game;
     
+    /**
+     * Constructor
+     * @param game Game instance
+     */
     public Robot(Game game) {
         this.game = game;
         this.game.registerNotifiable(this);
         this.setVerbose(Config.DEBUG);
     }
     
+    /**
+     * Connect the robot to IRC
+     */
     public void connect() {
         try {
             this.setName(Config.IRC_NICKNAME);
+            this.setLogin(Config.IRC_USERNAME);
+            this.setVersion(Config.IRC_REALNAME);
             this.setEncoding(Config.IRC_CHARSET);
-            super.connect(Config.IRC_SERVER, Config.IRC_PORT, Config.IRC_PASSWORD);
+            this.connect(Config.IRC_SERVER, Config.IRC_PORT, Config.IRC_PASSWORD);
+            this.sendRawLine(String.format("MODE %s +B", Config.IRC_NICKNAME));
             String[] channels = Config.IRC_CHANNEL.split(",");
             for (String channel : channels) this.joinChannel(Config.IRC_CHANNEL);
         } catch (IOException | IrcException ex) {
@@ -49,6 +59,11 @@ public class Robot extends IrcBot implements INotifiable {
         }
     }
     
+    /**
+     * Send a message on all channels
+     * @param message Message
+     * @param args Optional format arguments
+     */
     private void sendFormattedMessage(String message, Object... args) {
         if (this.isConnected()) {
             for (String channel : this.getChannels()) {
@@ -60,6 +75,12 @@ public class Robot extends IrcBot implements INotifiable {
         }
     }
     
+    /**
+     * Send a message to a specific user or channel
+     * @param target User nickname or channel name
+     * @param message Message
+     * @param args Optional format arguments
+     */
     private void sendFormattedMessage(String target, String message, Object... args) {
         if (this.isConnected()) {
             if (args.length > 0) message = String.format(message, args);
@@ -69,7 +90,14 @@ public class Robot extends IrcBot implements INotifiable {
         }
     }
 
+    /**
+     * Process received messages
+     * @param sender User nickname
+     * @param hostname User hostname
+     * @param message Message
+     */
     private void processMessage(String sender, String hostname, String message) {
+        if (Config.IRC_NICKNAME.equals(sender)) return;
         String[] words = message.trim().split(" ");
         if (words.length > 0) {
             String command = words[0].toLowerCase();
@@ -78,7 +106,7 @@ public class Robot extends IrcBot implements INotifiable {
             if (Strings.COMMAND_REGISTER.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
-                    String password = words[2];
+                    String password = Helpers.hash(words[2]); // Immediate hash for security
                     Result result = this.game.registerPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
@@ -92,7 +120,7 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_LOGIN.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
-                    String password = words[2];
+                    String password = Helpers.hash(words[2]); // Immediate hash for security
                     Result result = this.game.loginPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
@@ -117,7 +145,7 @@ public class Robot extends IrcBot implements INotifiable {
             // Password
             else if (Strings.COMMAND_PASSWORD.equals(command)) {
                 if (words.length == 2) {
-                    String password = words[1];
+                    String password = Helpers.hash(words[1]); // Immediate hash for security
                     if (this.game.changePassword(sender, password))
                         this.sendFormattedMessage(sender, Strings.RETURN_PASSWORD_CHANGED);
                 } else this.sendFormattedMessage(sender, help.get(command));
@@ -405,6 +433,11 @@ public class Robot extends IrcBot implements INotifiable {
         }
     }
     
+    /**
+     * Display the result to IRC
+     * @param result Result instance
+     * @param sender User nickname or channel name
+     */
     private void displayResult(Result result, String sender) {
         logger.log(Level.INFO, String.format("%s: %s", sender, result.toString()));
         if (result.isSuccess())
@@ -412,17 +445,28 @@ public class Robot extends IrcBot implements INotifiable {
         else this.sendFormattedMessage(sender, Helpers.getMessage(result));
     }
     
+    /**
+     * Display the admin result to IRC
+     * @param success True if command is successful, false else
+     * @param sender User nickname or channel name
+     */
     private void displayAdminResult(boolean success, String sender) {
         if (success)
             this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_SUCCEED);
         else this.sendFormattedMessage(sender, Strings.RETURN_ADMIN_COMMAND_FAILED);
     }
     
+    /**
+     * Notify a result from queues to be displayed
+     * @param result Result instance
+     */
     @Override
     public void notify(Result result) {
         logger.log(Level.INFO, result.toString());
         if (result.isSuccess()) this.sendFormattedMessage(Helpers.getMessage(result));
     }
+    
+    /* IRC Events */
     
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
@@ -455,11 +499,6 @@ public class Robot extends IrcBot implements INotifiable {
     }
     
     @Override
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
-        this.processMessage(sourceNick, sourceHostname, notice);
-    }
-    
-    @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
         this.processMessage(sender, hostname, message);
     }
@@ -467,6 +506,11 @@ public class Robot extends IrcBot implements INotifiable {
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
         this.processMessage(sender, hostname, message);
+    }
+    
+    @Override
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+        this.processMessage(sourceNick, sourceHostname, notice);
     }
     
     @Override

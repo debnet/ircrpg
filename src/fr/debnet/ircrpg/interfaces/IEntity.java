@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.enums.Model;
 import java.io.Serializable;
 
 /**
- *
+ * Interface for entities
  * @author Marc
  */
 public interface IEntity extends Serializable {

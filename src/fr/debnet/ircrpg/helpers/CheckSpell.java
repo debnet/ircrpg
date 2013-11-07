@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 /**
  * Checks for spells
- * 
  * @author Marc
  */
 public enum CheckSpell

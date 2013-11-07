@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 /**
  * Checks for players
- * 
  * @author Marc
  */
 public enum CheckPlayer

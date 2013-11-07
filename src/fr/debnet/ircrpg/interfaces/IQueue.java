@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.models.Player;
 
 /**
- *
+ * Interface for queues
  * @author Marc
  */
 public interface IQueue {

@@ -1,12 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.commons.Config;
-import fr.debnet.ircrpg.data.DAO;
 import fr.debnet.ircrpg.commons.Strings;
+import fr.debnet.ircrpg.data.DAO;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Type;
 import fr.debnet.ircrpg.interfaces.IEntity;
@@ -19,8 +15,10 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -247,7 +245,16 @@ public class Admin {
         if (object == null) return null;
         // Return object map
         MappedEntity entity = (MappedEntity)object;
-        return entity.toMap().toString();
+        List<String> properties = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : entity.toMap().entrySet()) {
+            Class<?> objectType = entry.getValue().getClass();
+            Type type = Type.from(objectType);
+            if (type != Type.OBJECT) {
+                properties.add(String.format(type != Type.STRING ? "%s = %s" : "%s = \"%s\"", 
+                    entry.getKey(), entry.getValue().toString()));
+            }
+        }
+        return properties.toString();
     }
     
     /**

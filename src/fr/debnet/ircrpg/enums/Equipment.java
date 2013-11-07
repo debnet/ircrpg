@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
- *
+ * Equipments
  * @author Marc
  */
 public enum Equipment implements IEnum {

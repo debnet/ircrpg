@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * Types
  * @author Marc
  */
 public enum Type {

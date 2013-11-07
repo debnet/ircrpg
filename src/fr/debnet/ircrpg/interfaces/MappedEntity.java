@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Abstract base entity for value mapping in inner map
  * @author Marc
  */
 public abstract class MappedEntity {
@@ -12,19 +12,38 @@ public abstract class MappedEntity {
     private Map<String, Object> map;
     private boolean enableMapping = true;
     
+    /**
+     * Constructor
+     */
     public MappedEntity() {
         this.map = new HashMap<>();
     }
     
+    /**
+     * Enable mapping of the entity
+     * @param enable True or false
+     */
     public void setEnableMapping(boolean enable) {
         this.enableMapping = enable;
     }
     
+    /**
+     * Return the map representation of the entity
+     * @return Map if enabled, null else
+     */
     public Map<String, Object> toMap() {
-        this.updateMapping();
-        return new HashMap<>(this.map);
+        if (this.enableMapping) {
+            this.updateMapping();
+            return new HashMap<>(this.map);
+        }
+        return null;
     }
     
+    /**
+     * Set a value inner the entity map
+     * @param key Key
+     * @param value Value
+     */
     protected synchronized void set(String key, Object value) {
         if (this.enableMapping) {
             if (this.map.containsKey(key)) this.map.remove(key);
@@ -42,5 +61,8 @@ public abstract class MappedEntity {
         }
     }
     
+    /**
+     * Specific update mapping by entity
+     */
     public abstract void updateMapping();
 }

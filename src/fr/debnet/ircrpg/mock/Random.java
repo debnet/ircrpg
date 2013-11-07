@@ -5,31 +5,40 @@ import java.util.Calendar;
 import java.util.Queue;
 
 /**
- *
+ * Random implementation for mock purposes
  * @author Marc
  */
-public class Random {
+public class Random extends java.util.Random {
     
-    private java.util.Random random;
-    private Queue<Double> defaultValues;
+    private Queue<Double> values;
     
+    /**
+     * Constructor
+     */
     public Random() {
-        this.random = new java.util.Random(Calendar.getInstance().getTimeInMillis());
-        this.defaultValues = new ArrayDeque<>();
+        super(Calendar.getInstance().getTimeInMillis());
+        this.values = new ArrayDeque<>();
     }
     
-    public void addDefaultValue(double value) {
+    /**
+     * Add a value in the queue
+     * @param value Value
+     */
+    public void addValue(double value) {
         if (value < 0 || value >= 1) {
             throw new IllegalArgumentException("Default random value must be between 0 inclusive and 1 exclusive.");
         }
-        this.defaultValues.offer(value);
+        this.values.offer(value);
     }
     
+    /**
+     * Get first value in the queue or a random value
+     * @return Value
+     */
+    @Override
     public double nextDouble() {
-        double value = random.nextDouble();
-        if (this.defaultValues.size() > 0) {
-            value = this.defaultValues.poll();
-        }
-        return value;
+        if (this.values.size() > 0)
+            return this.values.poll();
+        else return super.nextDouble();
     }
 }

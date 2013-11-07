@@ -1,13 +1,13 @@
 package fr.debnet.ircrpg.enums;
 
-import fr.debnet.ircrpg.interfaces.IEnum;
 import fr.debnet.ircrpg.models.Event;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Item;
+import fr.debnet.ircrpg.models.Result;
 import fr.debnet.ircrpg.models.Spell;
 
 /**
- *
+ * Models
  * @author Marc
  */
 public enum Model {
@@ -17,7 +17,7 @@ public enum Model {
     ITEM        (Item.class),
     SPELL       (Spell.class),
     EVENT       (Event.class),
-    RESULT      (Event.class);
+    RESULT      (Result.class);
 
     private final Class value;
 

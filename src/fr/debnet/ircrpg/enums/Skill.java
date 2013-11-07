@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
- *
+ * Skills
  * @author Marc
  */
 public enum Skill implements IEnum {

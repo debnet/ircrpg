@@ -1,11 +1,11 @@
 package fr.debnet.ircrpg.game;
 
-import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.enums.Activity;
+import fr.debnet.ircrpg.enums.Return;
+import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Spell;
-import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.models.Result;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -122,8 +122,8 @@ public class FightTest {
         // Description
         System.out.println("- both attack and defense succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.5d);
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
@@ -146,8 +146,8 @@ public class FightTest {
         // Description
         System.out.println("- attack failed but defense succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.6d);
-        this.game.getRandom().addDefaultValue(0.4d);
+        this.game.getRandom().addValue(0.6d);
+        this.game.getRandom().addValue(0.4d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
@@ -170,8 +170,8 @@ public class FightTest {
         // Description
         System.out.println("- attack succeed but defense failed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.4d);
-        this.game.getRandom().addDefaultValue(0.6d);
+        this.game.getRandom().addValue(0.4d);
+        this.game.getRandom().addValue(0.6d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
@@ -194,8 +194,8 @@ public class FightTest {
         // Description
         System.out.println("- both attack and defense failed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.9d);
-        this.game.getRandom().addDefaultValue(0.9d);
+        this.game.getRandom().addValue(0.9d);
+        this.game.getRandom().addValue(0.9d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", null);
         // Returns
@@ -218,7 +218,7 @@ public class FightTest {
         // Description
         System.out.println("- offensive spell succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.1d);
+        this.game.getRandom().addValue(0.1d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
@@ -241,7 +241,7 @@ public class FightTest {
         // Description
         System.out.println("- offensive spell failed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.9d);
+        this.game.getRandom().addValue(0.9d);
         // Create fightPlayer
         Result r = this.game.fightPlayer("p1", "p2", "s");
         // Returns
@@ -264,7 +264,7 @@ public class FightTest {
         // Description
         System.out.println("- status spell succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.1d);
+        this.game.getRandom().addValue(0.1d);
         // Modify spell
         Spell s = this.game.getSpellByCode("s");
         s.setHealthDamage(0d);
@@ -409,7 +409,7 @@ public class FightTest {
         // Description
         System.out.println("- defender killed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
         // Change player attack
         Player p = this.game.getPlayerByUsername("p1");
         p.setAttack(1000);
@@ -435,8 +435,8 @@ public class FightTest {
         // Description
         System.out.println("- attacker killed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.6d);
-        this.game.getRandom().addDefaultValue(0.4d);
+        this.game.getRandom().addValue(0.6d);
+        this.game.getRandom().addValue(0.4d);
         // Change player defense
         Player p = this.game.getPlayerByUsername("p2");
         p.setDefense(1000);
@@ -463,8 +463,8 @@ public class FightTest {
         // Description
         System.out.println("- experience bonus:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.5d);
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
         // Change player level
         Player p = this.game.getPlayerByUsername("p2");
         p.setLevel(2);

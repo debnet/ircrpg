@@ -1,7 +1,7 @@
 package fr.debnet.ircrpg.game;
 
-import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.commons.Config;
+import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import org.junit.After;
@@ -112,8 +112,8 @@ public class StealTest {
         // Description
         System.out.println("- steal succeed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.1d);
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addValue(0.1d);
+        this.game.getRandom().addValue(0.5d);
         // Create theft
         Result r = this.game.stealPlayer("p1", "p2");
         // Returns
@@ -133,7 +133,7 @@ public class StealTest {
         // Description
         System.out.println("- steal failed:");
         // Mock for random values
-        this.game.getRandom().addDefaultValue(0.5d);
+        this.game.getRandom().addValue(0.5d);
         // Create theft
         Result r = this.game.stealPlayer("p1", "p2");
         // Returns

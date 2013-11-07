@@ -28,6 +28,11 @@ public class UpdateQueue extends Thread implements IQueue {
     
     private static IQueue queue;
     
+    /**
+     * Get thread instance by game
+     * @param game Game instance
+     * @return Thread instance
+     */
     public static IQueue getInstance(Game game) {
         if (queue == null || queue.getGame() != game)
             queue = new UpdateQueue(game);
@@ -42,6 +47,10 @@ public class UpdateQueue extends Thread implements IQueue {
     private Player player;
     private Calendar date;
     
+    /**
+     * Constructor
+     * @param game Game instance 
+     */
     public UpdateQueue(Game game) {
         this.setName(this.getClass().getSimpleName());
         this.game = game;
@@ -50,15 +59,9 @@ public class UpdateQueue extends Thread implements IQueue {
         this.start();
     }
     
-    @Override
-    public boolean register(INotifiable notifiable) {
-        if (!this.notifiables.contains(notifiable)) {
-            this.notifiables.add(notifiable);
-            return true;
-        }
-        return false;
-    }
-    
+    /**
+     * Thread execution method
+     */
     @Override
     public void run() {
         while (run) {
@@ -83,6 +86,9 @@ public class UpdateQueue extends Thread implements IQueue {
         }
     }
     
+    /**
+     * Get the next event
+     */
     private synchronized void next() {
         Player player = null;
         Calendar date = Config.MAX_DATE;
@@ -95,7 +101,25 @@ public class UpdateQueue extends Thread implements IQueue {
         this.player = player;
         this.date = date;
     }
+    
+    /**
+     * Register a notifiable
+     * @param notifiable Notifiable
+     * @return True if successfully registred, false else
+     */
+    @Override
+    public boolean register(INotifiable notifiable) {
+        if (!this.notifiables.contains(notifiable)) {
+            this.notifiables.add(notifiable);
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * Update the thread status
+     * @param player Player instance
+     */
     @Override
     public synchronized void update(Player player) {
         // Check if the player is online
@@ -167,11 +191,18 @@ public class UpdateQueue extends Thread implements IQueue {
         this.players.put(player, date);
     }
     
+    /**
+     * Stop the thread
+     */
     @Override
     public void interrupt() {
         this.run = false;
     }
     
+    /**
+     * Set the game instance
+     * @return Game instance
+     */
     @Override
     public Game getGame() {
         return this.game;

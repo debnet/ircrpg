@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
- *
+ * Potions
  * @author Marc
  */
 public enum Potion implements IEnum {

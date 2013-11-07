@@ -1,10 +1,10 @@
 package fr.debnet.ircrpg.game;
 
-import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.enums.Activity;
-import fr.debnet.ircrpg.models.Player;
+import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Status;
+import fr.debnet.ircrpg.models.Player;
 import fr.debnet.ircrpg.models.Result;
 import java.util.Calendar;
 import org.junit.After;

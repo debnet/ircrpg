@@ -76,7 +76,7 @@ public class DAO {
      * Get entity from database
      * @param <T> Type entity
      * @param sql HSQL Query
-     * @param args Arguments
+     * @param parameters Optional parameters
      * @return Entity object
      */
     public static <T extends IEntity> T getObject(String sql, Parameter... parameters) {
@@ -88,7 +88,7 @@ public class DAO {
      * @param <T> Type entity
      * @param sql HSQL Query
      * @param limit Limit result ?
-     * @param args Arguments
+     * @param parameters Optional parameters
      * @return Entity object
      */
     @SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class DAO {
      * Get entity list from database
      * @param <T> Entity type
      * @param sql HSQL Query
-     * @param args Arguments
+     * @param parameters Optional parameters
      * @return Entity list
      */
     public static <T extends IEntity> List<T> getObjectList(String sql, Parameter... parameters) {
@@ -134,7 +134,7 @@ public class DAO {
      * @param <T> Entity type
      * @param sql HSQL Query
      * @param limit Number of returned elements
-     * @param args Arguments
+     * @param parameters Optional parameters
      * @return 
      */
     @SuppressWarnings("unchecked")

@@ -1,7 +1,7 @@
 package fr.debnet.ircrpg.enums;
 
 /**
- *
+ * Actions
  * @author Marc
  */
 public enum Action {

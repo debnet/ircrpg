@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 /**
  * Checks for items
- * 
  * @author Marc
  */
 public enum CheckItem

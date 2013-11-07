@@ -5,7 +5,7 @@
 package fr.debnet.ircrpg.interfaces;
 
 /**
- *
+ * Interface for enums
  * @author Marc
  */
 public interface IEnum {

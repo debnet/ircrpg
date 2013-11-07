@@ -4,7 +4,6 @@ import java.util.EnumSet;
 
 /**
  * Checks for potions
- * 
  * @author Marc
  */
 public enum CheckPotion

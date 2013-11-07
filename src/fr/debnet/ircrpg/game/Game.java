@@ -1,8 +1,8 @@
 package fr.debnet.ircrpg.game;
 
 import fr.debnet.ircrpg.commons.Config;
-import fr.debnet.ircrpg.data.DAO;
 import fr.debnet.ircrpg.commons.Strings;
+import fr.debnet.ircrpg.data.DAO;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
@@ -11,9 +11,9 @@ import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Skill;
 import fr.debnet.ircrpg.enums.Status;
 import fr.debnet.ircrpg.game.queues.EventQueue;
+import fr.debnet.ircrpg.game.queues.UpdateQueue;
 import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
-import fr.debnet.ircrpg.game.queues.UpdateQueue;
 import fr.debnet.ircrpg.helpers.CheckItem;
 import fr.debnet.ircrpg.helpers.CheckPlayer;
 import fr.debnet.ircrpg.helpers.CheckPotion;

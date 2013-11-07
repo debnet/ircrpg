@@ -27,6 +27,11 @@ public class EventQueue extends Thread implements IQueue {
     
     private static IQueue queue;
     
+    /**
+     * Get thread instance by game
+     * @param game Game instance
+     * @return Thread instance
+     */
     public static IQueue getInstance(Game game) {
         if (queue == null || queue.getGame() != game)
             queue = new EventQueue(game);
@@ -40,6 +45,10 @@ public class EventQueue extends Thread implements IQueue {
     
     private Map<Player, List<Event>> events;
     
+    /**
+     * Constructor
+     * @param game Game instance 
+     */
     public EventQueue(Game game) {
         this.setName(this.getClass().getSimpleName());
         this.game = game;
@@ -49,6 +58,9 @@ public class EventQueue extends Thread implements IQueue {
         this.start();
     }
     
+    /**
+     * Thread execution method
+     */
     @Override
     public void run() {
         while (run) {
@@ -87,7 +99,6 @@ public class EventQueue extends Thread implements IQueue {
                         }
                     }
                 }
-                
                 Thread.sleep(Config.EVENT_SLEEP * 1000);
             } catch (InterruptedException ex) {
                 logger.log(Level.SEVERE, ex.getLocalizedMessage());
@@ -95,6 +106,11 @@ public class EventQueue extends Thread implements IQueue {
         }
     }
 
+    /**
+     * Register a notifiable
+     * @param notifiable Notifiable
+     * @return True if successfully registred, false else
+     */
     @Override
     public boolean register(INotifiable notifiable) {
         if (!this.notifiables.contains(notifiable)) {
@@ -104,6 +120,10 @@ public class EventQueue extends Thread implements IQueue {
         return false;
     }
 
+    /**
+     * Update the thread status
+     * @param player Player instance
+     */
     @Override
     public synchronized void update(Player player) {
         if (!player.getOnline()) {
@@ -116,11 +136,18 @@ public class EventQueue extends Thread implements IQueue {
         else this.events.remove(player);
     }
     
+    /**
+     * Stop the thread
+     */
     @Override
     public void interrupt() {
         this.run = false;
     }
     
+    /**
+     * Set the game instance
+     * @return Game instance
+     */
     @Override
     public Game getGame() {
         return this.game;

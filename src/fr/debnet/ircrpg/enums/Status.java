@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
- *
+ * Status
  * @author Marc
  */
 public enum Status implements IEnum {

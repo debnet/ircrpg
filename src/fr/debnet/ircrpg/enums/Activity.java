@@ -4,7 +4,7 @@ import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**
- *
+ * Activities
  * @author Marc
  */
 public enum Activity implements IEnum {

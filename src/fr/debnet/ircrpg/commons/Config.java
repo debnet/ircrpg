@@ -28,6 +28,10 @@ public class Config {
     public static boolean IRC_ENABLED;
     @Property(name = "irc.nickname") 
     public static String IRC_NICKNAME;
+    @Property(name = "irc.username") 
+    public static String IRC_USERNAME;
+    @Property(name = "irc.realname") 
+    public static String IRC_REALNAME;
     @Property(name = "irc.server") 
     public static String IRC_SERVER;
     @Property(name = "irc.port") 

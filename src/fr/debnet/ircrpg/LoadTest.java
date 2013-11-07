@@ -54,6 +54,9 @@ public class LoadTest extends Thread {
         this.start();
     }
     
+    /**
+     * Thread execution method
+     */
     @Override
     public void run() {
         while(true) {
