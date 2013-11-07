@@ -3,7 +3,7 @@ package fr.debnet.ircrpg.models;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;
 import fr.debnet.ircrpg.enums.Status;
-import fr.debnet.ircrpg.Config;
+import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.interfaces.IEntity;
 import fr.debnet.ircrpg.interfaces.MappedEntity;
 import java.util.Calendar;

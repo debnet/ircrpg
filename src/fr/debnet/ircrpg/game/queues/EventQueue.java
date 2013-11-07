@@ -1,6 +1,6 @@
 package fr.debnet.ircrpg.game.queues;
 
-import fr.debnet.ircrpg.Config;
+import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.interfaces.IQueue;
 import fr.debnet.ircrpg.interfaces.INotifiable;
 import fr.debnet.ircrpg.game.Game;

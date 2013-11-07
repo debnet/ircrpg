@@ -1,4 +1,4 @@
-package fr.debnet.ircrpg;
+package fr.debnet.ircrpg.commons;
 
 import fr.debnet.ircbot.Colors;
 import fr.debnet.ircrpg.annotations.Property;

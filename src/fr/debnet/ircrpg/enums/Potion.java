@@ -1,6 +1,6 @@
 package fr.debnet.ircrpg.enums;
 
-import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.interfaces.IEnum;
 
 /**

@@ -1,7 +1,7 @@
 package fr.debnet.ircrpg.helpers;
 
-import fr.debnet.ircrpg.Config;
-import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.commons.Config;
+import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.enums.Potion;
 import fr.debnet.ircrpg.enums.Return;
 import fr.debnet.ircrpg.enums.Activity;

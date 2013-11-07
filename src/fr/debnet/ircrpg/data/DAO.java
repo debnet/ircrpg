@@ -1,5 +1,6 @@
-package fr.debnet.ircrpg;
+package fr.debnet.ircrpg.data;
 
+import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.interfaces.IEntity;
 import java.io.FileInputStream;
 import java.io.IOException;

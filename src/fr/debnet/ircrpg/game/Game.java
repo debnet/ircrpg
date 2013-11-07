@@ -1,8 +1,8 @@
 package fr.debnet.ircrpg.game;
 
-import fr.debnet.ircrpg.Config;
-import fr.debnet.ircrpg.DAO;
-import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.commons.Config;
+import fr.debnet.ircrpg.data.DAO;
+import fr.debnet.ircrpg.commons.Strings;
 import fr.debnet.ircrpg.enums.Action;
 import fr.debnet.ircrpg.enums.Activity;
 import fr.debnet.ircrpg.enums.Model;

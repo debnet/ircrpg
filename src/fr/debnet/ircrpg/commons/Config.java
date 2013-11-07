@@ -1,4 +1,4 @@
-package fr.debnet.ircrpg;
+package fr.debnet.ircrpg.commons;
 
 import fr.debnet.ircrpg.annotations.Property;
 import fr.debnet.ircrpg.enums.Type;

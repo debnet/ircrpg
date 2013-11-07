@@ -1,7 +1,7 @@
 package fr.debnet.ircrpg.models;
 
-import fr.debnet.ircrpg.Config;
-import fr.debnet.ircrpg.Strings;
+import fr.debnet.ircrpg.commons.Config;
+import fr.debnet.ircrpg.commons.Strings;
 
 /**
  * Time

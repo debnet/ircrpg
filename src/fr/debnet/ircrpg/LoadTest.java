@@ -1,5 +1,6 @@
 package fr.debnet.ircrpg;
 
+import fr.debnet.ircrpg.commons.Config;
 import fr.debnet.ircrpg.game.Game;
 import fr.debnet.ircrpg.helpers.Helpers;
 import fr.debnet.ircrpg.mock.Random;
