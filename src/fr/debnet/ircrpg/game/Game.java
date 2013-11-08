@@ -173,8 +173,6 @@ public class Game {
             return this.playersByNickname.get(key);
         }
         return null;
-//        return DAO.<Player>getObject("from " + Model.PLAYER + " where nickname = :nickname", 
-//                Parameter.<String>Create("nickname", key));
     }
 
     /**
@@ -188,8 +186,6 @@ public class Game {
             return this.playersByUsername.get(key);
         }
         return null;
-//        return DAO.<Player>getObject("from " + Model.PLAYER + " where username = :username", 
-//                Parameter.<String>Create("username", key));
     }
     
     /**
@@ -202,8 +198,6 @@ public class Game {
             return this.itemsByCode.get(item);
         }
         return null;
-//        return DAO.<Item>getObject("from " + Model.ITEM + " where code = :code", 
-//                Parameter.<String>Create("code", item));
     }
     
     /**
@@ -216,8 +210,6 @@ public class Game {
             return this.spellsByCode.get(spell);
         }
         return null;
-//        return DAO.<Spell>getObject("from " + Model.SPELL + " where code = :code", 
-//                Parameter.<String>Create("code", spell));
     }
     
     /**
@@ -230,8 +222,6 @@ public class Game {
             return this.eventsByCode.get(event);
         }
         return null;
-//        return DAO.<Event>getObject("from " + Model.EVENT + " where code = :code", 
-//                Parameter.<String>Create("code", event));
     }
     
     /**
@@ -898,7 +888,7 @@ public class Game {
      */
     public Result stealPlayer(String sender, String target) {
         Result result = new Result(Action.STEAL);
-        if (sender.equals(target)) {
+        if (sender.equalsIgnoreCase(target)) {
             result.addReturn(Return.NOT_SELF_THEFT);
             return result;
         }
@@ -973,7 +963,7 @@ public class Game {
                 defender.addMoneyStolen(gold);
             }
             // Experience gained (defenser)
-            double bonus = 1 + (defender.getLevel() - attacker.getLevel()) * Config.BONUS_EXPERIENCE;
+            double bonus = 1 + (attacker.getLevel() - defender.getLevel()) * Config.BONUS_EXPERIENCE;
             bonus = bonus < 0 ? 0 : bonus;
             double xp = Config.EXPERIENCE_DEFENSE * (bonus + defenderModifiers.getExperienceModifier());
             defender.addExperience(xp);

@@ -200,6 +200,13 @@ public class Robot extends IrcBot implements INotifiable {
                     this.displayResult(result, sender);
                 } else this.sendFormattedMessage(sender, help.get(command));
             }
+            // Pray
+            else if (Strings.COMMAND_PRAY.equals(command)) {
+                if (words.length == 1) {
+                    Result result = this.game.startActivity(sender, Activity.PRAYING.toString());
+                    this.displayResult(result, sender);
+                } else this.sendFormattedMessage(sender, help.get(command));
+            }
             // Return
             else if (Strings.COMMAND_RETURN.equals(command)) {
                 if (words.length == 1) {
