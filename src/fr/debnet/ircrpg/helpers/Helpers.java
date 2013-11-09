@@ -305,10 +305,22 @@ public class Helpers {
      */
     public static String hash(String string) {
         try {
+            StringBuilder builder = new StringBuilder();
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            return new String(digest.digest(string.getBytes()));
+            byte[] bytes = digest.digest(string.getBytes());
+            for (int i = 0; i < bytes.length; i++) {
+                builder.append(hexDigits[(bytes[i] >> 4) & 0x0f]);
+                builder.append(hexDigits[bytes[i] & 0x0f]);
+            }
+            return builder.toString();
         } catch (NoSuchAlgorithmException ex) {
             return null;
         }
     }
+    
+    // Hexadecimal digits for hashing
+    private static final char[] hexDigits = { 
+        '0', '1', '2', '3', '4', '5', '6', '7', 
+        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' 
+    };
 }
