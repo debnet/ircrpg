@@ -106,7 +106,7 @@ public class Robot extends IrcBot implements INotifiable {
             if (Strings.COMMAND_REGISTER.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
-                    String password = Helpers.hash(words[2]); // Immediate hash for security
+                    String password = Strings.hash(words[2]); // Immediate hash for security
                     Result result = this.game.registerPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
@@ -120,7 +120,7 @@ public class Robot extends IrcBot implements INotifiable {
             else if (Strings.COMMAND_LOGIN.equals(command)) {
                 if (words.length == 3) {
                     String username = words[1];
-                    String password = Helpers.hash(words[2]); // Immediate hash for security
+                    String password = Strings.hash(words[2]); // Immediate hash for security
                     Result result = this.game.loginPlayer(username, password, sender, hostname);
                     this.displayResult(result, sender);
                     if (result.isSuccess()) {
@@ -145,7 +145,7 @@ public class Robot extends IrcBot implements INotifiable {
             // Password
             else if (Strings.COMMAND_PASSWORD.equals(command)) {
                 if (words.length == 2) {
-                    String password = Helpers.hash(words[1]); // Immediate hash for security
+                    String password = Strings.hash(words[1]); // Immediate hash for security
                     if (this.game.changePassword(sender, password))
                         this.sendFormattedMessage(sender, Strings.RETURN_PASSWORD_CHANGED);
                 } else this.sendFormattedMessage(sender, help.get(command));

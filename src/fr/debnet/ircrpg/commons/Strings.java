@@ -2,6 +2,8 @@ package fr.debnet.ircrpg.commons;
 
 import fr.debnet.ircbot.Colors;
 import fr.debnet.ircrpg.annotations.Property;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -609,4 +611,30 @@ public class Strings {
         matcher.appendTail(buffer);
         return buffer.toString();
     }
+    
+        /**
+     * Hash string
+     * @param string String to hash
+     * @return Hashed string
+     */
+    public static String hash(String string) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            byte[] bytes = digest.digest(string.getBytes());
+            for (int i = 0; i < bytes.length; i++) {
+                builder.append(hexDigits[(bytes[i] >> 4) & 0x0f]);
+                builder.append(hexDigits[bytes[i] & 0x0f]);
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
+    }
+    
+    // Hexadecimal digits for hashing
+    private static final char[] hexDigits = { 
+        '0', '1', '2', '3', '4', '5', '6', '7', 
+        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' 
+    };
 }
